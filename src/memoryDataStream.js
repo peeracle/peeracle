@@ -163,14 +163,10 @@ Peeracle.MemoryDataStream = (function() {
    * @return {number}
    */
   MemoryDataStream.prototype.readUInteger = function readUInteger() {
-    try {
-      var value = this.peekUInteger();
-      this.offset += 4;
+    var value = this.peekUInteger();
+    this.offset += 4;
 
-      return value;
-    } catch (e) {
-      throw e;
-    }
+    return value;
   };
 
   /**
