@@ -1,0 +1,31 @@
+{
+  "name": "peeracle",
+  "version": "0.0.1",
+  "description": "Peer-to-peer assisted multimedia streaming for the web.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peeracle/peeracle.git"
+  },
+  "keywords": [
+    "peeracle",
+    "peer",
+    "to",
+    "peer",
+    "webrtc",
+    "video",
+    "audio",
+    "media",
+    "movie",
+    "music"
+  ],
+  "author": "Axel Isouard",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/peeracle/peeracle/issues"
+  },
+  "homepage": "https://github.com/peeracle/peeracle#readme"
+}
