@@ -22,7 +22,7 @@ install:
 - npm install
 
 before_script:
-- grunt build
+- grunt
 
 notifications:
   slack:
