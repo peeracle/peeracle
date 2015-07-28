@@ -1,6 +1,6 @@
 {
   "name": "peeracle",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Peer-to-peer assisted multimedia streaming for the web.",
   "main": "index.js",
   "scripts": {
@@ -13,8 +13,8 @@
   "keywords": [
     "peeracle",
     "peer",
-    "to",
-    "peer",
+    "peer-to-peer",
+    "p2p",
     "webrtc",
     "video",
     "audio",
@@ -27,5 +27,22 @@
   "bugs": {
     "url": "https://github.com/peeracle/peeracle/issues"
   },
-  "homepage": "https://github.com/peeracle/peeracle#readme"
+  "homepage": "https://github.com/peeracle/peeracle#readme",
+  "devDependencies": {
+    "eslint": "^0.24.1",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-eslint": "^16.0.0",
+    "grunt-jsbeautifier": "^0.2.10",
+    "grunt-karma": "^0.12.0",
+    "grunt-preprocess": "^5.0.1",
+    "karma": "^0.13.3",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^0.4.2",
+    "karma-express-http-server": "0.0.1",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-verbose-reporter": "0.0.3"
+  }
 }

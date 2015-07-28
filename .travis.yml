@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+- '0.12'
+before_install:
+- mkdir build
+- wget -P build http://dl.google.com/closure-compiler/compiler-latest.zip
+- unzip build/compiler-latest.zip -d build/
+- rm build/compiler-latest.zip
+- sudo apt-get update -qq
+- sudo apt-get install -qq libncurses5-dev libssl-dev libnss3-dev libexpat-dev
+- npm install -g grunt-cli jasmine istanbul
+install:
+- npm install
+before_script:
+- grunt build
+notifications:
+  slack:
+    secure: pUmkfxxNdGd6zMdrwKUinqHXb3TQAfhvx8HyPhrj9pmmT7qN91v8toG7v24MrI01d92TWFnqy4ZpyJwFZDIGULuFokHAFWpVFVUQbJjhSB7W0EG/lt2lkjrJH+mIu+I+RheBwqGYWm7U9VRAc4uuwzUUGA0VjwibHy3tvWyeu2bf3d9KKguXDda2y4Pz+R8S/4Pi+gkRV/bjmW9abBAramPr/aloKpTbXVwkJTcgWsFyi1l7mWiLZ71KRwzsZnzeR0JZDBQ8LMsGQjyvDcYyHQS0wRSR/Ex7ot1l5y5tKkGpt5a2aHvvW4D53w+xICc7wvrr9xGYOPD47e+t5n4j0Y6NjfuyttV5k/6snkIMmm+uNYOQez+gGDyA7sx86bNYZKD6H+FaEZQ4BpoDUVynoDXjT5MFp34oEJ8iALXS6E+kokshEz9IY4k0oj9Rtj4myKLKmwMqoa3T/HztXaDdcXba/VMOx64+UFlDdzvVRY9pJC97BrYrACrGOepxcwjY/TA9GPE27++d3DB3zdL4mQ/RdHgC1z6TPFhDHRcBslMki1VYW/zqRuSZScpJk1pcLF1WRI+X84RYtLZCI0blIF8rQmzEp2l07Oo03n2bAvlVliKZQfT0++lBDf/ayT8ZFFi0PWDRfXGeyRlmmhfBUH1N5iEcF2/+1eqA5O3nIUg=
