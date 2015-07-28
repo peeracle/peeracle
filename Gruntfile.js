@@ -60,16 +60,17 @@ module.exports = function (grunt) {
         banner: '<%= banner %>\n' +
         '\'use strict\';\n\n' +
         '(function(){\n' +
-        '\n' +
-        'var RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || \
-        window.webkitRTCPeerConnection || window.msRTCPeerConnection;\n' +
-        'var RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || \
-        window.webkitRTCSessionDescription || window.msRTCSessionDescription;\n' +
-        'var RTCIceCandidate = window.mozRTCIceCandidate || window.webkitRTCIceCandidate || \
-        window.RTCIceCandidate;\n\n' +
+        'var RTCPeerConnection = window.RTCPeerConnection ||\
+        window.mozRTCPeerConnection || window.webkitRTCPeerConnection ||\
+        window.msRTCPeerConnection;\n' +
+        'var RTCSessionDescription = window.RTCSessionDescription ||\
+        window.mozRTCSessionDescription || window.webkitRTCSessionDescription ||\
+        window.msRTCSessionDescription;\n' +
+        'var RTCIceCandidate = window.mozRTCIceCandidate ||\
+        window.webkitRTCIceCandidate || window.RTCIceCandidate;\n\n' +
         'var Peeracle = {};\n',
 
-        footer: '\nwindow[\'Peeracle\'] = Peeracle;\n})();\n',
+        footer: 'window.Peeracle = Peeracle;\n})();\n',
 
         process: function (src, filepath) {
           return src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\n/g, '$1');
@@ -78,6 +79,7 @@ module.exports = function (grunt) {
       },
       dist: {
         src: [
+          'src/memoryDataStream.js'
         ],
         dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.js'
       }
@@ -151,20 +153,16 @@ module.exports = function (grunt) {
     },
   });
 
+  grunt.loadNpmTasks('grunt-closure-compiler');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-preprocess');
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-jsbeautifier');
-  grunt.loadNpmTasks('grunt-closure-compiler');
-  grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-preprocess');
 
   // Default task(s).
-  grunt.registerTask('default', ['concat', 'preprocess', 'eslint', 'jsbeautifier'/*, 'closure-compiler'*/, 'karma']);
-
-  // Build only task
-  grunt.registerTask('build', ['concat', 'preprocess'/*, 'eslint'*/, 'jsbeautifier'/*, 'closure-compiler'*/]);
+  grunt.registerTask('default', ['eslint', 'concat', 'preprocess', 'jsbeautifier', 'closure-compiler', 'karma']);
   grunt.registerTask('test', ['karma']);
 };
