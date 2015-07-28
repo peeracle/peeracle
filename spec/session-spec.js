@@ -20,28 +20,12 @@
  * SOFTWARE.
  */
 
+/* eslint-disable */
 'use strict';
 
-var Peeracle = {
-  DataStream: require('./src/dataStream'),
-  FileDataStream: require('./src/fileDataStream'),
-  HttpDataStream: require('./src/httpDataStream'),
-  MemoryDataStream: require('./src/memoryDataStream'),
+if (typeof Peeracle === 'undefined') {
+  var Peeracle = require('..');
+}
 
-  Hash: require('./src/hash'),
-  Murmur3Hash: require('./src/murmur3Hash'),
-
-  Media: require('./src/media'),
-  ISOBMFFMedia: require('./src/isobmffMedia'),
-  WebMMedia: require('./src/webmMedia'),
-
-  Peer: require('./src/peer'),
-
-  TrackerClient: require('./src/trackerClient'),
-  TrackerMessage: require('./src/trackerMessage'),
-  TrackerServer: require('./src/trackerServer'),
-
-  Session: require('./src/session')
-};
-
-module.exports = Peeracle;
+describe('Session', function() {
+});

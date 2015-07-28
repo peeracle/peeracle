@@ -20,28 +20,29 @@
  * SOFTWARE.
  */
 
-'use strict';
-
+// @exclude
 var Peeracle = {
-  DataStream: require('./src/dataStream'),
-  FileDataStream: require('./src/fileDataStream'),
-  HttpDataStream: require('./src/httpDataStream'),
-  MemoryDataStream: require('./src/memoryDataStream'),
-
-  Hash: require('./src/hash'),
-  Murmur3Hash: require('./src/murmur3Hash'),
-
-  Media: require('./src/media'),
-  ISOBMFFMedia: require('./src/isobmffMedia'),
-  WebMMedia: require('./src/webmMedia'),
-
-  Peer: require('./src/peer'),
-
-  TrackerClient: require('./src/trackerClient'),
-  TrackerMessage: require('./src/trackerMessage'),
-  TrackerServer: require('./src/trackerServer'),
-
-  Session: require('./src/session')
+  Media: require('./media')
 };
+// @endexclude
 
-module.exports = Peeracle;
+/* eslint-disable */
+Peeracle.ISOBMFFMedia = (function() {
+  /* eslint-enable */
+  /**
+   * @class ISOBMFFMedia
+   * @constructor
+   * @implements {Hash}
+   */
+  function ISOBMFFMedia() {
+  }
+
+  ISOBMFFMedia.prototype = Object.create(Peeracle.Media.prototype);
+  ISOBMFFMedia.prototype.constructor = ISOBMFFMedia;
+
+  return ISOBMFFMedia;
+})();
+
+// @exclude
+module.exports = Peeracle.ISOBMFFMedia;
+// @endexclude

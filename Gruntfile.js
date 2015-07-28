@@ -92,7 +92,16 @@ module.exports = function (grunt) {
           'src/dataStream.js',
           'src/fileDataStream.js',
           'src/httpDataStream.js',
-          'src/memoryDataStream.js'
+          'src/memoryDataStream.js',
+          'src/hash.js',
+          'src/murmur3Hash.js',
+          'src/media.js',
+          'src/isobmffMedia.js',
+          'src/webmMedia.js',
+          'src/peer.js',
+          'src/trackerClient.js',
+          'src/trackerMessage.js',
+          'src/session.js'
         ],
         dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.js'
       }

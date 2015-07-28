@@ -20,28 +20,23 @@
  * SOFTWARE.
  */
 
-'use strict';
+// @exclude
+var Peeracle = {};
+// @endexclude
 
-var Peeracle = {
-  DataStream: require('./src/dataStream'),
-  FileDataStream: require('./src/fileDataStream'),
-  HttpDataStream: require('./src/httpDataStream'),
-  MemoryDataStream: require('./src/memoryDataStream'),
+/* eslint-disable */
 
-  Hash: require('./src/hash'),
-  Murmur3Hash: require('./src/murmur3Hash'),
+Peeracle.Media = (function() {
+  /**
+   * @interface Media
+   */
+  /* istanbul ignore next */
+  function Media() {
+  }
 
-  Media: require('./src/media'),
-  ISOBMFFMedia: require('./src/isobmffMedia'),
-  WebMMedia: require('./src/webmMedia'),
+  return Media;
+})();
 
-  Peer: require('./src/peer'),
-
-  TrackerClient: require('./src/trackerClient'),
-  TrackerMessage: require('./src/trackerMessage'),
-  TrackerServer: require('./src/trackerServer'),
-
-  Session: require('./src/session')
-};
-
-module.exports = Peeracle;
+// @exclude
+module.exports = Peeracle.Media;
+// @endexclude

@@ -20,28 +20,29 @@
  * SOFTWARE.
  */
 
-'use strict';
-
+// @exclude
 var Peeracle = {
-  DataStream: require('./src/dataStream'),
-  FileDataStream: require('./src/fileDataStream'),
-  HttpDataStream: require('./src/httpDataStream'),
-  MemoryDataStream: require('./src/memoryDataStream'),
-
-  Hash: require('./src/hash'),
-  Murmur3Hash: require('./src/murmur3Hash'),
-
-  Media: require('./src/media'),
-  ISOBMFFMedia: require('./src/isobmffMedia'),
-  WebMMedia: require('./src/webmMedia'),
-
-  Peer: require('./src/peer'),
-
-  TrackerClient: require('./src/trackerClient'),
-  TrackerMessage: require('./src/trackerMessage'),
-  TrackerServer: require('./src/trackerServer'),
-
-  Session: require('./src/session')
+  Hash: require('./hash')
 };
+// @endexclude
 
-module.exports = Peeracle;
+/* eslint-disable */
+Peeracle.Murmur3Hash = (function() {
+  /* eslint-enable */
+  /**
+   * @class Murmur3Hash
+   * @constructor
+   * @implements {Hash}
+   */
+  function Murmur3Hash() {
+  }
+
+  Murmur3Hash.prototype = Object.create(Peeracle.Hash.prototype);
+  Murmur3Hash.prototype.constructor = Murmur3Hash;
+
+  return Murmur3Hash;
+})();
+
+// @exclude
+module.exports = Peeracle.Murmur3Hash;
+// @endexclude

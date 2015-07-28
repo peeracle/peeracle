@@ -844,14 +844,9 @@
      * @throws {RangeError}
      */
     MemoryDataStream.prototype.readChar = function readChar() {
-      var value;
-
-      if (this.offset + 1 > this.buffer.length) {
-        throw new RangeError('index out of bounds');
-      }
-
-      value = this.peekChar();
+      var value = this.peekChar();
       this.offset += 1;
+
       return value;
     };
 
@@ -861,14 +856,9 @@
      * @throws {RangeError}
      */
     MemoryDataStream.prototype.readByte = function readByte() {
-      var value;
-
-      if (this.offset + 1 > this.buffer.length) {
-        throw new RangeError('index out of bounds');
-      }
-
-      value = this.peekByte();
+      var value = this.peekByte();
       this.offset += 1;
+
       return value;
     };
 
@@ -878,14 +868,9 @@
      * @throws {RangeError}
      */
     MemoryDataStream.prototype.readShort = function readShort() {
-      var value;
-
-      if (this.offset + 2 > this.buffer.length) {
-        throw new RangeError('index out of bounds');
-      }
-
-      value = this.peekShort();
+      var value = this.peekShort();
       this.offset += 2;
+
       return value;
     };
 
@@ -895,14 +880,9 @@
      * @throws {RangeError}
      */
     MemoryDataStream.prototype.readUShort = function readUShort() {
-      var value;
-
-      if (this.offset + 2 > this.buffer.length) {
-        throw new RangeError('index out of bounds');
-      }
-
-      value = this.peekUShort();
+      var value = this.peekUShort();
       this.offset += 2;
+
       return value;
     };
 
@@ -911,14 +891,9 @@
      * @return {number}
      */
     MemoryDataStream.prototype.readInteger = function readInteger() {
-      var value;
-
-      if (this.offset + 4 > this.buffer.length) {
-        throw new RangeError('index out of bounds');
-      }
-
-      value = this.peekInteger();
+      var value = this.peekInteger();
       this.offset += 4;
+
       return value;
     };
 
@@ -927,14 +902,9 @@
      * @return {number}
      */
     MemoryDataStream.prototype.readUInteger = function readUInteger() {
-      var value;
-
-      if (this.offset + 4 > this.buffer.length) {
-        throw new RangeError('index out of bounds');
-      }
-
-      value = this.peekUInteger();
+      var value = this.peekUInteger();
       this.offset += 4;
+
       return value;
     };
 
@@ -943,14 +913,9 @@
      * @return {number}
      */
     MemoryDataStream.prototype.readFloat = function readFloat() {
-      var value;
-
-      if (this.offset + 4 > this.buffer.length) {
-        throw new RangeError('index out of bounds');
-      }
-
-      value = this.peekFloat();
+      var value = this.peekFloat();
       this.offset += 4;
+
       return value;
     };
 
@@ -959,14 +924,9 @@
      * @return {number}
      */
     MemoryDataStream.prototype.readDouble = function readDouble() {
-      var value;
-
-      if (this.offset + 8 > this.buffer.length) {
-        throw new RangeError('index out of bounds');
-      }
-
-      value = this.peekDouble();
+      var value = this.peekDouble();
       this.offset += 8;
+
       return value;
     };
 
@@ -982,7 +942,7 @@
      * @return {number}
      */
     MemoryDataStream.prototype.peek = function peek(length) {
-      if (length < 0 || this.offset + length > this.buffer.length) {
+      if (length < 0 || this.offset + length >= this.buffer.length) {
         throw new RangeError('index out of bounds');
       }
 
@@ -994,6 +954,10 @@
      * @return {number}
      */
     MemoryDataStream.prototype.peekChar = function peekChar() {
+      if (this.offset + 1 >= this.buffer.length) {
+        throw new RangeError('index out of bounds');
+      }
+
       return this.dataview.getInt8(this.offset);
     };
 
@@ -1002,6 +966,10 @@
      * @return {number}
      */
     MemoryDataStream.prototype.peekByte = function peekByte() {
+      if (this.offset + 1 >= this.buffer.length) {
+        throw new RangeError('index out of bounds');
+      }
+
       return this.dataview.getUint8(this.offset);
     };
 
@@ -1010,6 +978,10 @@
      * @return {number}
      */
     MemoryDataStream.prototype.peekShort = function peekShort() {
+      if (this.offset + 2 >= this.buffer.length) {
+        throw new RangeError('index out of bounds');
+      }
+
       return this.dataview.getInt16(this.offset);
     };
 
@@ -1018,6 +990,10 @@
      * @return {number}
      */
     MemoryDataStream.prototype.peekUShort = function peekUShort() {
+      if (this.offset + 2 >= this.buffer.length) {
+        throw new RangeError('index out of bounds');
+      }
+
       return this.dataview.getUint16(this.offset);
     };
 
@@ -1026,6 +1002,10 @@
      * @return {number}
      */
     MemoryDataStream.prototype.peekInteger = function peekInteger() {
+      if (this.offset + 4 >= this.buffer.length) {
+        throw new RangeError('index out of bounds');
+      }
+
       return this.dataview.getInt32(this.offset);
     };
 
@@ -1034,6 +1014,10 @@
      * @return {number}
      */
     MemoryDataStream.prototype.peekUInteger = function peekUInteger() {
+      if (this.offset + 4 >= this.buffer.length) {
+        throw new RangeError('index out of bounds');
+      }
+
       return this.dataview.getUint32(this.offset);
     };
 
@@ -1042,6 +1026,10 @@
      * @return {number}
      */
     MemoryDataStream.prototype.peekFloat = function peekFloat() {
+      if (this.offset + 4 >= this.buffer.length) {
+        throw new RangeError('index out of bounds');
+      }
+
       return this.dataview.getFloat32(this.offset);
     };
 
@@ -1050,6 +1038,10 @@
      * @return {number}
      */
     MemoryDataStream.prototype.peekDouble = function peekDouble() {
+      if (this.offset + 8 >= this.buffer.length) {
+        throw new RangeError('index out of bounds');
+      }
+
       return this.dataview.getFloat64(this.offset);
     };
 
@@ -1141,6 +1133,126 @@
     };
 
     return MemoryDataStream;
+  })();
+
+  /* eslint-disable */
+
+  Peeracle.Hash = (function() {
+    /**
+     * @interface Hash
+     */
+    /* istanbul ignore next */
+    function Hash(options) {}
+
+    return Hash;
+  })();
+
+  /* eslint-disable */
+  Peeracle.Murmur3Hash = (function() {
+    /* eslint-enable */
+    /**
+     * @class Murmur3Hash
+     * @constructor
+     * @implements {Hash}
+     */
+    function Murmur3Hash() {}
+
+    Murmur3Hash.prototype = Object.create(Peeracle.Hash.prototype);
+    Murmur3Hash.prototype.constructor = Murmur3Hash;
+
+    return Murmur3Hash;
+  })();
+
+  /* eslint-disable */
+
+  Peeracle.Media = (function() {
+    /**
+     * @interface Media
+     */
+    /* istanbul ignore next */
+    function Media() {}
+
+    return Media;
+  })();
+
+  /* eslint-disable */
+  Peeracle.ISOBMFFMedia = (function() {
+    /* eslint-enable */
+    /**
+     * @class ISOBMFFMedia
+     * @constructor
+     * @implements {Hash}
+     */
+    function ISOBMFFMedia() {}
+
+    ISOBMFFMedia.prototype = Object.create(Peeracle.Media.prototype);
+    ISOBMFFMedia.prototype.constructor = ISOBMFFMedia;
+
+    return ISOBMFFMedia;
+  })();
+
+  /* eslint-disable */
+  Peeracle.WebMMedia = (function() {
+    /* eslint-enable */
+    /**
+     * @class WebMMedia
+     * @constructor
+     * @implements {Hash}
+     */
+    function WebMMedia() {}
+
+    WebMMedia.prototype = Object.create(Peeracle.Media.prototype);
+    WebMMedia.prototype.constructor = WebMMedia;
+
+    return WebMMedia;
+  })();
+
+  /* eslint-disable */
+  Peeracle.Peer = (function() {
+    /* eslint-enable */
+    /**
+     * @class Peer
+     * @constructor
+     */
+    function Peer() {}
+
+    return Peer;
+  })();
+
+  /* eslint-disable */
+  Peeracle.TrackerClient = (function() {
+    /* eslint-enable */
+    /**
+     * @class TrackerClient
+     * @constructor
+     */
+    function TrackerClient() {}
+
+    return TrackerClient;
+  })();
+
+  /* eslint-disable */
+  Peeracle.TrackerMessage = (function() {
+    /* eslint-enable */
+    /**
+     * @class TrackerMessage
+     * @constructor
+     */
+    function TrackerMessage() {}
+
+    return TrackerMessage;
+  })();
+
+  /* eslint-disable */
+  Peeracle.Session = (function() {
+    /* eslint-enable */
+    /**
+     * @class Session
+     * @constructor
+     */
+    function Session() {}
+
+    return Session;
   })();
 
   window.Peeracle = Peeracle;
