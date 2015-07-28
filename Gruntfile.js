@@ -163,6 +163,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-preprocess');
 
   // Default task(s).
-  grunt.registerTask('default', ['eslint', 'concat', 'preprocess', 'jsbeautifier', 'closure-compiler', 'karma']);
+  grunt.registerTask('default', ['eslint', 'concat', 'preprocess', 'jsbeautifier', 'closure-compiler']);
   grunt.registerTask('test', ['karma']);
 };
