@@ -31,6 +31,7 @@ Peeracle.Murmur3Hash = (function() {
   /* eslint-enable */
   /**
    * @class Murmur3Hash
+   * @memberof {Peeracle}
    * @constructor
    * @implements {Hash}
    */

@@ -30,6 +30,7 @@
   Peeracle.DataStream = (function() {
     /**
      * @interface DataStream
+     * @memberof {Peeracle}
      */
     /* istanbul ignore next */
     function DataStream(options) {}
@@ -276,6 +277,7 @@
     /* eslint-enable */
     /**
      * @class FileDataStream
+     * @memberof {Peeracle}
      * @constructor
      * @implements {DataStream}
      * @property {number} offset - Current stream's offset
@@ -523,6 +525,7 @@
     /* eslint-enable */
     /**
      * @class HttpDataStream
+     * @memberof {Peeracle}
      * @constructor
      * @implements {DataStream}
      * @property {number} offset - Current stream's offset
@@ -770,6 +773,7 @@
     /* eslint-enable */
     /**
      * @class MemoryDataStream
+     * @memberof {Peeracle}
      * @constructor
      * @implements {DataStream}
      * @param {Object} options
@@ -1140,6 +1144,7 @@
   Peeracle.Hash = (function() {
     /**
      * @interface Hash
+     * @memberof {Peeracle}
      */
     /* istanbul ignore next */
     function Hash(options) {}
@@ -1152,6 +1157,7 @@
     /* eslint-enable */
     /**
      * @class Murmur3Hash
+     * @memberof {Peeracle}
      * @constructor
      * @implements {Hash}
      */
@@ -1168,6 +1174,7 @@
   Peeracle.Media = (function() {
     /**
      * @interface Media
+     * @memberof {Peeracle}
      */
     /* istanbul ignore next */
     function Media() {}
@@ -1180,6 +1187,7 @@
     /* eslint-enable */
     /**
      * @class ISOBMFFMedia
+     * @memberof {Peeracle}
      * @constructor
      * @implements {Hash}
      */
@@ -1196,6 +1204,7 @@
     /* eslint-enable */
     /**
      * @class WebMMedia
+     * @memberof {Peeracle}
      * @constructor
      * @implements {Hash}
      */
@@ -1208,10 +1217,24 @@
   })();
 
   /* eslint-disable */
+  Peeracle.TrackerMessage = (function() {
+    /* eslint-enable */
+    /**
+     * @class TrackerMessage
+     * @memberof {Peeracle}
+     * @constructor
+     */
+    function TrackerMessage() {}
+
+    return TrackerMessage;
+  })();
+
+  /* eslint-disable */
   Peeracle.Peer = (function() {
     /* eslint-enable */
     /**
      * @class Peer
+     * @memberof {Peeracle}
      * @constructor
      */
     function Peer() {}
@@ -1224,6 +1247,7 @@
     /* eslint-enable */
     /**
      * @class TrackerClient
+     * @memberof {Peeracle}
      * @constructor
      */
     function TrackerClient() {}
@@ -1232,22 +1256,11 @@
   })();
 
   /* eslint-disable */
-  Peeracle.TrackerMessage = (function() {
-    /* eslint-enable */
-    /**
-     * @class TrackerMessage
-     * @constructor
-     */
-    function TrackerMessage() {}
-
-    return TrackerMessage;
-  })();
-
-  /* eslint-disable */
   Peeracle.Session = (function() {
     /* eslint-enable */
     /**
      * @class Session
+     * @memberof {Peeracle}
      * @constructor
      */
     function Session() {}

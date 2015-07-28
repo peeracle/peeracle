@@ -29,6 +29,7 @@ var Peeracle = {};
 Peeracle.Media = (function() {
   /**
    * @interface Media
+   * @memberof {Peeracle}
    */
   /* istanbul ignore next */
   function Media() {

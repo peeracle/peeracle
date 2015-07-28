@@ -29,6 +29,7 @@ Peeracle.TrackerMessage = (function() {
   /* eslint-enable */
   /**
    * @class TrackerMessage
+   * @memberof {Peeracle}
    * @constructor
    */
   function TrackerMessage() {

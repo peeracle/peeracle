@@ -31,6 +31,7 @@ Peeracle.MemoryDataStream = (function() {
 /* eslint-enable */
   /**
    * @class MemoryDataStream
+   * @memberof {Peeracle}
    * @constructor
    * @implements {DataStream}
    * @param {Object} options

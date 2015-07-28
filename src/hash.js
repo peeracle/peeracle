@@ -29,6 +29,7 @@ var Peeracle = {};
 Peeracle.Hash = (function() {
   /**
    * @interface Hash
+   * @memberof {Peeracle}
    */
   /* istanbul ignore next */
   function Hash(options) {

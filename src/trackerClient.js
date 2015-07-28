@@ -29,6 +29,7 @@ Peeracle.TrackerClient = (function() {
   /* eslint-enable */
   /**
    * @class TrackerClient
+   * @memberof {Peeracle}
    * @constructor
    */
   function TrackerClient() {

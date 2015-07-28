@@ -31,6 +31,7 @@ Peeracle.WebMMedia = (function() {
   /* eslint-enable */
   /**
    * @class WebMMedia
+   * @memberof {Peeracle}
    * @constructor
    * @implements {Hash}
    */

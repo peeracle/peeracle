@@ -29,6 +29,7 @@ Peeracle.MetadataFile = (function() {
   /* eslint-enable */
   /**
    * @class MetadataFile
+   * @memberof {Peeracle}
    * @constructor
    */
   function MetadataFile() {

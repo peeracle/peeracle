@@ -29,6 +29,7 @@ Peeracle.Session = (function() {
   /* eslint-enable */
   /**
    * @class Session
+   * @memberof {Peeracle}
    * @constructor
    */
   function Session() {

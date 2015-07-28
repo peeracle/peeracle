@@ -29,6 +29,7 @@ var Peeracle = {};
 Peeracle.DataStream = (function() {
   /**
    * @interface DataStream
+   * @memberof {Peeracle}
    */
   /* istanbul ignore next */
   function DataStream(options) {

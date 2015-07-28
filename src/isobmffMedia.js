@@ -31,6 +31,7 @@ Peeracle.ISOBMFFMedia = (function() {
   /* eslint-enable */
   /**
    * @class ISOBMFFMedia
+   * @memberof {Peeracle}
    * @constructor
    * @implements {Hash}
    */

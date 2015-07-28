@@ -31,6 +31,7 @@ Peeracle.FileDataStream = (function() {
 /* eslint-enable */
   /**
    * @class FileDataStream
+   * @memberof {Peeracle}
    * @constructor
    * @implements {DataStream}
    * @property {number} offset - Current stream's offset

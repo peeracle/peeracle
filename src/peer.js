@@ -29,6 +29,7 @@ Peeracle.Peer = (function() {
   /* eslint-enable */
   /**
    * @class Peer
+   * @memberof {Peeracle}
    * @constructor
    */
   function Peer() {
