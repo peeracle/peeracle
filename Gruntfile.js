@@ -55,19 +55,29 @@ module.exports = function (grunt) {
       }
     },
 
+    jsdoc : {
+      dist : {
+        src: ['src/*.js'],
+        jsdoc: './node_modules/jsdoc/jsdoc.js',
+        options: {
+          destination: 'doc'
+        }
+      }
+    },
+
     concat: {
       options: {
         banner: '<%= banner %>\n' +
         '\'use strict\';\n\n' +
         '(function(){\n' +
-        'var RTCPeerConnection = window.RTCPeerConnection ||\
+        /*'var RTCPeerConnection = window.RTCPeerConnection ||\
         window.mozRTCPeerConnection || window.webkitRTCPeerConnection ||\
         window.msRTCPeerConnection;\n' +
         'var RTCSessionDescription = window.RTCSessionDescription ||\
         window.mozRTCSessionDescription || window.webkitRTCSessionDescription ||\
         window.msRTCSessionDescription;\n' +
         'var RTCIceCandidate = window.mozRTCIceCandidate ||\
-        window.webkitRTCIceCandidate || window.RTCIceCandidate;\n\n' +
+        window.webkitRTCIceCandidate || window.RTCIceCandidate;\n\n' +*/
         'var Peeracle = {};\n',
 
         footer: 'window.Peeracle = Peeracle;\n})();\n',
@@ -79,6 +89,9 @@ module.exports = function (grunt) {
       },
       dist: {
         src: [
+          'src/dataStream.js',
+          'src/fileDataStream.js',
+          'src/httpDataStream.js',
           'src/memoryDataStream.js'
         ],
         dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.js'
@@ -112,7 +125,7 @@ module.exports = function (grunt) {
           jslintHappy: false,
           keepArrayIndentation: false,
           keepFunctionIndentation: false,
-          maxPreserveNewlines: 10,
+          maxPreserveNewlines: 2,
           preserveNewlines: true,
           spaceBeforeConditional: true,
           spaceInParen: false,
@@ -159,10 +172,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-jsbeautifier');
+  grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-preprocess');
 
-  // Default task(s).
-  grunt.registerTask('default', ['eslint', 'concat', 'preprocess', 'jsbeautifier', 'closure-compiler']);
+  grunt.registerTask('default', ['eslint', 'concat', 'jsdoc', 'preprocess',
+    'jsbeautifier'/*, 'closure-compiler'*/]);
+
   grunt.registerTask('test', ['karma']);
 };
