@@ -98,9 +98,9 @@ module.exports = function (grunt) {
           'src/media.js',
           'src/isobmffMedia.js',
           'src/webmMedia.js',
+          'src/trackerMessage.js',
           'src/peer.js',
           'src/trackerClient.js',
-          'src/trackerMessage.js',
           'src/session.js'
         ],
         dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.js'
