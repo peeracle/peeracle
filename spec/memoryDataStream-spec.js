@@ -158,6 +158,57 @@ describe('MemoryDataStream', function () {
     });
   });
 
+  describe('peek', function () {
+    var stream = new Peeracle.MemoryDataStream({buffer: buffer});
+
+    it('should have an offset equal to 0', function () {
+      expect(stream.tell()).toEqual(0);
+    });
+    it('should peek the first byte', function () {
+      var bytes = stream.peek(1);
+      expect(bytes).toEqual(jasmine.any(Uint8Array));
+      expect(bytes.length).toEqual(1);
+      expect(bytes[0]).toEqual(buffer[0]);
+    });
+    it('should have an offset equal to 0', function () {
+      expect(stream.tell()).toEqual(0);
+    });
+    it('should read the two next bytes', function () {
+      expect(stream.seek(1)).toEqual(1);
+      expect(stream.tell()).toEqual(1);
+      var bytes = stream.peek(2);
+      expect(bytes).toEqual(jasmine.any(Uint8Array));
+      expect(bytes.length).toEqual(2);
+      expect(bytes[0]).toEqual(buffer[1]);
+      expect(bytes[1]).toEqual(buffer[2]);
+    });
+    it('should have an offset equal to 1', function () {
+      expect(stream.tell()).toEqual(1);
+    });
+    it('should read the four next bytes', function () {
+      expect(stream.seek(3)).toEqual(3);
+      expect(stream.tell()).toEqual(3);
+      var bytes = stream.peek(4);
+      expect(bytes).toEqual(jasmine.any(Uint8Array));
+      expect(bytes.length).toEqual(4);
+      expect(bytes[0]).toEqual(buffer[3]);
+      expect(bytes[1]).toEqual(buffer[4]);
+      expect(bytes[2]).toEqual(buffer[5]);
+      expect(bytes[3]).toEqual(buffer[6]);
+    });
+    it('should have an offset equal to 3', function () {
+      expect(stream.tell()).toEqual(3);
+    });
+    it('should throw an error for reading too much', function () {
+      expect(function () {
+        var bytes = stream.peek(buffer.length);
+      }).toThrowError('index out of bounds');
+    });
+    it('should still have an offset equal to 3', function () {
+      expect(stream.tell()).toEqual(3);
+    });
+  });
+
   describe('reading', function () {
     var readTab = {
       readChar: ['char', 1,
