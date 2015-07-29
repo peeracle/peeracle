@@ -88,6 +88,11 @@ describe('MemoryDataStream', function () {
   describe('seek', function () {
     var stream = new Peeracle.MemoryDataStream({buffer: buffer});
 
+    it('should throw an error when the value is invalid', function () {
+      expect(function () {
+        stream.seek({});
+      }).toThrowError('argument must be a number');
+    });
     it('should seek at the beginning', function () {
       expect(stream.seek(0)).toBe(0);
     });

@@ -78,8 +78,12 @@ Peeracle.MemoryDataStream = (function() {
    * @return {Number}
    */
   MemoryDataStream.prototype.seek = function seek(position) {
+    if (typeof position !== 'number') {
+      throw new TypeError('argument must be a number');
+    }
+
     if (position < 0 || position > this.buffer.length) {
-      throw new Error('index out of bounds');
+      throw new RangeError('index out of bounds');
     }
 
     this.offset = position;
