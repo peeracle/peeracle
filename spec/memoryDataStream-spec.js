@@ -109,7 +109,7 @@ describe('MemoryDataStream', function () {
   describe('read', function () {
     var stream = new Peeracle.MemoryDataStream({buffer: buffer});
 
-    it('should have an offset set to 0', function () {
+    it('should have an offset equal to 0', function () {
       expect(stream.tell()).toEqual(0);
     });
     it('should read the first byte', function () {
@@ -118,7 +118,7 @@ describe('MemoryDataStream', function () {
       expect(bytes.length).toEqual(1);
       expect(bytes[0]).toEqual(buffer[0]);
     });
-    it('should have an offset set to 1', function () {
+    it('should have an offset equal to 1', function () {
       expect(stream.tell()).toEqual(1);
     });
     it('should read the two next bytes', function () {
@@ -128,7 +128,7 @@ describe('MemoryDataStream', function () {
       expect(bytes[0]).toEqual(buffer[1]);
       expect(bytes[1]).toEqual(buffer[2]);
     });
-    it('should have an offset set to 3', function () {
+    it('should have an offset equal to 3', function () {
       expect(stream.tell()).toEqual(3);
     });
     it('should read the four next bytes', function () {
@@ -140,7 +140,7 @@ describe('MemoryDataStream', function () {
       expect(bytes[2]).toEqual(buffer[5]);
       expect(bytes[3]).toEqual(buffer[6]);
     });
-    it('should have an offset set to 7', function () {
+    it('should have an offset equal to 7', function () {
       expect(stream.tell()).toEqual(7);
     });
     it('should throw an error for reading too much', function () {
@@ -148,8 +148,16 @@ describe('MemoryDataStream', function () {
         var bytes = stream.read(buffer.length);
       }).toThrowError('index out of bounds');
     });
-    it('should still have an offset set to 7', function () {
+    it('should still have an offset equal to 7', function () {
       expect(stream.tell()).toEqual(7);
+    });
+  });
+  
+  describe('readChar', function () {
+    var stream = new Peeracle.MemoryDataStream({buffer: buffer});
+
+    it('should have an offset equal to 0', function () {
+      expect(stream.tell()).toEqual(0);
     });
   });
 });
