@@ -29,17 +29,10 @@ if (typeof Peeracle === 'undefined') {
 
 describe('MemoryDataStream', function () {
   var buffer = new Uint8Array(32);
-  var floatBuffer = new Uint8Array(32);
 
   beforeEach(function () {
-    var dataView = new DataView(floatBuffer.buffer);
-
     for (var i = 0; i < 32; ++i) {
       buffer[i] = Math.floor(Math.random() * 256);
-    }
-
-    for (var i = 0; i < 32; i += 4) {
-      dataView.setFloat32(i, (new Float32Array([Math.random() * (3.40282e+38)]))[0]);
     }
   });
 
@@ -48,20 +41,18 @@ describe('MemoryDataStream', function () {
 
     it('should throw error on null argument', function () {
       expect(function () {
-        var buf = null;
-        var stream = new Peeracle.MemoryDataStream(buf);
+        new Peeracle.MemoryDataStream(null);
       }).toThrowError('buffer should be an Uint8Array');
     });
     it('should throw an error on invalid argument', function () {
       expect(function () {
-        var buf = null;
         new Peeracle.MemoryDataStream({});
       }).toThrowError('buffer should be an Uint8Array');
     });
     it('should be initialized', function () {
       expect(function () {
         var buf = new Uint8Array(1);
-        new Peeracle.MemoryDataStream({buffer: buffer});
+        new Peeracle.MemoryDataStream({buffer: buf});
       }).not.toThrow();
     });
     it('should be an instance of DataStream', function () {
@@ -150,7 +141,7 @@ describe('MemoryDataStream', function () {
     });
     it('should throw an error for reading too much', function () {
       expect(function () {
-        var bytes = stream.read(buffer.length);
+        stream.read(buffer.length);
       }).toThrowError('index out of bounds');
     });
     it('should still have an offset equal to 7', function () {
@@ -201,7 +192,7 @@ describe('MemoryDataStream', function () {
     });
     it('should throw an error for reading too much', function () {
       expect(function () {
-        var bytes = stream.peek(buffer.length);
+        stream.peek(buffer.length);
       }).toThrowError('index out of bounds');
     });
     it('should still have an offset equal to 3', function () {
