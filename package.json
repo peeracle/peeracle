@@ -4,7 +4,8 @@
   "description": "Peer-to-peer assisted multimedia streaming for the web.",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test istanbul cover --include-all-sources jasmine",
+    "test": "jasmine",
+    "coverage": "istanbul cover --include-all-sources jasmine",
     "lint": "node node_modules/eslint/bin/eslint.js src"
   },
   "repository": {
