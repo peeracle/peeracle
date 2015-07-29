@@ -35,7 +35,7 @@ Peeracle.MemoryDataStream = (function() {
    * @constructor
    * @implements {DataStream}
    * @param {Object} options
-   * @property {number} offset - Current stream's offset
+   * @property {Number} offset - Current stream's offset
    * @property {Uint8Array} buffer
    * @property {DataView} dataview
    * @throws {TypeError}
@@ -57,7 +57,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#length
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.length = function length() {
     return this.buffer.length;
@@ -65,7 +65,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#tell
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.tell = function tell() {
     return this.offset;
@@ -73,9 +73,9 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#seek
-   * @param {number} position
+   * @param {Number} position
    * @throws {RangeError}
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.seek = function seek(position) {
     if (position < 0 || position > this.buffer.length) {
@@ -88,7 +88,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#read
-   * @param {number} length
+   * @param {Number} length
    * @return {Uint8Array}
    * @throws {RangeError}
    */
@@ -102,7 +102,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#readChar
-   * @return {number}
+   * @return {Number}
    * @throws {RangeError}
    */
   MemoryDataStream.prototype.readChar = function readChar() {
@@ -114,7 +114,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#readByte
-   * @return {number}
+   * @return {Number}
    * @throws {RangeError}
    */
   MemoryDataStream.prototype.readByte = function readByte() {
@@ -126,7 +126,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#readShort
-   * @return {number}
+   * @return {Number}
    * @throws {RangeError}
    */
   MemoryDataStream.prototype.readShort = function readShort() {
@@ -138,7 +138,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#readUShort
-   * @return {number}
+   * @return {Number}
    * @throws {RangeError}
    */
   MemoryDataStream.prototype.readUShort = function readUShort() {
@@ -150,7 +150,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#readInteger
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.readInteger = function readInteger() {
     var value = this.peekInteger();
@@ -161,7 +161,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#readUInteger
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.readUInteger = function readUInteger() {
     var value = this.peekUInteger();
@@ -172,7 +172,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#readFloat
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.readFloat = function readFloat() {
     var value = this.peekFloat();
@@ -183,7 +183,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#readDouble
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.readDouble = function readDouble() {
     var value = this.peekDouble();
@@ -194,15 +194,15 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#readString
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.readString = function readString() {
   };
 
   /**
    * @function MemoryDataStream#peek
-   * @param {number} length
-   * @return {number}
+   * @param {Number} length
+   * @return {Number}
    */
   MemoryDataStream.prototype.peek = function peek(length) {
     if (length < 0 || this.offset + length >= this.buffer.length) {
@@ -214,7 +214,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#peekChar
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.peekChar = function peekChar() {
     if (this.offset + 1 >= this.buffer.length) {
@@ -226,7 +226,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#peekByte
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.peekByte = function peekByte() {
     if (this.offset + 1 >= this.buffer.length) {
@@ -238,7 +238,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#peekShort
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.peekShort = function peekShort() {
     if (this.offset + 2 >= this.buffer.length) {
@@ -250,7 +250,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#peekUShort
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.peekUShort = function peekUShort() {
     if (this.offset + 2 >= this.buffer.length) {
@@ -262,7 +262,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#peekInteger
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.peekInteger = function peekInteger() {
     if (this.offset + 4 >= this.buffer.length) {
@@ -274,7 +274,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#peekUInteger
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.peekUInteger = function peekUInteger() {
     if (this.offset + 4 >= this.buffer.length) {
@@ -286,7 +286,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#peekFloat
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.peekFloat = function peekFloat() {
     if (this.offset + 4 >= this.buffer.length) {
@@ -298,7 +298,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#peekDouble
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.peekDouble = function peekDouble() {
     if (this.offset + 8 >= this.buffer.length) {
@@ -310,14 +310,14 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#peekString
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.peekString = function peekString() {
   };
 
   /**
    * @function MemoryDataStream#write
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.write = function write(bytes) {
     return bytes;
@@ -325,7 +325,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeChar
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.writeChar = function writeChar(value) {
     return value;
@@ -333,7 +333,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeByte
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.writeByte = function writeByte(value) {
     return value;
@@ -341,7 +341,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeShort
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.writeShort = function writeShort(value) {
     return value;
@@ -349,7 +349,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeUShort
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.writeUShort = function writeUShort(value) {
     return value;
@@ -357,7 +357,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeInteger
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.writeInteger = function writeInteger(value) {
     return value;
@@ -365,7 +365,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeUInteger
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.writeUInteger = function writeUInteger(value) {
     return value;
@@ -373,7 +373,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeFloat
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.writeFloat = function writeFloat(value) {
     return value;
@@ -381,7 +381,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeDouble
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.writeDouble = function writeDouble(value) {
     return value;
@@ -389,7 +389,7 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeString
-   * @return {number}
+   * @return {Number}
    */
   MemoryDataStream.prototype.writeString = function writeString(str) {
     return str;

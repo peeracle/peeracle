@@ -37,7 +37,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#length
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.length = function length() {
@@ -45,7 +45,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#tell
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.tell = function tell() {
@@ -53,8 +53,8 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#seek
-   * @param {number} position
-   * @return {number}
+   * @param {Number} position
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.seek = function seek(position) {
@@ -62,7 +62,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#read
-   * @param {number} length
+   * @param {Number} length
    * @return {Uint8Array}
    */
   /* istanbul ignore next */
@@ -71,7 +71,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#readChar
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.readChar = function readChar() {
@@ -79,7 +79,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#readByte
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.readByte = function readByte() {
@@ -87,7 +87,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#readShort
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.readShort = function readShort() {
@@ -95,7 +95,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#readUShort
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.readUShort = function readUShort() {
@@ -103,7 +103,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#readInteger
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.readInteger = function readInteger() {
@@ -111,7 +111,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#readUInteger
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.readUInteger = function readUInteger() {
@@ -119,7 +119,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#readFloat
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.readFloat = function readFloat() {
@@ -127,7 +127,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#readDouble
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.readDouble = function readDouble() {
@@ -135,7 +135,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#readString
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.readString = function readString() {
@@ -143,8 +143,8 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#peek
-   * @param {number} length
-   * @return {number}
+   * @param {Number} length
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.peek = function peek(length) {
@@ -152,7 +152,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#peekChar
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.peekChar = function peekChar() {
@@ -160,7 +160,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#peekByte
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.peekByte = function peekByte() {
@@ -168,7 +168,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#peekShort
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.peekShort = function peekShort() {
@@ -176,7 +176,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#peekUShort
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.peekUShort = function peekUShort() {
@@ -184,7 +184,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#peekInteger
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.peekInteger = function peekInteger() {
@@ -192,7 +192,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#peekUInteger
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.peekUInteger = function peekUInteger() {
@@ -200,7 +200,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#peekFloat
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.peekFloat = function peekFloat() {
@@ -208,7 +208,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#peekDouble
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.peekDouble = function peekDouble() {
@@ -216,7 +216,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#peekString
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.peekString = function peekString() {
@@ -224,7 +224,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#write
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.write = function write(bytes) {
@@ -232,7 +232,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#writeChar
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.writeChar = function writeChar(value) {
@@ -240,7 +240,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#writeByte
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.writeByte = function writeByte(value) {
@@ -248,7 +248,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#writeShort
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.writeShort = function writeShort(value) {
@@ -256,7 +256,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#writeUShort
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.writeUShort = function writeUShort(value) {
@@ -264,7 +264,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#writeInteger
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.writeInteger = function writeInteger(value) {
@@ -272,7 +272,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#writeUInteger
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.writeUInteger = function writeUInteger(value) {
@@ -280,7 +280,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#writeFloat
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.writeFloat = function writeFloat(value) {
@@ -288,7 +288,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#writeDouble
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.writeDouble = function writeDouble(value) {
@@ -296,7 +296,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * @function DataStream#writeString
-   * @return {number}
+   * @return {Number}
    */
   /* istanbul ignore next */
   DataStream.prototype.writeString = function writeString(str) {

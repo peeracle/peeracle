@@ -34,7 +34,7 @@ Peeracle.FileDataStream = (function() {
    * @memberof {Peeracle}
    * @constructor
    * @implements {DataStream}
-   * @property {number} offset - Current stream's offset
+   * @property {Number} offset - Current stream's offset
    */
   function FileDataStream(options) {
     this.options = options || {};
@@ -46,22 +46,22 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#length
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.length = function length() {
   };
 
   /**
    * @function FileDataStream#tell
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.tell = function tell() {
   };
 
   /**
    * @function FileDataStream#seek
-   * @param {number} position
-   * @return {number}
+   * @param {Number} position
+   * @return {Number}
    */
   FileDataStream.prototype.seek = function seek(position) {
     this.offset = position;
@@ -69,7 +69,7 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#read
-   * @param {number} length
+   * @param {Number} length
    * @return {Uint8Array}
    */
   FileDataStream.prototype.read = function read(length) {
@@ -78,71 +78,71 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#readChar
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.readChar = function readChar() {
   };
 
   /**
    * @function FileDataStream#readByte
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.readByte = function readByte() {
   };
 
   /**
    * @function FileDataStream#readShort
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.readShort = function readShort() {
   };
 
   /**
    * @function FileDataStream#readUShort
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.readUShort = function readUShort() {
   };
 
   /**
    * @function FileDataStream#readInteger
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.readInteger = function readInteger() {
   };
 
   /**
    * @function FileDataStream#readUInteger
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.readUInteger = function readUInteger() {
   };
 
   /**
    * @function FileDataStream#readFloat
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.readFloat = function readFloat() {
   };
 
   /**
    * @function FileDataStream#readDouble
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.readDouble = function readDouble() {
   };
 
   /**
    * @function FileDataStream#readString
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.readString = function readString() {
   };
 
   /**
    * @function FileDataStream#peek
-   * @param {number} length
-   * @return {number}
+   * @param {Number} length
+   * @return {Number}
    */
   FileDataStream.prototype.peek = function peek(length) {
     return length;
@@ -150,70 +150,70 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#peekChar
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.peekChar = function peekChar() {
   };
 
   /**
    * @function FileDataStream#peekByte
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.peekByte = function peekByte() {
   };
 
   /**
    * @function FileDataStream#peekShort
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.peekShort = function peekShort() {
   };
 
   /**
    * @function FileDataStream#peekUShort
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.peekUShort = function peekUShort() {
   };
 
   /**
    * @function FileDataStream#peekInteger
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.peekInteger = function peekInteger() {
   };
 
   /**
    * @function FileDataStream#peekUInteger
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.peekUInteger = function peekUInteger() {
   };
 
   /**
    * @function FileDataStream#peekFloat
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.peekFloat = function peekFloat() {
   };
 
   /**
    * @function FileDataStream#peekDouble
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.peekDouble = function peekDouble() {
   };
 
   /**
    * @function FileDataStream#peekString
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.peekString = function peekString() {
   };
 
   /**
    * @function FileDataStream#write
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.write = function write(bytes) {
     return bytes;
@@ -221,7 +221,7 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#writeChar
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.writeChar = function writeChar(value) {
     return value;
@@ -229,7 +229,7 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#writeByte
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.writeByte = function writeByte(value) {
     return value;
@@ -237,7 +237,7 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#writeShort
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.writeShort = function writeShort(value) {
     return value;
@@ -245,7 +245,7 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#writeUShort
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.writeUShort = function writeUShort(value) {
     return value;
@@ -253,7 +253,7 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#writeInteger
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.writeInteger = function writeInteger(value) {
     return value;
@@ -261,7 +261,7 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#writeUInteger
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.writeUInteger = function writeUInteger(value) {
     return value;
@@ -269,7 +269,7 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#writeFloat
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.writeFloat = function writeFloat(value) {
     return value;
@@ -277,7 +277,7 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#writeDouble
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.writeDouble = function writeDouble(value) {
     return value;
@@ -285,7 +285,7 @@ Peeracle.FileDataStream = (function() {
 
   /**
    * @function FileDataStream#writeString
-   * @return {number}
+   * @return {Number}
    */
   FileDataStream.prototype.writeString = function writeString(str) {
     return str;
