@@ -157,12 +157,121 @@ describe('MemoryDataStream', function () {
       expect(stream.tell()).toEqual(7);
     });
   });
-  
-  describe('readChar', function () {
-    var stream = new Peeracle.MemoryDataStream({buffer: buffer});
 
-    it('should have an offset equal to 0', function () {
-      expect(stream.tell()).toEqual(0);
-    });
+  describe('reading', function () {
+    var readTab = {
+      readChar: ['char', 1,
+        Peeracle.MemoryDataStream.prototype.readChar,
+        DataView.prototype.getInt8],
+      readByte: ['byte', 1,
+        Peeracle.MemoryDataStream.prototype.readByte,
+        DataView.prototype.getUint8],
+      readShort: ['short', 2,
+        Peeracle.MemoryDataStream.prototype.readShort,
+        DataView.prototype.getInt16],
+      readUShort: ['unsigned short', 2,
+        Peeracle.MemoryDataStream.prototype.readUShort,
+        DataView.prototype.getUint16],
+      readInteger: ['integer', 4,
+        Peeracle.MemoryDataStream.prototype.readInteger,
+        DataView.prototype.getInt32],
+      readUInteger: ['unsigned integer', 4,
+        Peeracle.MemoryDataStream.prototype.readUInteger,
+        DataView.prototype.getUint32],
+      readFloat: ['float', 4,
+        Peeracle.MemoryDataStream.prototype.readFloat,
+        DataView.prototype.getFloat32],
+      readDouble: ['double', 8,
+        Peeracle.MemoryDataStream.prototype.readDouble,
+        DataView.prototype.getFloat64]
+    };
+
+    for (var t in readTab) {
+      if (!readTab.hasOwnProperty(t)) {
+        continue;
+      }
+
+      var tab = readTab[t];
+      it('should read one ' + tab[0] + ', the next one and throw an error',
+        function () {
+          var stream = new Peeracle.MemoryDataStream({buffer: buffer});
+          var dataview = new DataView(buffer.buffer);
+
+          expect(stream.tell()).toEqual(0);
+          expect(tab[2].call(stream)).toEqual(tab[3].call(dataview, 0));
+
+          expect(stream.tell()).toEqual(tab[1]);
+          expect(tab[2].call(stream)).toEqual(tab[3].call(dataview, tab[1]));
+
+          expect(stream.tell()).toEqual(tab[1] * 2);
+          expect(stream.seek(32)).toEqual(32);
+
+          expect(function () {
+            tab[2].call(stream);
+          }).toThrowError('index out of bounds');
+
+          expect(stream.tell()).toEqual(32);
+        });
+    }
+  });
+
+  describe('peeking', function () {
+    var peekTab = {
+      peekChar: ['char', 1,
+        Peeracle.MemoryDataStream.prototype.peekChar,
+        DataView.prototype.getInt8],
+      peekByte: ['byte', 1,
+        Peeracle.MemoryDataStream.prototype.peekByte,
+        DataView.prototype.getUint8],
+      peekShort: ['short', 2,
+        Peeracle.MemoryDataStream.prototype.peekShort,
+        DataView.prototype.getInt16],
+      peekUShort: ['unsigned short', 2,
+        Peeracle.MemoryDataStream.prototype.peekUShort,
+        DataView.prototype.getUint16],
+      peekInteger: ['integer', 4,
+        Peeracle.MemoryDataStream.prototype.peekInteger,
+        DataView.prototype.getInt32],
+      peekUInteger: ['unsigned integer', 4,
+        Peeracle.MemoryDataStream.prototype.peekUInteger,
+        DataView.prototype.getUint32],
+      peekFloat: ['float', 4,
+        Peeracle.MemoryDataStream.prototype.peekFloat,
+        DataView.prototype.getFloat32],
+      peekDouble: ['double', 8,
+        Peeracle.MemoryDataStream.prototype.peekDouble,
+        DataView.prototype.getFloat64]
+    };
+
+    for (var t in peekTab) {
+      if (!peekTab.hasOwnProperty(t)) {
+        continue;
+      }
+
+      var tab = peekTab[t];
+      it('should peek one ' + tab[0] + ', the next one and throw an error',
+        function () {
+          var stream = new Peeracle.MemoryDataStream({buffer: buffer});
+          var dataview = new DataView(buffer.buffer);
+
+          expect(stream.tell()).toEqual(0);
+          expect(tab[2].call(stream)).toEqual(tab[3].call(dataview, 0));
+
+          expect(stream.tell()).toEqual(0);
+          expect(stream.seek(tab[1])).toEqual(tab[1]);
+
+          expect(stream.tell()).toEqual(tab[1]);
+          expect(tab[2].call(stream)).toEqual(tab[3].call(dataview, tab[1]));
+
+          expect(stream.tell()).toEqual(tab[1]);
+          expect(stream.seek(32)).toEqual(32);
+
+          expect(function () {
+            tab[2].call(stream);
+          }).toThrowError('index out of bounds');
+
+          expect(stream.tell()).toEqual(32);
+        });
+    }
   });
 });
