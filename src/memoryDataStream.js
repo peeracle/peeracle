@@ -368,18 +368,24 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#write
+   * @param {Uint8Array} bytes
    * @return {Number}
+   * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.write = function write(bytes) {
-    return bytes;
   };
 
   /**
    * @function MemoryDataStream#writeChar
+   * @param {Number} value
    * @return {Number}
-   * @throws {RangeError}
+   * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.writeChar = function writeChar(value) {
+    if (typeof value !== 'number') {
+      throw new TypeError('argument must be a number');
+    }
+
     if (this.offset + 1 >= this.buffer.length) {
       throw new RangeError('index out of bounds');
     }
@@ -391,10 +397,15 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeByte
+   * @param {Number} value
    * @return {Number}
-   * @throws {RangeError}
+   * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.writeByte = function writeByte(value) {
+    if (typeof value !== 'number') {
+      throw new TypeError('argument must be a number');
+    }
+
     if (this.offset + 1 >= this.buffer.length) {
       throw new RangeError('index out of bounds');
     }
@@ -406,10 +417,15 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeShort
+   * @param {Number} value
    * @return {Number}
-   * @throws {RangeError}
+   * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.writeShort = function writeShort(value) {
+    if (typeof value !== 'number') {
+      throw new TypeError('argument must be a number');
+    }
+
     if (this.offset + 2 >= this.buffer.length) {
       throw new RangeError('index out of bounds');
     }
@@ -421,10 +437,15 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeUShort
+   * @param {Number} value
    * @return {Number}
-   * @throws {RangeError}
+   * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.writeUShort = function writeUShort(value) {
+    if (typeof value !== 'number') {
+      throw new TypeError('argument must be a number');
+    }
+
     if (this.offset + 2 >= this.buffer.length) {
       throw new RangeError('index out of bounds');
     }
@@ -436,10 +457,15 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeInteger
+   * @param {Number} value
    * @return {Number}
-   * @throws {RangeError}
+   * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.writeInteger = function writeInteger(value) {
+    if (typeof value !== 'number') {
+      throw new TypeError('argument must be a number');
+    }
+
     if (this.offset + 4 >= this.buffer.length) {
       throw new RangeError('index out of bounds');
     }
@@ -451,10 +477,15 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeUInteger
+   * @param {Number} value
    * @return {Number}
-   * @throws {RangeError}
+   * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.writeUInteger = function writeUInteger(value) {
+    if (typeof value !== 'number') {
+      throw new TypeError('argument must be a number');
+    }
+
     if (this.offset + 4 >= this.buffer.length) {
       throw new RangeError('index out of bounds');
     }
@@ -466,10 +497,15 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeFloat
+   * @param {Number} value
    * @return {Number}
-   * @throws {RangeError}
+   * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.writeFloat = function writeFloat(value) {
+    if (typeof value !== 'number') {
+      throw new TypeError('argument must be a number');
+    }
+
     if (this.offset + 4 >= this.buffer.length) {
       throw new RangeError('index out of bounds');
     }
@@ -481,10 +517,15 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeDouble
+   * @param {Number} value
    * @return {Number}
-   * @throws {RangeError}
+   * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.writeDouble = function writeDouble(value) {
+    if (typeof value !== 'number') {
+      throw new TypeError('argument must be a number');
+    }
+
     if (this.offset + 8 >= this.buffer.length) {
       throw new RangeError('index out of bounds');
     }
@@ -496,12 +537,17 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#writeString
+   * @param {String} str
    * @return {Number}
-   * @throws {RangeError}
+   * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.writeString = function writeString(str) {
     var index = 0;
     var length = str.length;
+
+    if (typeof str !== 'string') {
+      throw new TypeError('argument must be a string');
+    }
 
     if (str.length + 1 >= this.buffer.length) {
       throw new RangeError('index out of bounds');
