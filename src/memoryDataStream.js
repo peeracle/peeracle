@@ -497,9 +497,25 @@ Peeracle.MemoryDataStream = (function() {
   /**
    * @function MemoryDataStream#writeString
    * @return {Number}
+   * @throws {RangeError}
    */
   MemoryDataStream.prototype.writeString = function writeString(str) {
-    return str;
+    var index = 0;
+    var length = str.length;
+
+    if (str.length + 1 >= this.buffer.length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    while (index < length) {
+      this.buffer[this.offset + index] = str.charCodeAt(index);
+      ++index;
+    }
+
+    this.buffer[index] = 0;
+    length += 1;
+    this.offset += length;
+    return length;
   };
 
   return MemoryDataStream;

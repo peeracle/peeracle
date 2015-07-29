@@ -486,4 +486,38 @@ describe('MemoryDataStream', function () {
       defineWriteTest(methodName, writeTab[methodName]);
     }
   });
+
+  describe('writeString', function () {
+    var stream = new Peeracle.MemoryDataStream({buffer: buffer});
+
+    it('should write the string at the beginning', function () {
+      var str = 'hello world';
+
+      expect(stream.tell()).toEqual(0);
+      expect(stream.writeString(str)).toEqual(str.length + 1);
+      expect(stream.tell()).toEqual(str.length + 1);
+
+      for (var i = 0, l = str.length; i < l; ++i) {
+        expect(buffer[i]).toEqual(str.charCodeAt(i));
+      }
+      expect(buffer[i]).toEqual(0);
+    });
+    it('should write the string at the beginning', function () {
+      var str;
+
+      for (str = ''; str.length < 64;) {
+        str += Math.random().toString(36).substr(2, 1);
+      }
+    });
+    it('should throw an error for trying to write too much', function() {
+      var str;
+
+      for (str = ''; str.length < 64;) {
+        str += Math.random().toString(36).substr(2, 1);
+      }
+      expect(function () {
+        stream.writeString(str);
+      }).toThrowError('index out of bounds');
+    });
+  });
 });
