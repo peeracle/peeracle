@@ -206,6 +206,14 @@ Peeracle.MemoryDataStream = (function() {
    * @throws {RangeError}
    */
   MemoryDataStream.prototype.readString = function readString() {
+    var str = this.peekString();
+
+    this.offset += str.length;
+    if (this.offset + 1 < this.buffer.length) {
+      ++this.offset;
+    }
+
+    return str;
   };
 
   /**
@@ -328,9 +336,34 @@ Peeracle.MemoryDataStream = (function() {
 
   /**
    * @function MemoryDataStream#peekString
-   * @return {Number}
+   * @return {String|null}
+   * @throws {RangeError}
    */
   MemoryDataStream.prototype.peekString = function peekString() {
+    var index = this.offset;
+    var length = this.buffer.length;
+    var str = null;
+    var charCode;
+
+    if (index >= length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    while (index < length) {
+      charCode = this.buffer[index++];
+
+      if (charCode === 0) {
+        break;
+      }
+
+      if (!str) {
+        str = '';
+      }
+
+      str += String.fromCharCode(charCode);
+    }
+
+    return str;
   };
 
   /**

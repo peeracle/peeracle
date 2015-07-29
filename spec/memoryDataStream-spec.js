@@ -260,6 +260,45 @@ describe('MemoryDataStream', function () {
     }
   });
 
+  describe('readString', function () {
+    var stringBuffer = new Uint8Array(32);
+    var stream = new Peeracle.MemoryDataStream({buffer: stringBuffer});
+
+    it('should read the string correctly', function () {
+      var str = 'hello world';
+
+      for (var i = 0, l = str.length; i < l; ++i) {
+        stringBuffer.set([str.charCodeAt(i)], i);
+      }
+      stringBuffer.set([0], i);
+
+      expect(stream.tell()).toEqual(0);
+      expect(stream.readString()).toEqual(str);
+      expect(stream.tell()).toEqual(i + 1);
+    });
+    it('should read the longer string correctly', function () {
+      var str;
+
+      for (str = ''; str.length < 64;) {
+        str += Math.random().toString(36).substr(2, 1);
+      }
+
+      for (var i = 0; i < 32; ++i) {
+        stringBuffer.set([str.charCodeAt(i)], i);
+      }
+
+      expect(stream.seek(0)).toEqual(0);
+      expect(stream.tell()).toEqual(0);
+      expect(stream.readString()).toEqual(str.substr(0, 32));
+      expect(stream.tell()).toEqual(32);
+    });
+    it('should throw an error for trying to read too much', function () {
+      expect(function () {
+        stream.readString();
+      }).toThrowError('index out of bounds');
+    });
+  });
+
   describe('peeking', function () {
     var peekTab = {
       peekChar: ['char', 1,
@@ -321,6 +360,45 @@ describe('MemoryDataStream', function () {
 
       definePeekTest(methodName, peekTab[methodName]);
     }
+  });
+
+  describe('peekString', function () {
+    var stringBuffer = new Uint8Array(32);
+    var stream = new Peeracle.MemoryDataStream({buffer: stringBuffer});
+
+    it('should peek the string correctly', function () {
+      var str = 'hello world';
+
+      for (var i = 0, l = str.length; i < l; ++i) {
+        stringBuffer.set([str.charCodeAt(i)], i);
+      }
+      stringBuffer.set([0], i);
+
+      expect(stream.tell()).toEqual(0);
+      expect(stream.peekString()).toEqual(str);
+      expect(stream.tell()).toEqual(0);
+    });
+    it('should peek the longer string correctly', function () {
+      var str;
+
+      for (str = ''; str.length < 64;) {
+        str += Math.random().toString(36).substr(2, 1);
+      }
+
+      for (var i = 0; i < 32; ++i) {
+        stringBuffer.set([str.charCodeAt(i)], i);
+      }
+
+      expect(stream.tell()).toEqual(0);
+      expect(stream.peekString()).toEqual(str.substr(0, 32));
+      expect(stream.tell()).toEqual(0);
+    });
+    it('should throw an error for trying to read too much', function () {
+      expect(stream.seek(32)).toEqual(32);
+      expect(function () {
+        stream.peekString();
+      }).toThrowError('index out of bounds');
+    });
   });
 
   describe('writing', function () {
