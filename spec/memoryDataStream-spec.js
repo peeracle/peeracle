@@ -186,13 +186,8 @@ describe('MemoryDataStream', function () {
         DataView.prototype.getFloat64]
     };
 
-    for (var t in readTab) {
-      if (!readTab.hasOwnProperty(t)) {
-        continue;
-      }
-
-      var tab = readTab[t];
-      it('should read one ' + tab[0] + ', the next one and throw an error',
+    function defineReadTest(methodName, tab) {
+      it('with ' + methodName,
         function () {
           var stream = new Peeracle.MemoryDataStream({buffer: buffer});
           var dataview = new DataView(buffer.buffer);
@@ -212,6 +207,14 @@ describe('MemoryDataStream', function () {
 
           expect(stream.tell()).toEqual(32);
         });
+    }
+
+    for (var methodName in readTab) {
+      if (!readTab.hasOwnProperty(methodName)) {
+        continue;
+      }
+
+      defineReadTest(methodName, readTab[methodName]);
     }
   });
 
@@ -243,13 +246,8 @@ describe('MemoryDataStream', function () {
         DataView.prototype.getFloat64]
     };
 
-    for (var t in peekTab) {
-      if (!peekTab.hasOwnProperty(t)) {
-        continue;
-      }
-
-      var tab = peekTab[t];
-      it('should peek one ' + tab[0] + ', the next one and throw an error',
+    function definePeekTest(methodName, tab) {
+      it('with ' + methodName,
         function () {
           var stream = new Peeracle.MemoryDataStream({buffer: buffer});
           var dataview = new DataView(buffer.buffer);
@@ -272,6 +270,100 @@ describe('MemoryDataStream', function () {
 
           expect(stream.tell()).toEqual(32);
         });
+    }
+
+    for (var methodName in peekTab) {
+      if (!peekTab.hasOwnProperty(methodName)) {
+        continue;
+      }
+
+      definePeekTest(methodName, peekTab[methodName]);
+    }
+  });
+
+  describe('writing', function () {
+    var writeTab = {
+      writeChar: ['char', 1,
+        Peeracle.MemoryDataStream.prototype.writeChar,
+        DataView.prototype.getInt8,
+        Peeracle.MemoryDataStream.prototype.readChar],
+      writeByte: ['byte', 1,
+        Peeracle.MemoryDataStream.prototype.writeByte,
+        DataView.prototype.getUint8,
+        Peeracle.MemoryDataStream.prototype.readByte],
+      writeShort: ['short', 2,
+        Peeracle.MemoryDataStream.prototype.writeShort,
+        DataView.prototype.getInt16,
+        Peeracle.MemoryDataStream.prototype.readShort],
+      writeUShort: ['unsigned short', 2,
+        Peeracle.MemoryDataStream.prototype.writeUShort,
+        DataView.prototype.getUint16,
+        Peeracle.MemoryDataStream.prototype.readUShort],
+      writeInteger: ['integer', 4,
+        Peeracle.MemoryDataStream.prototype.writeInteger,
+        DataView.prototype.getInt32,
+        Peeracle.MemoryDataStream.prototype.readInteger],
+      writeUInteger: ['unsigned integer', 4,
+        Peeracle.MemoryDataStream.prototype.writeUInteger,
+        DataView.prototype.getUint32,
+        Peeracle.MemoryDataStream.prototype.readUInteger],
+      writeFloat: ['float', 4,
+        Peeracle.MemoryDataStream.prototype.writeFloat,
+        DataView.prototype.getFloat32,
+        Peeracle.MemoryDataStream.prototype.readFloat],
+      writeDouble: ['double', 8,
+        Peeracle.MemoryDataStream.prototype.writeDouble,
+        DataView.prototype.getFloat64,
+        Peeracle.MemoryDataStream.prototype.readDouble]
+    };
+
+    function defineWriteTest(methodName, tab) {
+      it('with ' + methodName, function () {
+        var stream = new Peeracle.MemoryDataStream({buffer: buffer});
+        var dataview = new DataView(buffer.buffer);
+
+        var size = tab[1];
+        var streamWriteFunc = tab[2];
+        var dvReadFunc = tab[3];
+        var streamReadFunc = tab[4];
+
+        expect(stream.tell()).toEqual(0);
+        expect(streamWriteFunc.call(stream, dvReadFunc.call(dataview, 32 - size))).toEqual(size);
+
+        expect(stream.tell()).toEqual(size);
+        expect(stream.seek(0)).toEqual(0);
+        expect(stream.tell()).toEqual(0);
+        expect(streamReadFunc.call(stream)).toEqual(dvReadFunc.call(dataview, 32 - size));
+
+        expect(stream.tell()).toEqual(size);
+        expect(streamWriteFunc.call(stream, dvReadFunc.call(dataview, 32 - (size * 2)))).toEqual(size);
+
+        expect(stream.seek(0)).toEqual(0);
+        expect(stream.tell()).toEqual(0);
+        expect(streamReadFunc.call(stream)).toEqual(dvReadFunc.call(dataview, 32 - size));
+        expect(stream.tell()).toEqual(size);
+        expect(streamReadFunc.call(stream)).toEqual(dvReadFunc.call(dataview, 32 - (size * 2)));
+        expect(stream.tell()).toEqual(size * 2);
+
+        expect(stream.seek(0)).toEqual(0);
+        expect(stream.tell()).toEqual(0);
+        expect(streamWriteFunc.call(stream, dvReadFunc.call(dataview, 32 - (size * 3)))).toEqual(size);
+        expect(stream.tell()).toEqual(size);
+
+        expect(stream.seek(32)).toEqual(32);
+        expect(stream.tell()).toEqual(32);
+        expect(function () {
+          streamWriteFunc.call(stream, dvReadFunc.call(dataview, 0));
+        }).toThrowError('index out of bounds');
+      });
+    }
+
+    for (var methodName in writeTab) {
+      if (!writeTab.hasOwnProperty(methodName)) {
+        continue;
+      }
+
+      defineWriteTest(methodName, writeTab[methodName]);
     }
   });
 });

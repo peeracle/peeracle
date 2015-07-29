@@ -332,7 +332,13 @@ Peeracle.MemoryDataStream = (function() {
    * @return {Number}
    */
   MemoryDataStream.prototype.writeChar = function writeChar(value) {
-    return value;
+    if (this.offset + 1 >= this.buffer.length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    this.dataview.setInt8(this.offset, value);
+    this.offset += 1;
+    return 1;
   };
 
   /**
@@ -340,7 +346,13 @@ Peeracle.MemoryDataStream = (function() {
    * @return {Number}
    */
   MemoryDataStream.prototype.writeByte = function writeByte(value) {
-    return value;
+    if (this.offset + 1 >= this.buffer.length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    this.dataview.setUint8(this.offset, value);
+    this.offset += 1;
+    return 1;
   };
 
   /**
@@ -348,7 +360,13 @@ Peeracle.MemoryDataStream = (function() {
    * @return {Number}
    */
   MemoryDataStream.prototype.writeShort = function writeShort(value) {
-    return value;
+    if (this.offset + 2 >= this.buffer.length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    this.dataview.setInt16(this.offset, value);
+    this.offset += 2;
+    return 2;
   };
 
   /**
@@ -356,7 +374,13 @@ Peeracle.MemoryDataStream = (function() {
    * @return {Number}
    */
   MemoryDataStream.prototype.writeUShort = function writeUShort(value) {
-    return value;
+    if (this.offset + 2 >= this.buffer.length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    this.dataview.setUint16(this.offset, value);
+    this.offset += 2;
+    return 2;
   };
 
   /**
@@ -364,7 +388,13 @@ Peeracle.MemoryDataStream = (function() {
    * @return {Number}
    */
   MemoryDataStream.prototype.writeInteger = function writeInteger(value) {
-    return value;
+    if (this.offset + 4 >= this.buffer.length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    this.dataview.setInt32(this.offset, value);
+    this.offset += 4;
+    return 4;
   };
 
   /**
@@ -372,7 +402,13 @@ Peeracle.MemoryDataStream = (function() {
    * @return {Number}
    */
   MemoryDataStream.prototype.writeUInteger = function writeUInteger(value) {
-    return value;
+    if (this.offset + 4 >= this.buffer.length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    this.dataview.setUint32(this.offset, value);
+    this.offset += 4;
+    return 4;
   };
 
   /**
@@ -380,7 +416,13 @@ Peeracle.MemoryDataStream = (function() {
    * @return {Number}
    */
   MemoryDataStream.prototype.writeFloat = function writeFloat(value) {
-    return value;
+    if (this.offset + 4 >= this.buffer.length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    this.dataview.setFloat32(this.offset, value);
+    this.offset += 4;
+    return 4;
   };
 
   /**
@@ -388,7 +430,13 @@ Peeracle.MemoryDataStream = (function() {
    * @return {Number}
    */
   MemoryDataStream.prototype.writeDouble = function writeDouble(value) {
-    return value;
+    if (this.offset + 8 >= this.buffer.length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    this.dataview.setFloat64(this.offset, value);
+    this.offset += 8;
+    return 8;
   };
 
   /**
