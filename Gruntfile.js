@@ -185,8 +185,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-preprocess');
 
-  grunt.registerTask('default', ['eslint', 'concat', 'jsdoc', 'preprocess',
-    'jsbeautifier'/*, 'closure-compiler'*/]);
-
+  grunt.registerTask('default', ['eslint', 'concat', 'preprocess', 'jsbeautifier'/*, 'closure-compiler'*/]);
   grunt.registerTask('test', ['karma']);
+  grunt.registerTask('doc', ['jsdoc']);
 };
