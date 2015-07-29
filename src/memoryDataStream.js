@@ -373,6 +373,21 @@ Peeracle.MemoryDataStream = (function() {
    * @throws {TypeError|RangeError}
    */
   MemoryDataStream.prototype.write = function write(bytes) {
+    var length;
+
+    if (!(bytes instanceof Uint8Array)) {
+      throw new TypeError('argument must be an Uint8Array');
+    }
+
+    length = bytes.length;
+    if (this.offset + length >= this.buffer.length) {
+      throw new RangeError('index out of bounds');
+    }
+
+    this.buffer.set(bytes, this.offset);
+    this.offset += length;
+
+    return length;
   };
 
   /**
@@ -543,13 +558,14 @@ Peeracle.MemoryDataStream = (function() {
    */
   MemoryDataStream.prototype.writeString = function writeString(str) {
     var index = 0;
-    var length = str.length;
+    var length;
 
     if (typeof str !== 'string') {
       throw new TypeError('argument must be a string');
     }
 
-    if (str.length + 1 >= this.buffer.length) {
+    length = str.length;
+    if (length + 1 >= this.buffer.length) {
       throw new RangeError('index out of bounds');
     }
 

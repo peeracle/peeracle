@@ -401,6 +401,44 @@ describe('MemoryDataStream', function () {
     });
   });
 
+  describe('write', function () {
+    it('should write some random bytes', function () {
+      var actualBuffer = new Uint8Array(32);
+      var stream = new Peeracle.MemoryDataStream({buffer: actualBuffer});
+
+      expect(function () {
+        stream.write(null);
+      }).toThrowError('argument must be an Uint8Array');
+
+      expect(stream.tell()).toEqual(0);
+      expect(stream.write(buffer.subarray(0, 8))).toEqual(8);
+      expect(stream.tell()).toEqual(8);
+
+      for (var i = 0; i < 8; ++i) {
+        expect(actualBuffer[i]).toEqual(buffer[i]);
+      }
+
+      for (var i = 8; i < 32; ++i) {
+        expect(actualBuffer[i]).toEqual(0);
+      }
+
+      expect(stream.seek(8)).toEqual(8);
+      expect(stream.write(buffer.subarray(8, 16))).toEqual(8);
+
+      for (var i = 8; i < 16; ++i) {
+        expect(actualBuffer[i]).toEqual(buffer[i]);
+      }
+
+      for (var i = 16; i < 32; ++i) {
+        expect(actualBuffer[i]).toEqual(0);
+      }
+
+      expect(function () {
+        stream.write(buffer);
+      }).toThrowError('index out of bounds');
+    });
+  });
+
   describe('writing', function () {
     var writeTab = {
       writeChar: ['char', 1,
@@ -446,6 +484,10 @@ describe('MemoryDataStream', function () {
         var streamWriteFunc = tab[2];
         var dvReadFunc = tab[3];
         var streamReadFunc = tab[4];
+
+        expect(function () {
+          streamWriteFunc.call(stream, null);
+        }).toThrowError('argument must be a number');
 
         expect(stream.tell()).toEqual(0);
         expect(streamWriteFunc.call(stream, dvReadFunc.call(dataview, 32 - size))).toEqual(size);
@@ -493,6 +535,10 @@ describe('MemoryDataStream', function () {
     it('should write the string at the beginning', function () {
       var str = 'hello world';
 
+      expect(function () {
+        stream.writeString(null);
+      }).toThrowError('argument must be a string');
+
       expect(stream.tell()).toEqual(0);
       expect(stream.writeString(str)).toEqual(str.length + 1);
       expect(stream.tell()).toEqual(str.length + 1);
@@ -509,7 +555,7 @@ describe('MemoryDataStream', function () {
         str += Math.random().toString(36).substr(2, 1);
       }
     });
-    it('should throw an error for trying to write too much', function() {
+    it('should throw an error for trying to write too much', function () {
       var str;
 
       for (str = ''; str.length < 64;) {
