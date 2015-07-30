@@ -24,26 +24,26 @@
 
 var Peeracle = {
   DataStream: require('./src/dataStream'),
-  FileDataStream: require('./src/fileDataStream'),
-  HttpDataStream: require('./src/httpDataStream'),
+  // FileDataStream: require('./src/fileDataStream'),
+  // HttpDataStream: require('./src/httpDataStream'),
   MemoryDataStream: require('./src/memoryDataStream'),
 
-  Hash: require('./src/hash'),
-  Murmur3Hash: require('./src/murmur3Hash'),
+  // Hash: require('./src/hash'),
+  // Murmur3Hash: require('./src/murmur3Hash'),
 
-  Media: require('./src/media'),
-  ISOBMFFMedia: require('./src/isobmffMedia'),
-  WebMMedia: require('./src/webmMedia'),
+  // Media: require('./src/media'),
+  // ISOBMFFMedia: require('./src/isobmffMedia'),
+  // WebMMedia: require('./src/webmMedia'),
 
-  Metadata: require('./src/metadata'),
+  Metadata: require('./src/metadata')
 
-  Peer: require('./src/peer'),
+  // Peer: require('./src/peer'),
 
-  TrackerClient: require('./src/trackerClient'),
-  TrackerMessage: require('./src/trackerMessage'),
-  TrackerServer: require('./src/trackerServer'),
+  // TrackerClient: require('./src/trackerClient'),
+  // TrackerMessage: require('./src/trackerMessage'),
+  // TrackerServer: require('./src/trackerServer'),
 
-  Session: require('./src/session')
+  // Session: require('./src/session')
 };
 
 module.exports = Peeracle;
