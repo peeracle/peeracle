@@ -25,19 +25,19 @@ var Peeracle = {};
 // @endexclude
 
 /* eslint-disable */
-Peeracle.MetadataFile = (function() {
+Peeracle.Metadata = (function() {
   /* eslint-enable */
   /**
-   * @class MetadataFile
+   * @class Metadata
    * @memberof {Peeracle}
    * @constructor
    */
-  function MetadataFile() {
+  function Metadata() {
   }
 
-  return MetadataFile;
+  return Metadata;
 })();
 
 // @exclude
-module.exports = Peeracle.MetadataFile;
+module.exports = Peeracle.Metadata;
 // @endexclude

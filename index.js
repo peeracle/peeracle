@@ -35,6 +35,8 @@ var Peeracle = {
   ISOBMFFMedia: require('./src/isobmffMedia'),
   WebMMedia: require('./src/webmMedia'),
 
+  Metadata: require('./src/metadata'),
+
   Peer: require('./src/peer'),
 
   TrackerClient: require('./src/trackerClient'),
