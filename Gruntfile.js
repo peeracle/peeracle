@@ -98,6 +98,7 @@ module.exports = function (grunt) {
           'src/media.js',
           'src/isobmffMedia.js',
           'src/webmMedia.js',
+          'src/metadataStream.js',
           'src/metadata.js',
           'src/trackerMessage.js',
           'src/peer.js',
