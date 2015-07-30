@@ -86,6 +86,7 @@ module.exports = function (grunt) {
           'src/httpDataStream.js',
           'src/memoryDataStream.js',
           'src/hash.js',
+          'third_party/murmurHash3.js/murmurHash3.js',
           'src/murmur3Hash.js',
           'src/media.js',
           'src/isobmffMedia.js',
