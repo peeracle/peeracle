@@ -55,5 +55,8 @@
     "karma-jasmine": "^0.3.6",
     "karma-junit-reporter": "^0.3.3",
     "karma-verbose-reporter": "0.0.3"
+  },
+  "dependencies": {
+    "wrtc": "0.0.57"
   }
 }
