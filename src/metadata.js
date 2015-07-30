@@ -21,7 +21,9 @@
  */
 
 // @exclude
-var Peeracle = {};
+var Peeracle = {
+  DataStream: require('./dataStream')
+};
 // @endexclude
 
 /* eslint-disable */
@@ -31,9 +33,49 @@ Peeracle.Metadata = (function() {
    * @class Metadata
    * @memberof {Peeracle}
    * @constructor
+   * @property {Number} version
+   * @property {String} checksumAlgorithm
+   * @property {Number} timecodeScale
+   * @property {Number} duration
+   * @property {Array.<String>} trackerUrls
+   * @property {Array.<MetadataStream>} streams
    */
   function Metadata() {
+    this.version = 0;
+    this.checksumAlgorithm = '';
+    this.timecodeScale = 0;
+    this.duration = 0;
+    this.trackerUrls = [];
+    this.streams = [];
   }
+
+  /**
+   * @function Metadata#serialize
+   * @param {DataStream} dataStream
+   * @return {Number}
+   * @throws {TypeError}
+   */
+  Metadata.prototype.serialize = function serialize(dataStream) {
+    if (!(dataStream instanceof Peeracle.DataStream)) {
+      throw new TypeError('argument must be a DataStream');
+    }
+
+    return 0;
+  };
+
+  /**
+   * @function Metadata#unserialize
+   * @param {DataStream} dataStream
+   * @return {Number}
+   * @throws {TypeError}
+   */
+  Metadata.prototype.unserialize = function unserialize(dataStream) {
+    if (!(dataStream instanceof Peeracle.DataStream)) {
+      throw new TypeError('argument must be a DataStream');
+    }
+
+    return 0;
+  };
 
   return Metadata;
 })();
