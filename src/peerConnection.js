@@ -20,31 +20,45 @@
  * SOFTWARE.
  */
 
-'use strict';
+// @exclude
+var Peeracle = {};
+// @endexclude
 
-var Peeracle = {
-  DataStream: require('./src/dataStream'),
-  // FileDataStream: require('./src/fileDataStream'),
-  // HttpDataStream: require('./src/httpDataStream'),
-  MemoryDataStream: require('./src/memoryDataStream'),
+/* eslint-disable */
+Peeracle.PeerConnection = (function () {
+  // @exclude
+  var webrtc = require('wrtc');
+  var RTCPeerConnection = webrtc.RTCIceCandidate;
+  var RTCSessionDescription = webrtc.RTCSessionDescription;
+  var RTCIceCandidate = webrtc.RTCIceCandidate;
 
-  // Hash: require('./src/hash'),
-  // Murmur3Hash: require('./src/murmur3Hash'),
+  if (typeof module === 'undefined') {
+    // @endexclude
+    var RTCPeerConnection = window.RTCPeerConnection ||
+      window.mozRTCPeerConnection || window.webkitRTCPeerConnection ||
+      window.msRTCPeerConnection;
 
-  // Media: require('./src/media'),
-  // ISOBMFFMedia: require('./src/isobmffMedia'),
-  // WebMMedia: require('./src/webmMedia'),
+    var RTCSessionDescription = window.RTCSessionDescription ||
+      window.mozRTCSessionDescription || window.webkitRTCSessionDescription ||
+      window.msRTCSessionDescription;
 
-  Metadata: require('./src/metadata')
+    var RTCIceCandidate = window.mozRTCIceCandidate ||
+      window.webkitRTCIceCandidate || window.RTCIceCandidate;
+    // @exclude
+  }
+  // @endexclude
+  /* eslint-enable */
+  /**
+   * @class PeerConnection
+   * @memberof {Peeracle}
+   * @constructor
+   */
+  function PeerConnection() {
+  }
 
-  // PeerConnection: require('./src/peerConnection'),
-  // Peer: require('./src/peer'),
+  return PeerConnection;
+})();
 
-  // TrackerClient: require('./src/trackerClient'),
-  // TrackerMessage: require('./src/trackerMessage'),
-  // TrackerServer: require('./src/trackerServer'),
-
-  // Session: require('./src/session')
-};
-
-module.exports = Peeracle;
+// @exclude
+module.exports = Peeracle.PeerConnection;
+// @endexclude

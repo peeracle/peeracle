@@ -70,14 +70,6 @@ module.exports = function (grunt) {
         banner: '<%= banner %>\n' +
         '\'use strict\';\n\n' +
         '(function(){\n' +
-        /*'var RTCPeerConnection = window.RTCPeerConnection ||\
-        window.mozRTCPeerConnection || window.webkitRTCPeerConnection ||\
-        window.msRTCPeerConnection;\n' +
-        'var RTCSessionDescription = window.RTCSessionDescription ||\
-        window.mozRTCSessionDescription || window.webkitRTCSessionDescription ||\
-        window.msRTCSessionDescription;\n' +
-        'var RTCIceCandidate = window.mozRTCIceCandidate ||\
-        window.webkitRTCIceCandidate || window.RTCIceCandidate;\n\n' +*/
         'var Peeracle = {};\n',
 
         footer: 'window.Peeracle = Peeracle;\n})();\n',
@@ -101,6 +93,7 @@ module.exports = function (grunt) {
           'src/metadataStream.js',
           'src/metadata.js',
           'src/trackerMessage.js',
+          'src/peerConnection.js',
           'src/peer.js',
           'src/trackerClient.js',
           'src/session.js'
