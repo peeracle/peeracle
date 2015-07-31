@@ -93,260 +93,325 @@ Peeracle.MemoryDataStream = (function() {
   /**
    * @function MemoryDataStream#read
    * @param {Number} length
-   * @return {Uint8Array}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.read = function read(length) {
-    var bytes;
+  MemoryDataStream.prototype.read = function read(length, cb) {
+    var _this = this;
 
-    bytes = this.peek(length);
-    this.offset += length;
-    return bytes;
+    this.peek(length, function peekCb(error, value, len) {
+      if (error) {
+        cb(error);
+        return;
+      }
+      _this.offset += len;
+      cb(null, value, len);
+    });
   };
 
   /**
    * @function MemoryDataStream#readChar
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.readChar = function readChar() {
-    var value = this.peekChar();
-    this.offset += 1;
+  MemoryDataStream.prototype.readChar = function readChar(cb) {
+    var _this = this;
 
-    return value;
+    this.peekChar(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+      _this.offset += length;
+      cb(null, value, length);
+    });
   };
 
   /**
    * @function MemoryDataStream#readByte
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.readByte = function readByte() {
-    var value = this.peekByte();
-    this.offset += 1;
+  MemoryDataStream.prototype.readByte = function readByte(cb) {
+    var _this = this;
 
-    return value;
+    this.peekByte(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+      _this.offset += length;
+      cb(null, value, length);
+    });
   };
 
   /**
    * @function MemoryDataStream#readShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.readShort = function readShort() {
-    var value = this.peekShort();
-    this.offset += 2;
+  MemoryDataStream.prototype.readShort = function readShort(cb) {
+    var _this = this;
 
-    return value;
+    this.peekShort(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+      _this.offset += length;
+      cb(null, value, length);
+    });
   };
 
   /**
    * @function MemoryDataStream#readUShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.readUShort = function readUShort() {
-    var value = this.peekUShort();
-    this.offset += 2;
+  MemoryDataStream.prototype.readUShort = function readUShort(cb) {
+    var _this = this;
 
-    return value;
+    this.peekUShort(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+      _this.offset += length;
+      cb(null, value, length);
+    });
   };
 
   /**
    * @function MemoryDataStream#readInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.readInteger = function readInteger() {
-    var value = this.peekInteger();
-    this.offset += 4;
+  MemoryDataStream.prototype.readInteger = function readInteger(cb) {
+    var _this = this;
 
-    return value;
+    this.peekInteger(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+      _this.offset += length;
+      cb(null, value, length);
+    });
   };
 
   /**
    * @function MemoryDataStream#readUInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.readUInteger = function readUInteger() {
-    var value = this.peekUInteger();
-    this.offset += 4;
+  MemoryDataStream.prototype.readUInteger = function readUInteger(cb) {
+    var _this = this;
 
-    return value;
+    this.peekUInteger(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+      _this.offset += length;
+      cb(null, value, length);
+    });
   };
 
   /**
    * @function MemoryDataStream#readFloat
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.readFloat = function readFloat() {
-    var value = this.peekFloat();
-    this.offset += 4;
+  MemoryDataStream.prototype.readFloat = function readFloat(cb) {
+    var _this = this;
 
-    return value;
+    this.peekFloat(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+      _this.offset += length;
+      cb(null, value, length);
+    });
   };
 
   /**
    * @function MemoryDataStream#readDouble
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.readDouble = function readDouble() {
-    var value = this.peekDouble();
-    this.offset += 8;
+  MemoryDataStream.prototype.readDouble = function readDouble(cb) {
+    var _this = this;
 
-    return value;
+    this.peekDouble(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+      _this.offset += length;
+      cb(null, value, length);
+    });
   };
 
   /**
    * @function MemoryDataStream#readString
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.readString = function readString() {
-    var str = this.peekString();
+  MemoryDataStream.prototype.readString = function readString(cb) {
+    var _this = this;
 
-    this.offset += str.length;
-    if (this.offset + 1 < this.buffer.length) {
-      ++this.offset;
-    }
-
-    return str;
+    this.peekString(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+      _this.offset += length;
+      cb(null, value, length);
+    });
   };
 
   /**
    * @function MemoryDataStream#peek
    * @param {Number} length
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.peek = function peek(length) {
+  MemoryDataStream.prototype.peek = function peek(length, cb) {
     if (length < 0 || this.offset + length >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
-    return this.buffer.subarray(this.offset, this.offset + length);
+    cb(null, this.buffer.subarray(this.offset, this.offset + length), length);
   };
 
   /**
    * @function MemoryDataStream#peekChar
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.peekChar = function peekChar() {
+  MemoryDataStream.prototype.peekChar = function peekChar(cb) {
     if (this.offset + 1 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
-    return this.dataview.getInt8(this.offset);
+    cb(null, this.dataview.getInt8(this.offset), 1);
   };
 
   /**
    * @function MemoryDataStream#peekByte
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.peekByte = function peekByte() {
+  MemoryDataStream.prototype.peekByte = function peekByte(cb) {
     if (this.offset + 1 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
-    return this.dataview.getUint8(this.offset);
+    cb(null, this.dataview.getUint8(this.offset), 1);
   };
 
   /**
    * @function MemoryDataStream#peekShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.peekShort = function peekShort() {
+  MemoryDataStream.prototype.peekShort = function peekShort(cb) {
     if (this.offset + 2 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
-    return this.dataview.getInt16(this.offset);
+    cb(null, this.dataview.getInt16(this.offset), 2);
   };
 
   /**
    * @function MemoryDataStream#peekUShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.peekUShort = function peekUShort() {
+  MemoryDataStream.prototype.peekUShort = function peekUShort(cb) {
     if (this.offset + 2 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
-    return this.dataview.getUint16(this.offset);
+    cb(null, this.dataview.getUint16(this.offset), 2);
   };
 
   /**
    * @function MemoryDataStream#peekInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.peekInteger = function peekInteger() {
+  MemoryDataStream.prototype.peekInteger = function peekInteger(cb) {
     if (this.offset + 4 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
-    return this.dataview.getInt32(this.offset);
+    cb(null, this.dataview.getInt32(this.offset), 4);
   };
 
   /**
    * @function MemoryDataStream#peekUInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.peekUInteger = function peekUInteger() {
+  MemoryDataStream.prototype.peekUInteger = function peekUInteger(cb) {
     if (this.offset + 4 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
-    return this.dataview.getUint32(this.offset);
+    cb(null, this.dataview.getUint32(this.offset), 4);
   };
 
   /**
    * @function MemoryDataStream#peekFloat
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.peekFloat = function peekFloat() {
+  MemoryDataStream.prototype.peekFloat = function peekFloat(cb) {
     if (this.offset + 4 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
-    return this.dataview.getFloat32(this.offset);
+    cb(null, this.dataview.getFloat32(this.offset), 4);
   };
 
   /**
    * @function MemoryDataStream#peekDouble
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.peekDouble = function peekDouble() {
+  MemoryDataStream.prototype.peekDouble = function peekDouble(cb) {
     if (this.offset + 8 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
-    return this.dataview.getFloat64(this.offset);
+    cb(null, this.dataview.getFloat64(this.offset), 8);
   };
 
   /**
    * @function MemoryDataStream#peekString
-   * @return {String|null}
+   * @param {DataStream~readCallback} cb
    * @throws {RangeError}
    */
-  MemoryDataStream.prototype.peekString = function peekString() {
+  MemoryDataStream.prototype.peekString = function peekString(cb) {
     var index = this.offset;
     var length = this.buffer.length;
     var str = null;
     var charCode;
 
     if (index >= length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     while (index < length) {
@@ -363,210 +428,229 @@ Peeracle.MemoryDataStream = (function() {
       str += String.fromCharCode(charCode);
     }
 
-    return str;
+    cb(null, str, index);
   };
 
   /**
    * @function MemoryDataStream#write
    * @param {Uint8Array} bytes
-   * @return {Number}
+   * @param {DataStream~writeCallback} cb
    * @throws {TypeError|RangeError}
    */
-  MemoryDataStream.prototype.write = function write(bytes) {
+  MemoryDataStream.prototype.write = function write(bytes, cb) {
     var length;
 
     if (!(bytes instanceof Uint8Array)) {
-      throw new TypeError('argument must be an Uint8Array');
+      cb(new TypeError('argument must be an Uint8Array'));
+      return;
     }
 
     length = bytes.length;
     if (this.offset + length >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     this.buffer.set(bytes, this.offset);
     this.offset += length;
-
-    return length;
+    cb(null, length);
   };
 
   /**
    * @function MemoryDataStream#writeChar
    * @param {Number} value
-   * @return {Number}
+   * @param {DataStream~writeCallback} cb
    * @throws {TypeError|RangeError}
    */
-  MemoryDataStream.prototype.writeChar = function writeChar(value) {
+  MemoryDataStream.prototype.writeChar = function writeChar(value, cb) {
     if (typeof value !== 'number') {
-      throw new TypeError('argument must be a number');
+      cb(new TypeError('argument must be a number'));
+      return;
     }
 
     if (this.offset + 1 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     this.dataview.setInt8(this.offset, value);
     this.offset += 1;
-    return 1;
+    cb(null, 1);
   };
 
   /**
    * @function MemoryDataStream#writeByte
    * @param {Number} value
-   * @return {Number}
+   * @param {DataStream~writeCallback} cb
    * @throws {TypeError|RangeError}
    */
-  MemoryDataStream.prototype.writeByte = function writeByte(value) {
+  MemoryDataStream.prototype.writeByte = function writeByte(value, cb) {
     if (typeof value !== 'number') {
-      throw new TypeError('argument must be a number');
+      cb(new TypeError('argument must be a number'));
+      return;
     }
 
     if (this.offset + 1 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     this.dataview.setUint8(this.offset, value);
     this.offset += 1;
-    return 1;
+    cb(null, 1);
   };
 
   /**
    * @function MemoryDataStream#writeShort
    * @param {Number} value
-   * @return {Number}
+   * @param {DataStream~writeCallback} cb
    * @throws {TypeError|RangeError}
    */
-  MemoryDataStream.prototype.writeShort = function writeShort(value) {
+  MemoryDataStream.prototype.writeShort = function writeShort(value, cb) {
     if (typeof value !== 'number') {
-      throw new TypeError('argument must be a number');
+      cb(new TypeError('argument must be a number'));
+      return;
     }
 
     if (this.offset + 2 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     this.dataview.setInt16(this.offset, value);
     this.offset += 2;
-    return 2;
+    cb(null, 2);
   };
 
   /**
    * @function MemoryDataStream#writeUShort
    * @param {Number} value
-   * @return {Number}
+   * @param {DataStream~writeCallback} cb
    * @throws {TypeError|RangeError}
    */
-  MemoryDataStream.prototype.writeUShort = function writeUShort(value) {
+  MemoryDataStream.prototype.writeUShort = function writeUShort(value, cb) {
     if (typeof value !== 'number') {
-      throw new TypeError('argument must be a number');
+      cb(new TypeError('argument must be a number'));
+      return;
     }
 
     if (this.offset + 2 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     this.dataview.setUint16(this.offset, value);
     this.offset += 2;
-    return 2;
+    cb(null, 2);
   };
 
   /**
    * @function MemoryDataStream#writeInteger
    * @param {Number} value
-   * @return {Number}
+   * @param {DataStream~writeCallback} cb
    * @throws {TypeError|RangeError}
    */
-  MemoryDataStream.prototype.writeInteger = function writeInteger(value) {
+  MemoryDataStream.prototype.writeInteger = function writeInteger(value, cb) {
     if (typeof value !== 'number') {
-      throw new TypeError('argument must be a number');
+      cb(new TypeError('argument must be a number'));
+      return;
     }
 
     if (this.offset + 4 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     this.dataview.setInt32(this.offset, value);
     this.offset += 4;
-    return 4;
+    cb(null, 4);
   };
 
   /**
    * @function MemoryDataStream#writeUInteger
    * @param {Number} value
-   * @return {Number}
+   * @param {DataStream~writeCallback} cb
    * @throws {TypeError|RangeError}
    */
-  MemoryDataStream.prototype.writeUInteger = function writeUInteger(value) {
+  MemoryDataStream.prototype.writeUInteger = function writeUInteger(value, cb) {
     if (typeof value !== 'number') {
-      throw new TypeError('argument must be a number');
+      cb(new TypeError('argument must be a number'));
+      return;
     }
 
     if (this.offset + 4 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     this.dataview.setUint32(this.offset, value);
     this.offset += 4;
-    return 4;
+    cb(null, 4);
   };
 
   /**
    * @function MemoryDataStream#writeFloat
    * @param {Number} value
-   * @return {Number}
+   * @param {DataStream~writeCallback} cb
    * @throws {TypeError|RangeError}
    */
-  MemoryDataStream.prototype.writeFloat = function writeFloat(value) {
+  MemoryDataStream.prototype.writeFloat = function writeFloat(value, cb) {
     if (typeof value !== 'number') {
-      throw new TypeError('argument must be a number');
+      cb(new TypeError('argument must be a number'));
+      return;
     }
 
     if (this.offset + 4 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     this.dataview.setFloat32(this.offset, value);
     this.offset += 4;
-    return 4;
+    cb(null, 4);
   };
 
   /**
    * @function MemoryDataStream#writeDouble
    * @param {Number} value
-   * @return {Number}
+   * @param {DataStream~writeCallback} cb
    * @throws {TypeError|RangeError}
    */
-  MemoryDataStream.prototype.writeDouble = function writeDouble(value) {
+  MemoryDataStream.prototype.writeDouble = function writeDouble(value, cb) {
     if (typeof value !== 'number') {
-      throw new TypeError('argument must be a number');
+      cb(new TypeError('argument must be a number'));
+      return;
     }
 
     if (this.offset + 8 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     this.dataview.setFloat64(this.offset, value);
     this.offset += 8;
-    return 8;
+    cb(null, 8);
   };
 
   /**
    * @function MemoryDataStream#writeString
    * @param {String} str
-   * @return {Number}
+   * @param {DataStream~writeCallback} cb
    * @throws {TypeError|RangeError}
    */
-  MemoryDataStream.prototype.writeString = function writeString(str) {
+  MemoryDataStream.prototype.writeString = function writeString(str, cb) {
     var index = 0;
     var length;
 
     if (typeof str !== 'string') {
-      throw new TypeError('argument must be a string');
+      cb(new TypeError('argument must be a string'));
+      return;
     }
 
     length = str.length;
     if (length + 1 >= this.buffer.length) {
-      throw new RangeError('index out of bounds');
+      cb(new RangeError('index out of bounds'));
+      return;
     }
 
     while (index < length) {
@@ -574,10 +658,9 @@ Peeracle.MemoryDataStream = (function() {
       ++index;
     }
 
-    this.buffer[index] = 0;
-    length += 1;
-    this.offset += length;
-    return length;
+    this.buffer[index++] = 0;
+    this.offset += index;
+    cb(null, index);
   };
 
   return MemoryDataStream;

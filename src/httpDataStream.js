@@ -28,7 +28,7 @@ var Peeracle = {
 
 /* eslint-disable */
 Peeracle.HttpDataStream = (function() {
-/* eslint-enable */
+  /* eslint-enable */
   /**
    * @class HttpDataStream
    * @memberof {Peeracle}
@@ -70,224 +70,264 @@ Peeracle.HttpDataStream = (function() {
   /**
    * @function HttpDataStream#read
    * @param {Number} length
-   * @return {Uint8Array}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.read = function read(length) {
+  HttpDataStream.prototype.read = function read(length, cb) {
     this.offset += length;
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#readChar
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.readChar = function readChar() {
+  HttpDataStream.prototype.readChar = function readChar(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#readByte
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.readByte = function readByte() {
+  HttpDataStream.prototype.readByte = function readByte(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#readShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.readShort = function readShort() {
+  HttpDataStream.prototype.readShort = function readShort(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#readUShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.readUShort = function readUShort() {
+  HttpDataStream.prototype.readUShort = function readUShort(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#readInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.readInteger = function readInteger() {
+  HttpDataStream.prototype.readInteger = function readInteger(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#readUInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.readUInteger = function readUInteger() {
+  HttpDataStream.prototype.readUInteger = function readUInteger(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#readFloat
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.readFloat = function readFloat() {
+  HttpDataStream.prototype.readFloat = function readFloat(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#readDouble
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.readDouble = function readDouble() {
+  HttpDataStream.prototype.readDouble = function readDouble(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#readString
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.readString = function readString() {
+  HttpDataStream.prototype.readString = function readString(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#peek
    * @param {Number} length
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.peek = function peek(length) {
+  HttpDataStream.prototype.peek = function peek(length, cb) {
+    cb(null);
     return length;
   };
 
   /**
    * @function HttpDataStream#peekChar
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.peekChar = function peekChar() {
+  HttpDataStream.prototype.peekChar = function peekChar(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#peekByte
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.peekByte = function peekByte() {
+  HttpDataStream.prototype.peekByte = function peekByte(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#peekShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.peekShort = function peekShort() {
+  HttpDataStream.prototype.peekShort = function peekShort(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#peekUShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.peekUShort = function peekUShort() {
+  HttpDataStream.prototype.peekUShort = function peekUShort(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#peekInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.peekInteger = function peekInteger() {
+  HttpDataStream.prototype.peekInteger = function peekInteger(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#peekUInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.peekUInteger = function peekUInteger() {
+  HttpDataStream.prototype.peekUInteger = function peekUInteger(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#peekFloat
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.peekFloat = function peekFloat() {
+  HttpDataStream.prototype.peekFloat = function peekFloat(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#peekDouble
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.peekDouble = function peekDouble() {
+  HttpDataStream.prototype.peekDouble = function peekDouble(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#peekString
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
-  HttpDataStream.prototype.peekString = function peekString() {
+  HttpDataStream.prototype.peekString = function peekString(cb) {
+    cb(null);
   };
 
   /**
    * @function HttpDataStream#write
-   * @return {Number}
+   * @param {Uint8Array} bytes
+   * @param {DataStream~writeCallback} cb
    */
-  HttpDataStream.prototype.write = function write(bytes) {
+  HttpDataStream.prototype.write = function write(bytes, cb) {
+    cb(null);
     return bytes;
   };
 
   /**
    * @function HttpDataStream#writeChar
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
-  HttpDataStream.prototype.writeChar = function writeChar(value) {
+  HttpDataStream.prototype.writeChar = function writeChar(value, cb) {
+    cb(null);
     return value;
   };
 
   /**
    * @function HttpDataStream#writeByte
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
-  HttpDataStream.prototype.writeByte = function writeByte(value) {
+  HttpDataStream.prototype.writeByte = function writeByte(value, cb) {
+    cb(null);
     return value;
   };
 
   /**
    * @function HttpDataStream#writeShort
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
-  HttpDataStream.prototype.writeShort = function writeShort(value) {
+  HttpDataStream.prototype.writeShort = function writeShort(value, cb) {
+    cb(null);
     return value;
   };
 
   /**
    * @function HttpDataStream#writeUShort
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
-  HttpDataStream.prototype.writeUShort = function writeUShort(value) {
+  HttpDataStream.prototype.writeUShort = function writeUShort(value, cb) {
+    cb(null);
     return value;
   };
 
   /**
    * @function HttpDataStream#writeInteger
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
-  HttpDataStream.prototype.writeInteger = function writeInteger(value) {
+  HttpDataStream.prototype.writeInteger = function writeInteger(value, cb) {
+    cb(null);
     return value;
   };
 
   /**
    * @function HttpDataStream#writeUInteger
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
-  HttpDataStream.prototype.writeUInteger = function writeUInteger(value) {
+  HttpDataStream.prototype.writeUInteger = function writeUInteger(value, cb) {
+    cb(null);
     return value;
   };
 
   /**
    * @function HttpDataStream#writeFloat
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
-  HttpDataStream.prototype.writeFloat = function writeFloat(value) {
+  HttpDataStream.prototype.writeFloat = function writeFloat(value, cb) {
+    cb(null);
     return value;
   };
 
   /**
    * @function HttpDataStream#writeDouble
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
-  HttpDataStream.prototype.writeDouble = function writeDouble(value) {
+  HttpDataStream.prototype.writeDouble = function writeDouble(value, cb) {
+    cb(null);
     return value;
   };
 
   /**
    * @function HttpDataStream#writeString
-   * @return {Number}
+   * @param {String} str
+   * @param {DataStream~writeCallback} cb
    */
-  HttpDataStream.prototype.writeString = function writeString(str) {
+  HttpDataStream.prototype.writeString = function writeString(str, cb) {
+    cb(null);
     return str;
   };
 

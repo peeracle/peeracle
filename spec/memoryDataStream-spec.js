@@ -44,17 +44,20 @@ describe('MemoryDataStream', function () {
         new Peeracle.MemoryDataStream(null);
       }).toThrowError('buffer should be an Uint8Array');
     });
+
     it('should throw an error on invalid argument', function () {
       expect(function () {
         new Peeracle.MemoryDataStream({});
       }).toThrowError('buffer should be an Uint8Array');
     });
+
     it('should be initialized', function () {
       expect(function () {
         var buf = new Uint8Array(1);
         new Peeracle.MemoryDataStream({buffer: buf});
       }).not.toThrow();
     });
+
     it('should be an instance of DataStream', function () {
       expect(stream).toEqual(jasmine.any(Peeracle.DataStream));
     });
@@ -108,41 +111,54 @@ describe('MemoryDataStream', function () {
     it('should have an offset equal to 0', function () {
       expect(stream.tell()).toEqual(0);
     });
-    it('should read the first byte', function () {
-      var bytes = stream.read(1);
-      expect(bytes).toEqual(jasmine.any(Uint8Array));
-      expect(bytes.length).toEqual(1);
-      expect(bytes[0]).toEqual(buffer[0]);
+    it('should read the first byte', function (done) {
+      stream.read(1, function readFirstByte(err, value, length) {
+        expect(err).toBeNull();
+        expect(value).toEqual(jasmine.any(Uint8Array));
+        expect(value.length).toEqual(1);
+        expect(length).toEqual(1);
+        expect(value[0]).toEqual(buffer[0]);
+        done();
+      });
     });
     it('should have an offset equal to 1', function () {
       expect(stream.tell()).toEqual(1);
     });
-    it('should read the two next bytes', function () {
-      var bytes = stream.read(2);
-      expect(bytes).toEqual(jasmine.any(Uint8Array));
-      expect(bytes.length).toEqual(2);
-      expect(bytes[0]).toEqual(buffer[1]);
-      expect(bytes[1]).toEqual(buffer[2]);
+    it('should read the two next bytes', function (done) {
+      stream.read(2, function readNextTwoBytes(err, value, length) {
+        expect(err).toBeNull();
+        expect(value).toEqual(jasmine.any(Uint8Array));
+        expect(value.length).toEqual(2);
+        expect(length).toEqual(2);
+        expect(value[0]).toEqual(buffer[1]);
+        expect(value[1]).toEqual(buffer[2]);
+        done();
+      });
     });
     it('should have an offset equal to 3', function () {
       expect(stream.tell()).toEqual(3);
     });
-    it('should read the four next bytes', function () {
-      var bytes = stream.read(4);
-      expect(bytes).toEqual(jasmine.any(Uint8Array));
-      expect(bytes.length).toEqual(4);
-      expect(bytes[0]).toEqual(buffer[3]);
-      expect(bytes[1]).toEqual(buffer[4]);
-      expect(bytes[2]).toEqual(buffer[5]);
-      expect(bytes[3]).toEqual(buffer[6]);
+    it('should read the four next bytes', function (done) {
+      stream.read(4, function readNextFourBytes(err, value, length) {
+        expect(err).toBeNull();
+        expect(value).toEqual(jasmine.any(Uint8Array));
+        expect(value.length).toEqual(4);
+        expect(length).toEqual(4);
+        expect(value[0]).toEqual(buffer[3]);
+        expect(value[1]).toEqual(buffer[4]);
+        expect(value[2]).toEqual(buffer[5]);
+        expect(value[3]).toEqual(buffer[6]);
+        done();
+      });
     });
     it('should have an offset equal to 7', function () {
       expect(stream.tell()).toEqual(7);
     });
-    it('should throw an error for reading too much', function () {
-      expect(function () {
-        stream.read(buffer.length);
-      }).toThrowError('index out of bounds');
+    it('should throw an error for reading too much', function (done) {
+      stream.read(buffer.length, function readThrowError(err) {
+        expect(err).toEqual(jasmine.any(RangeError));
+        done();
+      });
     });
     it('should still have an offset equal to 7', function () {
       expect(stream.tell()).toEqual(7);
@@ -155,45 +171,58 @@ describe('MemoryDataStream', function () {
     it('should have an offset equal to 0', function () {
       expect(stream.tell()).toEqual(0);
     });
-    it('should peek the first byte', function () {
-      var bytes = stream.peek(1);
-      expect(bytes).toEqual(jasmine.any(Uint8Array));
-      expect(bytes.length).toEqual(1);
-      expect(bytes[0]).toEqual(buffer[0]);
+    it('should peek the first byte', function (done) {
+      stream.peek(1, function (error, value, length) {
+        expect(error).toBeNull();
+        expect(value).toEqual(jasmine.any(Uint8Array));
+        expect(value.length).toEqual(1);
+        expect(length).toEqual(1);
+        expect(value[0]).toEqual(buffer[0]);
+        done();
+      });
     });
     it('should have an offset equal to 0', function () {
       expect(stream.tell()).toEqual(0);
     });
-    it('should read the two next bytes', function () {
+    it('should read the two next bytes', function (done) {
       expect(stream.seek(1)).toEqual(1);
       expect(stream.tell()).toEqual(1);
-      var bytes = stream.peek(2);
-      expect(bytes).toEqual(jasmine.any(Uint8Array));
-      expect(bytes.length).toEqual(2);
-      expect(bytes[0]).toEqual(buffer[1]);
-      expect(bytes[1]).toEqual(buffer[2]);
+      stream.peek(2, function (error, value, length) {
+        expect(error).toBeNull();
+        expect(value).toEqual(jasmine.any(Uint8Array));
+        expect(value.length).toEqual(2);
+        expect(length).toEqual(2);
+        expect(value[0]).toEqual(buffer[1]);
+        expect(value[1]).toEqual(buffer[2]);
+        done();
+      });
     });
     it('should have an offset equal to 1', function () {
       expect(stream.tell()).toEqual(1);
     });
-    it('should read the four next bytes', function () {
+    it('should read the four next bytes', function (done) {
       expect(stream.seek(3)).toEqual(3);
       expect(stream.tell()).toEqual(3);
-      var bytes = stream.peek(4);
-      expect(bytes).toEqual(jasmine.any(Uint8Array));
-      expect(bytes.length).toEqual(4);
-      expect(bytes[0]).toEqual(buffer[3]);
-      expect(bytes[1]).toEqual(buffer[4]);
-      expect(bytes[2]).toEqual(buffer[5]);
-      expect(bytes[3]).toEqual(buffer[6]);
+      stream.peek(4, function (error, value, length) {
+        expect(error).toBeNull();
+        expect(value).toEqual(jasmine.any(Uint8Array));
+        expect(value.length).toEqual(4);
+        expect(length).toEqual(4);
+        expect(value[0]).toEqual(buffer[3]);
+        expect(value[1]).toEqual(buffer[4]);
+        expect(value[2]).toEqual(buffer[5]);
+        expect(value[3]).toEqual(buffer[6]);
+        done();
+      });
     });
     it('should have an offset equal to 3', function () {
       expect(stream.tell()).toEqual(3);
     });
-    it('should throw an error for reading too much', function () {
-      expect(function () {
-        stream.peek(buffer.length);
-      }).toThrowError('index out of bounds');
+    it('should throw an error for reading too much', function (done) {
+      stream.peek(buffer.length, function (error) {
+        expect(error).toEqual(jasmine.any(RangeError));
+        done();
+      });
     });
     it('should still have an offset equal to 3', function () {
       expect(stream.tell()).toEqual(3);
@@ -229,26 +258,34 @@ describe('MemoryDataStream', function () {
     };
 
     function defineReadTest(methodName, tab) {
-      it('with ' + methodName,
-        function () {
-          var stream = new Peeracle.MemoryDataStream({buffer: buffer});
-          var dataview = new DataView(buffer.buffer);
+      it('with ' + methodName, function (done) {
+        var stream = new Peeracle.MemoryDataStream({buffer: buffer});
+        var dataview = new DataView(buffer.buffer);
 
-          expect(stream.tell()).toEqual(0);
-          expect(tab[2].call(stream)).toEqual(tab[3].call(dataview, 0));
+        var size = tab[1];
+        var readFn = tab[2];
+        var dvFn = tab[3];
 
-          expect(stream.tell()).toEqual(tab[1]);
-          expect(tab[2].call(stream)).toEqual(tab[3].call(dataview, tab[1]));
-
-          expect(stream.tell()).toEqual(tab[1] * 2);
-          expect(stream.seek(32)).toEqual(32);
-
-          expect(function () {
-            tab[2].call(stream);
-          }).toThrowError('index out of bounds');
-
-          expect(stream.tell()).toEqual(32);
+        expect(stream.tell()).toEqual(0);
+        readFn.call(stream, function (error, value, length) {
+          expect(error).toBeNull();
+          expect(length).toEqual(size);
+          expect(value).toEqual(dvFn.call(dataview, 0));
+          expect(stream.tell()).toEqual(size);
+          readFn.call(stream, function (error, value, length) {
+            expect(error).toBeNull();
+            expect(length).toEqual(size);
+            expect(value).toEqual(dvFn.call(dataview, size));
+            expect(stream.tell()).toEqual(size * 2);
+            expect(stream.seek(32)).toEqual(32);
+            readFn.call(stream, function (error) {
+              expect(error).toEqual(jasmine.any(RangeError));
+              expect(stream.tell()).toEqual(32);
+              done();
+            });
+          });
         });
+      });
     }
 
     for (var methodName in readTab) {
@@ -264,7 +301,7 @@ describe('MemoryDataStream', function () {
     var stringBuffer = new Uint8Array(32);
     var stream = new Peeracle.MemoryDataStream({buffer: stringBuffer});
 
-    it('should read the string correctly', function () {
+    it('should read the string correctly', function (done) {
       var str = 'hello world';
 
       for (var i = 0, l = str.length; i < l; ++i) {
@@ -273,10 +310,16 @@ describe('MemoryDataStream', function () {
       stringBuffer.set([0], i);
 
       expect(stream.tell()).toEqual(0);
-      expect(stream.readString()).toEqual(str);
-      expect(stream.tell()).toEqual(i + 1);
+      stream.readString(function readStringCb(error, value, length) {
+        expect(error).toBeNull();
+        expect(stream.tell()).toEqual(i + 1);
+        expect(value).toEqual(str);
+        expect(length).toEqual(i + 1);
+        done();
+      });
     });
-    it('should read the longer string correctly', function () {
+
+    it('should read the longer string correctly', function (done) {
       var str;
 
       for (str = ''; str.length < 64;) {
@@ -289,13 +332,19 @@ describe('MemoryDataStream', function () {
 
       expect(stream.seek(0)).toEqual(0);
       expect(stream.tell()).toEqual(0);
-      expect(stream.readString()).toEqual(str.substr(0, 32));
-      expect(stream.tell()).toEqual(32);
+      stream.readString(function readStringCb(error, value, length) {
+        expect(error).toBeNull();
+        expect(stream.tell()).toEqual(32);
+        expect(value).toEqual(str.substr(0, 32));
+        expect(length).toEqual(32);
+        done();
+      });
     });
-    it('should throw an error for trying to read too much', function () {
-      expect(function () {
-        stream.readString();
-      }).toThrowError('index out of bounds');
+    it('should throw an error for trying to read too much', function (done) {
+      stream.readString(function (error) {
+        expect(error).toEqual(jasmine.any(RangeError));
+        done();
+      });
     });
   });
 
@@ -328,29 +377,36 @@ describe('MemoryDataStream', function () {
     };
 
     function definePeekTest(methodName, tab) {
-      it('with ' + methodName,
-        function () {
-          var stream = new Peeracle.MemoryDataStream({buffer: buffer});
-          var dataview = new DataView(buffer.buffer);
+      it('with ' + methodName, function () {
+        var stream = new Peeracle.MemoryDataStream({buffer: buffer});
+        var dataview = new DataView(buffer.buffer);
 
+        var size = tab[1];
+        var readFn = tab[2];
+        var dvFn = tab[3];
+
+        expect(stream.tell()).toEqual(0);
+        readFn.call(stream, function (error, value, length) {
+          expect(error).toBeNull();
+          expect(value).toEqual(dvFn.call(dataview, 0));
+          expect(length).toEqual(size);
           expect(stream.tell()).toEqual(0);
-          expect(tab[2].call(stream)).toEqual(tab[3].call(dataview, 0));
-
-          expect(stream.tell()).toEqual(0);
-          expect(stream.seek(tab[1])).toEqual(tab[1]);
-
-          expect(stream.tell()).toEqual(tab[1]);
-          expect(tab[2].call(stream)).toEqual(tab[3].call(dataview, tab[1]));
-
-          expect(stream.tell()).toEqual(tab[1]);
-          expect(stream.seek(32)).toEqual(32);
-
-          expect(function () {
-            tab[2].call(stream);
-          }).toThrowError('index out of bounds');
-
-          expect(stream.tell()).toEqual(32);
+          expect(stream.seek(size)).toEqual(size);
+          expect(stream.tell()).toEqual(size);
+          readFn.call(stream, function (error, value, length) {
+            expect(error).toBeNull();
+            expect(value).toEqual(dvFn.call(dataview, size));
+            expect(length).toEqual(size);
+            expect(stream.tell()).toEqual(size);
+            expect(stream.seek(32)).toEqual(32);
+            expect(stream.tell()).toEqual(32);
+            readFn.call(stream, function (error) {
+              expect(stream.tell()).toEqual(32);
+              expect(error).toEqual(jasmine.any(RangeError));
+            });
+          });
         });
+      });
     }
 
     for (var methodName in peekTab) {
@@ -366,7 +422,7 @@ describe('MemoryDataStream', function () {
     var stringBuffer = new Uint8Array(32);
     var stream = new Peeracle.MemoryDataStream({buffer: stringBuffer});
 
-    it('should peek the string correctly', function () {
+    it('should peek the string correctly', function (done) {
       var str = 'hello world';
 
       for (var i = 0, l = str.length; i < l; ++i) {
@@ -375,10 +431,16 @@ describe('MemoryDataStream', function () {
       stringBuffer.set([0], i);
 
       expect(stream.tell()).toEqual(0);
-      expect(stream.peekString()).toEqual(str);
-      expect(stream.tell()).toEqual(0);
+      stream.peekString(function peekStringCb(error, value, length) {
+        expect(error).toBeNull();
+        expect(value).toEqual(str);
+        expect(value.length).toEqual(l);
+        expect(length).toEqual(l + 1);
+        expect(stream.tell()).toEqual(0);
+        done();
+      });
     });
-    it('should peek the longer string correctly', function () {
+    it('should peek the longer string correctly', function (done) {
       var str;
 
       for (str = ''; str.length < 64;) {
@@ -390,163 +452,232 @@ describe('MemoryDataStream', function () {
       }
 
       expect(stream.tell()).toEqual(0);
-      expect(stream.peekString()).toEqual(str.substr(0, 32));
-      expect(stream.tell()).toEqual(0);
+      stream.peekString(function peekStringCb(error, value, length) {
+        expect(error).toBeNull();
+        expect(value).toEqual(str.substr(0, 32));
+        expect(value.length).toEqual(32);
+        expect(length).toEqual(32);
+        expect(stream.tell()).toEqual(0);
+        done();
+      });
     });
-    it('should throw an error for trying to read too much', function () {
+    it('should throw an error for trying to read too much', function (done) {
       expect(stream.seek(32)).toEqual(32);
-      expect(function () {
-        stream.peekString();
-      }).toThrowError('index out of bounds');
+      stream.peekString(function peekStringCb(error) {
+        expect(error).toEqual(jasmine.any(RangeError));
+        done();
+      });
     });
   });
 
   describe('write', function () {
-    it('should write some random bytes', function () {
+    it('should throw an error on invalid argument', function (done) {
+      var stream = new Peeracle.MemoryDataStream({buffer: buffer});
+      stream.write(null, function (error) {
+        expect(error).toEqual(jasmine.any(TypeError));
+        done();
+      });
+    });
+    it('should write some random bytes', function (done) {
       var actualBuffer = new Uint8Array(32);
       var stream = new Peeracle.MemoryDataStream({buffer: actualBuffer});
 
-      expect(function () {
-        stream.write(null);
-      }).toThrowError('argument must be an Uint8Array');
-
       expect(stream.tell()).toEqual(0);
-      expect(stream.write(buffer.subarray(0, 8))).toEqual(8);
-      expect(stream.tell()).toEqual(8);
+      stream.write(buffer.subarray(0, 8), function (error, length) {
+        expect(error).toBeNull();
+        expect(length).toEqual(8);
+        expect(stream.tell()).toEqual(8);
 
-      for (var i = 0; i < 8; ++i) {
-        expect(actualBuffer[i]).toEqual(buffer[i]);
-      }
+        for (var i = 0; i < 8; ++i) {
+          expect(actualBuffer[i]).toEqual(buffer[i]);
+        }
 
-      for (var i = 8; i < 32; ++i) {
-        expect(actualBuffer[i]).toEqual(0);
-      }
+        for (var i = 8; i < 32; ++i) {
+          expect(actualBuffer[i]).toEqual(0);
+        }
 
-      expect(stream.seek(8)).toEqual(8);
-      expect(stream.write(buffer.subarray(8, 16))).toEqual(8);
+        expect(stream.seek(8)).toEqual(8);
 
-      for (var i = 8; i < 16; ++i) {
-        expect(actualBuffer[i]).toEqual(buffer[i]);
-      }
+        stream.write(buffer.subarray(8, 16), function (error, length) {
+          expect(error).toBeNull();
+          expect(length).toEqual(8);
 
-      for (var i = 16; i < 32; ++i) {
-        expect(actualBuffer[i]).toEqual(0);
-      }
+          for (var i = 8; i < 16; ++i) {
+            expect(actualBuffer[i]).toEqual(buffer[i]);
+          }
 
-      expect(function () {
-        stream.write(buffer);
-      }).toThrowError('index out of bounds');
+          for (var i = 16; i < 32; ++i) {
+            expect(actualBuffer[i]).toEqual(0);
+          }
+
+          stream.write(buffer, function (error) {
+            expect(error).toEqual(jasmine.any(RangeError));
+            done();
+          });
+        });
+      });
     });
   });
 
-  describe('writing', function () {
-    var writeTab = {
-      writeChar: ['char', 1,
-        Peeracle.MemoryDataStream.prototype.writeChar,
-        DataView.prototype.getInt8,
-        Peeracle.MemoryDataStream.prototype.readChar],
-      writeByte: ['byte', 1,
-        Peeracle.MemoryDataStream.prototype.writeByte,
-        DataView.prototype.getUint8,
-        Peeracle.MemoryDataStream.prototype.readByte],
-      writeShort: ['short', 2,
-        Peeracle.MemoryDataStream.prototype.writeShort,
-        DataView.prototype.getInt16,
-        Peeracle.MemoryDataStream.prototype.readShort],
-      writeUShort: ['unsigned short', 2,
-        Peeracle.MemoryDataStream.prototype.writeUShort,
-        DataView.prototype.getUint16,
-        Peeracle.MemoryDataStream.prototype.readUShort],
-      writeInteger: ['integer', 4,
-        Peeracle.MemoryDataStream.prototype.writeInteger,
-        DataView.prototype.getInt32,
-        Peeracle.MemoryDataStream.prototype.readInteger],
-      writeUInteger: ['unsigned integer', 4,
-        Peeracle.MemoryDataStream.prototype.writeUInteger,
-        DataView.prototype.getUint32,
-        Peeracle.MemoryDataStream.prototype.readUInteger],
-      writeFloat: ['float', 4,
-        Peeracle.MemoryDataStream.prototype.writeFloat,
-        DataView.prototype.getFloat32,
-        Peeracle.MemoryDataStream.prototype.readFloat],
-      writeDouble: ['double', 8,
-        Peeracle.MemoryDataStream.prototype.writeDouble,
-        DataView.prototype.getFloat64,
-        Peeracle.MemoryDataStream.prototype.readDouble]
-    };
+  /*describe('writing', function () {
+   var writeTab = {
+   writeChar: ['char', 1,
+   Peeracle.MemoryDataStream.prototype.writeChar,
+   DataView.prototype.getInt8,
+   Peeracle.MemoryDataStream.prototype.readChar],
+   writeByte: ['byte', 1,
+   Peeracle.MemoryDataStream.prototype.writeByte,
+   DataView.prototype.getUint8,
+   Peeracle.MemoryDataStream.prototype.readByte],
+   writeShort: ['short', 2,
+   Peeracle.MemoryDataStream.prototype.writeShort,
+   DataView.prototype.getInt16,
+   Peeracle.MemoryDataStream.prototype.readShort],
+   writeUShort: ['unsigned short', 2,
+   Peeracle.MemoryDataStream.prototype.writeUShort,
+   DataView.prototype.getUint16,
+   Peeracle.MemoryDataStream.prototype.readUShort],
+   writeInteger: ['integer', 4,
+   Peeracle.MemoryDataStream.prototype.writeInteger,
+   DataView.prototype.getInt32,
+   Peeracle.MemoryDataStream.prototype.readInteger],
+   writeUInteger: ['unsigned integer', 4,
+   Peeracle.MemoryDataStream.prototype.writeUInteger,
+   DataView.prototype.getUint32,
+   Peeracle.MemoryDataStream.prototype.readUInteger],
+   writeFloat: ['float', 4,
+   Peeracle.MemoryDataStream.prototype.writeFloat,
+   DataView.prototype.getFloat32,
+   Peeracle.MemoryDataStream.prototype.readFloat],
+   writeDouble: ['double', 8,
+   Peeracle.MemoryDataStream.prototype.writeDouble,
+   DataView.prototype.getFloat64,
+   Peeracle.MemoryDataStream.prototype.readDouble]
+   };
 
-    function defineWriteTest(methodName, tab) {
-      it('with ' + methodName, function () {
-        var stream = new Peeracle.MemoryDataStream({buffer: buffer});
-        var dataview = new DataView(buffer.buffer);
+   function defineWriteTest(methodName, tab) {
+   var stream = new Peeracle.MemoryDataStream({buffer: buffer});
+   var dataview = new DataView(buffer.buffer);
+   var size = tab[1];
+   var streamWriteFunc = tab[2];
+   var dvReadFunc = tab[3];
+   var streamReadFunc = tab[4];
 
-        var size = tab[1];
-        var streamWriteFunc = tab[2];
-        var dvReadFunc = tab[3];
-        var streamReadFunc = tab[4];
+   it('should throw an error on invalid argument', function (done) {
+   streamWriteFunc.call(stream, null, function (error) {
+   expect(error).toEqual(jasmine.any(TypeError));
+   done();
+   });
+   });
 
-        expect(function () {
-          streamWriteFunc.call(stream, null);
-        }).toThrowError('argument must be a number');
+   it('with ' + methodName, function (done) {
+   expect(stream.tell()).toEqual(0);
+   streamWriteFunc.call(stream, dvReadFunc.call(dataview, 32 - size),
+   function (error, length) {
+   expect(error).toBeNull();
+   expect(length).toEqual(size);
+   expect(stream.tell()).toEqual(size);
+   expect(stream.seek(0)).toEqual(0);
+   expect(stream.tell()).toEqual(0);
+   streamReadFunc.call(stream, function (error, value, length) {
+   expect(error).toBeNull();
+   expect(length).toEqual(size);
+   expect(value).toEqual(dvReadFunc.call(dataview, 32 - size));
+   expect(stream.tell()).toEqual(size);
+   done();
+   });
+   });
+   });
 
-        expect(stream.tell()).toEqual(0);
-        expect(streamWriteFunc.call(stream, dvReadFunc.call(dataview, 32 - size))).toEqual(size);
+   it('with ' + methodName + ' 2', function (done) {
+   streamWriteFunc.call(stream, dvReadFunc.call(dataview, 32 - (size * 2)),
+   function (error, length) {
+   expect(error).toBeNull();
+   expect(length).toEqual(size);
+   expect(stream.seek(0)).toEqual(0);
+   expect(stream.tell()).toEqual(0);
+   done();
+   });
+   });
 
-        expect(stream.tell()).toEqual(size);
-        expect(stream.seek(0)).toEqual(0);
-        expect(stream.tell()).toEqual(0);
-        expect(streamReadFunc.call(stream)).toEqual(dvReadFunc.call(dataview, 32 - size));
+   it('with ' + methodName + ' 3', function (done) {
+   streamReadFunc.call(stream, function (error, value, length) {
+   expect(error).toBeNull();
+   expect(value).toEqual(dvReadFunc.call(dataview, 32 - size));
+   expect(length).toEqual(size);
+   expect(stream.tell()).toEqual(size);
+   done();
+   });
+   });
 
-        expect(stream.tell()).toEqual(size);
-        expect(streamWriteFunc.call(stream, dvReadFunc.call(dataview, 32 - (size * 2)))).toEqual(size);
+   it('with ' + methodName + ' 4', function (done) {
+   streamReadFunc.call(stream, function (error, value, length) {
+   expect(error).toBeNull();
+   expect(value).toEqual(dvReadFunc.call(dataview, 32 - (size * 2)));
+   expect(length).toEqual(size);
+   expect(stream.tell()).toEqual(size * 2);
+   expect(stream.seek(0)).toEqual(0);
+   expect(stream.tell()).toEqual(0);
+   done();
+   });
+   });
 
-        expect(stream.seek(0)).toEqual(0);
-        expect(stream.tell()).toEqual(0);
-        expect(streamReadFunc.call(stream)).toEqual(dvReadFunc.call(dataview, 32 - size));
-        expect(stream.tell()).toEqual(size);
-        expect(streamReadFunc.call(stream)).toEqual(dvReadFunc.call(dataview, 32 - (size * 2)));
-        expect(stream.tell()).toEqual(size * 2);
+   it('with ' + methodName + ' 5', function (done) {
+   streamWriteFunc.call(stream, function (error, value, length) {
+   expect(error).toBeNull();
+   expect(value).toEqual(dvReadFunc.call(dataview, 32 - (size * 3)));
+   expect(length).toEqual(size);
+   expect(stream.tell()).toEqual(size);
+   expect(stream.seek(32)).toEqual(32);
+   expect(stream.tell()).toEqual(32);
+   done();
+   });
+   });
 
-        expect(stream.seek(0)).toEqual(0);
-        expect(stream.tell()).toEqual(0);
-        expect(streamWriteFunc.call(stream, dvReadFunc.call(dataview, 32 - (size * 3)))).toEqual(size);
-        expect(stream.tell()).toEqual(size);
+   it('should throw an error', function (done) {
+   streamWriteFunc.call(stream, dvReadFunc.call(dataview, 0),
+   function (error) {
+   expect(error).toEqual(jasmine.any(RangeError));
+   done();
+   });
+   });
+   }
 
-        expect(stream.seek(32)).toEqual(32);
-        expect(stream.tell()).toEqual(32);
-        expect(function () {
-          streamWriteFunc.call(stream, dvReadFunc.call(dataview, 0));
-        }).toThrowError('index out of bounds');
-      });
-    }
+   for (var methodName in writeTab) {
+   if (!writeTab.hasOwnProperty(methodName)) {
+   continue;
+   }
 
-    for (var methodName in writeTab) {
-      if (!writeTab.hasOwnProperty(methodName)) {
-        continue;
-      }
-
-      defineWriteTest(methodName, writeTab[methodName]);
-    }
-  });
+   defineWriteTest(methodName, writeTab[methodName]);
+   }
+   });*/
 
   describe('writeString', function () {
     var stream = new Peeracle.MemoryDataStream({buffer: buffer});
 
-    it('should write the string at the beginning', function () {
+    it('should throw an error on invalid argument', function (done) {
+      stream.writeString(null, function expectErrorOnNull(err) {
+        expect(err).toEqual(jasmine.any(TypeError));
+        done();
+      });
+    });
+
+    it('should write the string at the beginning', function (done) {
       var str = 'hello world';
 
-      expect(function () {
-        stream.writeString(null);
-      }).toThrowError('argument must be a string');
-
       expect(stream.tell()).toEqual(0);
-      expect(stream.writeString(str)).toEqual(str.length + 1);
-      expect(stream.tell()).toEqual(str.length + 1);
+      stream.writeString(str, function writeCb(err, length) {
+        expect(err).toBeNull();
+        expect(length).toEqual(str.length + 1);
+        expect(stream.tell()).toEqual(str.length + 1);
 
-      for (var i = 0, l = str.length; i < l; ++i) {
-        expect(buffer[i]).toEqual(str.charCodeAt(i));
-      }
-      expect(buffer[i]).toEqual(0);
+        for (var i = 0, l = str.length; i < l; ++i) {
+          expect(buffer[i]).toEqual(str.charCodeAt(i));
+        }
+        expect(buffer[i]).toEqual(0);
+
+        done();
+      });
     });
     it('should write the string at the beginning', function () {
       var str;
@@ -555,15 +686,16 @@ describe('MemoryDataStream', function () {
         str += Math.random().toString(36).substr(2, 1);
       }
     });
-    it('should throw an error for trying to write too much', function () {
+    it('should throw an error for trying to write too much', function (done) {
       var str;
 
       for (str = ''; str.length < 64;) {
         str += Math.random().toString(36).substr(2, 1);
       }
-      expect(function () {
-        stream.writeString(str);
-      }).toThrowError('index out of bounds');
+      stream.writeString(str, function (error) {
+        expect(error).toEqual(jasmine.any(RangeError));
+        done();
+      });
     });
   });
 });

@@ -28,6 +28,7 @@ var Peeracle = {};
 
 Peeracle.DataStream = (function() {
   /**
+   * TODO: Interface description here.
    * @interface DataStream
    * @memberof {Peeracle}
    */
@@ -36,6 +37,7 @@ Peeracle.DataStream = (function() {
   }
 
   /**
+   * TODO: Function description here.
    * @function DataStream#length
    * @return {Number}
    */
@@ -44,6 +46,7 @@ Peeracle.DataStream = (function() {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#tell
    * @return {Number}
    */
@@ -52,6 +55,7 @@ Peeracle.DataStream = (function() {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#seek
    * @param {Number} position
    * @return {Number}
@@ -61,246 +65,301 @@ Peeracle.DataStream = (function() {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#read
    * @param {Number} length
-   * @return {Uint8Array}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.read = function read(length) {
+  DataStream.prototype.read = function read(length, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#readChar
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.readChar = function readChar() {
+  DataStream.prototype.readChar = function readChar(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#readByte
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.readByte = function readByte() {
+  DataStream.prototype.readByte = function readByte(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#readShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.readShort = function readShort() {
+  DataStream.prototype.readShort = function readShort(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#readUShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.readUShort = function readUShort() {
+  DataStream.prototype.readUShort = function readUShort(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#readInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.readInteger = function readInteger() {
+  DataStream.prototype.readInteger = function readInteger(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#readUInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.readUInteger = function readUInteger() {
+  DataStream.prototype.readUInteger = function readUInteger(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#readFloat
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.readFloat = function readFloat() {
+  DataStream.prototype.readFloat = function readFloat(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#readDouble
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.readDouble = function readDouble() {
+  DataStream.prototype.readDouble = function readDouble(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#readString
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.readString = function readString() {
+  DataStream.prototype.readString = function readString(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#peek
    * @param {Number} length
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.peek = function peek(length) {
+  DataStream.prototype.peek = function peek(length, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#peekChar
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.peekChar = function peekChar() {
+  DataStream.prototype.peekChar = function peekChar(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#peekByte
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.peekByte = function peekByte() {
+  DataStream.prototype.peekByte = function peekByte(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#peekShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.peekShort = function peekShort() {
+  DataStream.prototype.peekShort = function peekShort(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#peekUShort
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.peekUShort = function peekUShort() {
+  DataStream.prototype.peekUShort = function peekUShort(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#peekInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.peekInteger = function peekInteger() {
+  DataStream.prototype.peekInteger = function peekInteger(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#peekUInteger
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.peekUInteger = function peekUInteger() {
+  DataStream.prototype.peekUInteger = function peekUInteger(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#peekFloat
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.peekFloat = function peekFloat() {
+  DataStream.prototype.peekFloat = function peekFloat(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#peekDouble
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.peekDouble = function peekDouble() {
+  DataStream.prototype.peekDouble = function peekDouble(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#peekString
-   * @return {Number}
+   * @param {DataStream~readCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.peekString = function peekString() {
+  DataStream.prototype.peekString = function peekString(cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#write
-   * @return {Number}
+   * @param {Uint8Array} bytes
+   * @param {DataStream~writeCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.write = function write(bytes) {
+  DataStream.prototype.write = function write(bytes, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#writeChar
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.writeChar = function writeChar(value) {
+  DataStream.prototype.writeChar = function writeChar(value, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#writeByte
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.writeByte = function writeByte(value) {
+  DataStream.prototype.writeByte = function writeByte(value, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#writeShort
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.writeShort = function writeShort(value) {
+  DataStream.prototype.writeShort = function writeShort(value, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#writeUShort
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.writeUShort = function writeUShort(value) {
+  DataStream.prototype.writeUShort = function writeUShort(value, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#writeInteger
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.writeInteger = function writeInteger(value) {
+  DataStream.prototype.writeInteger = function writeInteger(value, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#writeUInteger
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.writeUInteger = function writeUInteger(value) {
+  DataStream.prototype.writeUInteger = function writeUInteger(value, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#writeFloat
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.writeFloat = function writeFloat(value) {
+  DataStream.prototype.writeFloat = function writeFloat(value, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#writeDouble
-   * @return {Number}
+   * @param {Number} value
+   * @param {DataStream~writeCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.writeDouble = function writeDouble(value) {
+  DataStream.prototype.writeDouble = function writeDouble(value, cb) {
   };
 
   /**
+   * TODO: Function description here.
    * @function DataStream#writeString
-   * @return {Number}
+   * @param {String} str
+   * @param {DataStream~writeCallback} cb
    */
   /* istanbul ignore next */
-  DataStream.prototype.writeString = function writeString(str) {
+  DataStream.prototype.writeString = function writeString(str, cb) {
   };
+
+  /**
+   * TODO: Callback description here.
+   * @callback DataStream~readCallback
+   * @param {Error} error
+   * @param {Number|String|Uint8Array} value
+   * @param {Number} length
+   */
+
+  /**
+   * TODO: Callback description here.
+   * @callback DataStream~writeCallback
+   * @param {Error} error
+   * @param {Number} length
+   */
 
   return DataStream;
 })();
