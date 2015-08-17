@@ -87,22 +87,16 @@ function executeDataStreamTest(dataStreamName) {
       }
     });
     describe('length', function () {
-      it('should return the correct')
     });
     describe('tell', function () {
-
     });
     describe('seek', function () {
-
     });
     describe('read', function () {
-
     });
     describe('peek', function () {
-
     });
     describe('write', function () {
-
     });
   });
 }

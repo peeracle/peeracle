@@ -28,7 +28,12 @@ var Peeracle = {};
 
 Peeracle.DataStream = (function() {
   /**
-   * TODO: Interface description here.
+   * @typedef {Object} DataStreamOptions
+   * @property {Uint8Array} buffer
+   */
+
+  /**
+   * Interface for reading and writing to a stream.
    * @interface DataStream
    * @memberof {Peeracle}
    */
@@ -37,7 +42,7 @@ Peeracle.DataStream = (function() {
   }
 
   /**
-   * TODO: Function description here.
+   * Return the total number of bytes.
    * @function DataStream#length
    * @return {Number}
    */
@@ -46,7 +51,7 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Return the cursor's current position.
    * @function DataStream#tell
    * @return {Number}
    */
@@ -55,7 +60,7 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Move the cursor to a specific position inside the stream.
    * @function DataStream#seek
    * @param {Number} position
    * @return {Number}
@@ -65,7 +70,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads up to length bytes of data starting at the internal cursor, then pass
+   * them as an argument inside cb and increase the internal cursor.
    * @function DataStream#read
    * @param {Number} length
    * @param {DataStream~readCallback} cb
@@ -75,7 +81,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one signed char starting at the internal cursor, then pass it as an
+   * argument inside cb and increase the internal cursor.
    * @function DataStream#readChar
    * @param {DataStream~readCallback} cb
    */
@@ -84,7 +91,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one unsigned byte starting at the internal cursor, then pass it as an
+   * argument inside cb and increase the internal cursor.
    * @function DataStream#readByte
    * @param {DataStream~readCallback} cb
    */
@@ -93,7 +101,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one signed short starting at the internal cursor, then pass it as an
+   * argument inside cb and increase the internal cursor.
    * @function DataStream#readShort
    * @param {DataStream~readCallback} cb
    */
@@ -102,7 +111,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one unsigned short starting at the internal cursor, then pass it as
+   * an argument inside cb and increase the internal cursor.
    * @function DataStream#readUShort
    * @param {DataStream~readCallback} cb
    */
@@ -111,7 +121,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one signed integer starting at the internal cursor, then pass it as
+   * an argument inside cb and increase the internal cursor.
    * @function DataStream#readInteger
    * @param {DataStream~readCallback} cb
    */
@@ -120,7 +131,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one unsigned integer starting at the internal cursor, then pass it as
+   * an argument inside cb and increase the internal cursor.
    * @function DataStream#readUInteger
    * @param {DataStream~readCallback} cb
    */
@@ -129,7 +141,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one float starting at the internal cursor, then pass it as an
+   * argument inside cb and increase the internal cursor.
    * @function DataStream#readFloat
    * @param {DataStream~readCallback} cb
    */
@@ -138,7 +151,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one double starting at the internal cursor, then pass it as an
+   * argument inside cb and increase the internal cursor.
    * @function DataStream#readDouble
    * @param {DataStream~readCallback} cb
    */
@@ -147,7 +161,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads a string starting at the internal cursor, then pass it as an argument
+   * inside cb and increase the internal cursor.
    * @function DataStream#readString
    * @param {DataStream~readCallback} cb
    */
@@ -156,7 +171,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads up to length bytes of data starting at the internal cursor, then pass
+   * them as an argument inside cb.
    * @function DataStream#peek
    * @param {Number} length
    * @param {DataStream~readCallback} cb
@@ -166,7 +182,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one signed char starting at the internal cursor, then pass it as an
+   * argument inside cb.
    * @function DataStream#peekChar
    * @param {DataStream~readCallback} cb
    */
@@ -175,7 +192,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one unsigned char starting at the internal cursor, then pass it as an
+   * argument inside cb.
    * @function DataStream#peekByte
    * @param {DataStream~readCallback} cb
    */
@@ -184,7 +202,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one signed short starting at the internal cursor, then pass it as an
+   * argument inside cb.
    * @function DataStream#peekShort
    * @param {DataStream~readCallback} cb
    */
@@ -193,7 +212,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one unsigned short starting at the internal cursor, then pass it as
+   * an argument inside cb.
    * @function DataStream#peekUShort
    * @param {DataStream~readCallback} cb
    */
@@ -202,7 +222,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one signed integer starting at the internal cursor, then pass it as
+   * an argument inside cb.
    * @function DataStream#peekInteger
    * @param {DataStream~readCallback} cb
    */
@@ -211,7 +232,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one unsigned integer starting at the internal cursor, then pass it as
+   * an argument inside cb.
    * @function DataStream#peekUInteger
    * @param {DataStream~readCallback} cb
    */
@@ -220,7 +242,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one float starting at the internal cursor, then pass it as an
+   * argument inside cb.
    * @function DataStream#peekFloat
    * @param {DataStream~readCallback} cb
    */
@@ -229,7 +252,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads one double starting at the internal cursor, then pass it as an
+   * argument inside cb.
    * @function DataStream#peekDouble
    * @param {DataStream~readCallback} cb
    */
@@ -238,7 +262,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Reads a string starting at the internal cursor, then pass it as an argument
+   * inside cb.
    * @function DataStream#peekString
    * @param {DataStream~readCallback} cb
    */
@@ -247,7 +272,9 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Writes up to length bytes of data at the internal cursor, then pass the
+   * number of written bytes as an argument inside cb and increase the internal
+   * cursor.
    * @function DataStream#write
    * @param {Uint8Array} bytes
    * @param {DataStream~writeCallback} cb
@@ -257,7 +284,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Writes a signed char at the internal cursor, then pass the number of
+   * written bytes as an argument inside cb and increase the internal cursor.
    * @function DataStream#writeChar
    * @param {Number} value
    * @param {DataStream~writeCallback} cb
@@ -267,7 +295,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Writes an unsigned char at the internal cursor, then pass the number of
+   * written bytes as an argument inside cb and increase the internal cursor.
    * @function DataStream#writeByte
    * @param {Number} value
    * @param {DataStream~writeCallback} cb
@@ -277,7 +306,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Writes a signed short at the internal cursor, then pass the number of
+   * written bytes as an argument inside cb and increase the internal cursor.
    * @function DataStream#writeShort
    * @param {Number} value
    * @param {DataStream~writeCallback} cb
@@ -287,7 +317,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Writes an unsigned short at the internal cursor, then pass the number of
+   * written bytes as an argument inside cb and increase the internal cursor.
    * @function DataStream#writeUShort
    * @param {Number} value
    * @param {DataStream~writeCallback} cb
@@ -297,7 +328,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Writes an integer at the internal cursor, then pass the number of written
+   * bytes as an argument inside cb and increase the internal cursor.
    * @function DataStream#writeInteger
    * @param {Number} value
    * @param {DataStream~writeCallback} cb
@@ -307,7 +339,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Writes an unsigned integer at the internal cursor, then pass the number of
+   * written bytes as an argument inside cb and increase the internal cursor.
    * @function DataStream#writeUInteger
    * @param {Number} value
    * @param {DataStream~writeCallback} cb
@@ -317,7 +350,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Writes a float at the internal cursor, then pass the number of written
+   * bytesas an argument inside cb and increase the internal cursor.
    * @function DataStream#writeFloat
    * @param {Number} value
    * @param {DataStream~writeCallback} cb
@@ -327,7 +361,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Writes a double at the internal cursor, then pass the number of written
+   * bytes as an argument inside cb and increase the internal cursor.
    * @function DataStream#writeDouble
    * @param {Number} value
    * @param {DataStream~writeCallback} cb
@@ -337,7 +372,8 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Function description here.
+   * Writes a string at the internal cursor, then pass the number of written
+   * bytes as an argument inside cb and increase the internal cursor.
    * @function DataStream#writeString
    * @param {String} str
    * @param {DataStream~writeCallback} cb
@@ -347,7 +383,10 @@ Peeracle.DataStream = (function() {
   };
 
   /**
-   * TODO: Callback description here.
+   * Callback function for reading methods. error will be an instance of Error
+   * if the call has failed, it will be null otherwise. value contains the
+   * result of the read method, and length contains the number of bytes that
+   * have been read.
    * @callback DataStream~readCallback
    * @param {Error} error
    * @param {Number|String|Uint8Array} value
@@ -355,7 +394,9 @@ Peeracle.DataStream = (function() {
    */
 
   /**
-   * TODO: Callback description here.
+   * Callback function for writing methods. error will be an instance of Error
+   * if the call has failed, it will be null otherwise. length contains the
+   * number of bytes that have been written.
    * @callback DataStream~writeCallback
    * @param {Error} error
    * @param {Number} length
