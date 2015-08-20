@@ -28,8 +28,8 @@ var Peeracle = {
   // HttpDataStream: require('./src/httpDataStream'),
   MemoryDataStream: require('./src/memoryDataStream'),
 
-  // Hash: require('./src/hash'),
-  // Murmur3Hash: require('./src/murmur3Hash'),
+  Hash: require('./src/hash'),
+  Murmur3Hash: require('./src/murmur3Hash'),
 
   Media: require('./src/media'),
   ISOBMFFMedia: require('./src/isobmffMedia'),
