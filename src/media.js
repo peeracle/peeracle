@@ -26,14 +26,96 @@ var Peeracle = {};
 
 /* eslint-disable */
 
-Peeracle.Media = (function() {
+Peeracle.Media = (function () {
   /**
    * @interface Media
    * @memberof {Peeracle}
+   * @property {Object.<String, Number>} cues;
+   * @property {Array.<MediaTrack>} tracks;
+   * @property {Number} timecodeScale;
+   * @property {Number} duration;
+   * @property {String} mimeType;
    */
   /* istanbul ignore next */
   function Media() {
   }
+
+  /**
+   * @function Media#loadFromDataStream
+   * @param {DataStream} dataStream
+   * @param {Media~loadFromDataStreamCallback} cb
+   * @return {?Media}
+   */
+  Media.loadFromDataStream = function loadFromDataStream(dataStream, cb) {
+    var i = 0;
+    var mediaInstance;
+    var mediaFormats = ['ISOBMFFMedia', 'WebMMedia'];
+    var mediaFormat = mediaFormats[i];
+
+    // @exclude
+    Peeracle.ISOBMFFMedia = require('./isobmffMedia');
+    Peeracle.WebMMedia = require('./webmMedia');
+    // @endexclude
+
+    mediaInstance = Peeracle[mediaFormat].loadFromDataStream(dataStream,
+      function loadFromDataStreamCallback(error, instance) {
+        if (!error) {
+          cb(null, instance);
+          return;
+        }
+
+        if (++i < mediaFormats.length) {
+          mediaFormat = mediaFormats[i];
+          mediaInstance = Peeracle[mediaFormat].loadFromDataStream(dataStream,
+            loadFromDataStreamCallback);
+          return;
+        }
+
+        cb(new Error('Unknown media format'));
+      });
+  };
+
+  /**
+   * @function Media#getInitSegment
+   * @param {Media~segmentCallback} cb
+   * @return {?Media}
+   */
+  Media.prototype.getInitSegment = function getInitSegment(cb) {
+  };
+
+  /**
+   * @function Media#getMediaSegment
+   * @param {Number} timecode
+   * @param {Media~segmentCallback} cb
+   * @return {?Media}
+   */
+  Media.prototype.getMediaSegment = function getMediaSegment(timecode, cb) {
+  };
+
+  /**
+   * @callback Media~loadFromDataStreamCallback
+   * @param {Error} error
+   * @param {Media} instance
+   */
+
+  /**
+   * Callback function for segment callbacks.
+   * @callback Media~segmentCallback
+   * @param {Error} error
+   * @param {Uint8Array} bytes
+   */
+
+  /**
+   * @typedef {Object} MediaTrack
+   * @property {Number} id
+   * @property {Number} type
+   * @property {String} codec
+   * @property {Number} width
+   * @property {Number} height
+   * @property {Number} samplingFrequency
+   * @property {Number} channels
+   * @property {Number} bitDepth
+   */
 
   return Media;
 })();

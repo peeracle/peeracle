@@ -27,16 +27,27 @@ var Peeracle = {
 // @endexclude
 
 /* eslint-disable */
-Peeracle.ISOBMFFMedia = (function() {
+Peeracle.ISOBMFFMedia = (function () {
   /* eslint-enable */
   /**
    * @class ISOBMFFMedia
    * @memberof {Peeracle}
    * @constructor
-   * @implements {Hash}
+   * @implements {Media}
    */
   function ISOBMFFMedia() {
   }
+
+  /**
+   * @function ISOBMFFMedia#loadFromDataStream
+   * @param {DataStream} dataStream
+   * @param {Media~loadFromDataStreamCallback} cb
+   * @return {?ISOBMFFMedia}
+   */
+  ISOBMFFMedia.loadFromDataStream =
+    function loadFromDataStream(dataStream, cb) {
+      cb(new Error('Format not implemented'));
+    };
 
   ISOBMFFMedia.prototype = Object.create(Peeracle.Media.prototype);
   ISOBMFFMedia.prototype.constructor = ISOBMFFMedia;

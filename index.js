@@ -31,9 +31,9 @@ var Peeracle = {
   // Hash: require('./src/hash'),
   // Murmur3Hash: require('./src/murmur3Hash'),
 
-  // Media: require('./src/media'),
-  // ISOBMFFMedia: require('./src/isobmffMedia'),
-  // WebMMedia: require('./src/webmMedia'),
+  Media: require('./src/media'),
+  ISOBMFFMedia: require('./src/isobmffMedia'),
+  WebMMedia: require('./src/webmMedia'),
 
   Metadata: require('./src/metadata')
 
