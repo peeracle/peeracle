@@ -22,7 +22,9 @@
 
 // @exclude
 var Peeracle = {
-  DataStream: require('./dataStream')
+  DataStream: require('./dataStream'),
+  MetadataStream: require('./metadataStream'),
+  Media: require('./media')
 };
 // @endexclude
 
@@ -48,6 +50,56 @@ Peeracle.Metadata = (function() {
     this.trackerUrls = [];
     this.streams = [];
   }
+
+  /**
+   * @function Metadata#addMedia
+   * @param {Media} media
+   * @param {Metadata~genericCallback} cb
+   */
+  Metadata.prototype.addMedia = function addMedia(media, cb) {
+    var _this = this;
+
+    if (!(media instanceof Peeracle.Media)) {
+      cb(new TypeError('argument must be a Media'));
+      return;
+    }
+
+    media.getInitSegment(function getInitSegmentCb(error, bytes) {
+      var stream;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      _this.timecodeScale = media.timecodeScale;
+      _this.duration = media.duration;
+
+      stream = new Peeracle.MetadataStream(media, bytes);
+      stream.addMediaSegments(function addMediaSegmentsCb(err) {
+        if (err) {
+          cb(err);
+          return;
+        }
+
+        _this.streams.push(stream);
+      });
+    });
+  };
+
+  /**
+   * @function Metadata#addTrackerUrl
+   * @param {String} url
+   */
+  Metadata.prototype.addTrackerUrl = function addTrackerUrl(url) {
+    var lowerCaseUrl = url.toLowerCase();
+
+    if (lowerCaseUrl in this.trackerUrls) {
+      return;
+    }
+
+    this.trackerUrls.push(lowerCaseUrl);
+  };
 
   /**
    * @function Metadata#serialize
@@ -76,6 +128,12 @@ Peeracle.Metadata = (function() {
 
     return 0;
   };
+
+  /**
+   * Generic callback function taking an error as the only argument.
+   * @callback Metadata~genericCallback
+   * @param {Error} error
+   */
 
   return Metadata;
 })();
