@@ -57,6 +57,7 @@
     "karma-verbose-reporter": "0.0.3"
   },
   "dependencies": {
+    "commander": "^2.8.1",
     "wrtc": "0.0.57"
   }
 }
