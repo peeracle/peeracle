@@ -43,6 +43,10 @@ Peeracle.MemoryDataStream = (function() {
   function MemoryDataStream(options) {
     this.options = options || {};
 
+    if ((typeof this.options) !== 'object') {
+      throw new TypeError('options should be an object');
+    }
+
     if (!this.options.buffer || !(this.options.buffer instanceof Uint8Array)) {
       throw new TypeError('buffer should be an Uint8Array');
     }
