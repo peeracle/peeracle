@@ -32,6 +32,7 @@ Peeracle.DataStream = (function() {
    * @property {Uint8Array} buffer
    * @property {String} path
    * @property {String} mode
+   * @property {Boolean} littleEndian
    */
 
   /**

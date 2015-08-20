@@ -49,6 +49,8 @@ Peeracle.FileDataStream = (function () {
     }
     // @endexclude
     this.offset = 0;
+    this.littleEndian = this.options.littleEndian ?
+      this.options.littleEndian : false;
     // @exclude
     if ((typeof this.options) !== 'object') {
       throw new TypeError('options should be an object');
