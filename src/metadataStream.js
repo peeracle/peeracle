@@ -25,15 +25,84 @@ var Peeracle = {};
 // @endexclude
 
 /* eslint-disable */
-Peeracle.MetadataStream = (function() {
+Peeracle.MetadataStream = (function () {
   /* eslint-enable */
   /**
    * @class MetadataStream
    * @memberof {Peeracle}
+   * @param {Media} media
+   * @param {Uint8Array} bytes
+   *
+   * @property {Media} media
+   * @property {Number} type
+   * @property {String} mimeType
+   * @property {Number} bandwidth
+   * @property {Number} width
+   * @property {Number} height
+   * @property {Number} numChannels
+   * @property {Number} samplingFrequency
+   * @property {Uint8Array} initSegment
+   * @property {Number} initSegmentLength
+   * @property {Number} chunkSize
+   * @property {Object} mediaSegments
    * @constructor
    */
-  function MetadataStream() {
+  function MetadataStream(media, bytes) {
+    var index;
+    var count;
+    var track;
+
+    this.media = media;
+    this.mimeType = media.mimeType;
+    this.bandwidth = 0;
+    this.initSegment = bytes;
+    this.initSegmentLength = bytes.length;
+    this.chunkSize = 0;
+    this.mediaSegments = [];
+
+    for (index = 0, count = media.tracks.length; index < count; ++index) {
+      track = media.tracks[index];
+
+      if ((track.type === 1 || track.type === 2) &&
+        (this.type === 1 || this.type === 2) && this.type !== track.type) {
+        this.type = 4;
+      } else {
+        this.type = track.type;
+      }
+      this.width = track.width !== -1 ? track.width : this.width;
+      this.height = track.height !== -1 ? track.height : this.height;
+      this.numChannels = track.channels !== -1 ?
+        track.channels : this.numChannels;
+      this.samplingFrequency = track.samplingFrequency !== -1 ?
+        track.samplingFrequency : this.samplingFrequency;
+    }
   }
+
+  /**
+   * @function MetadataStream#addMediaSegments
+   * @throws {TypeError}
+   */
+  MetadataStream.prototype.addMediaSegments = function addMediaSegments(cb) {
+    var _this = this;
+    var index = 0;
+    var cues = this.media.cues['' + this.media.tracks[0].id];
+    var timecodes = Object.keys(cues);
+    var count = timecodes.length;
+
+    this.media.getMediaSegment(parseInt(timecodes[index], 10),
+      function getMediaSegmentCb(error, bytes) {
+        if (error) {
+          cb(error);
+          return;
+        }
+
+        console.log(bytes.length);
+        if (++index < count) {
+          _this.media.getMediaSegment(parseInt(timecodes[index], 10),
+            getMediaSegmentCb);
+        }
+      });
+  };
 
   /**
    * @function MetadataStream#serialize
