@@ -121,7 +121,7 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
+      dataView = new DataView(bytes.buffer);
       cb(null, dataView.getInt8(), length);
     });
   };
@@ -136,12 +136,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
+      dataView = new DataView(bytes.buffer);
       cb(null, dataView.getUint8(), length);
     });
   };
 
   FileDataStream.prototype.readShort = function readShort(cb) {
+    var _this = this;
     this.read(2, function readCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -151,12 +152,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getInt16(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getInt16(0, _this.littleEndian), length);
     });
   };
 
   FileDataStream.prototype.readUShort = function readUShort(cb) {
+    var _this = this;
     this.read(2, function readCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -166,12 +168,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getUint16(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getUint16(0, _this.littleEndian), length);
     });
   };
 
   FileDataStream.prototype.readInteger = function readInteger(cb) {
+    var _this = this;
     this.read(4, function readCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -181,12 +184,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getInt32(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getInt32(0, _this.littleEndian), length);
     });
   };
 
   FileDataStream.prototype.readUInteger = function readUInteger(cb) {
+    var _this = this;
     this.read(4, function readCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -196,12 +200,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getUint32(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getUint32(0, _this.littleEndian), length);
     });
   };
 
   FileDataStream.prototype.readFloat = function readFloat(cb) {
+    var _this = this;
     this.read(4, function readCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -211,12 +216,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getFloat32(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getFloat32(0, _this.littleEndian), length);
     });
   };
 
   FileDataStream.prototype.readDouble = function readDouble(cb) {
+    var _this = this;
     this.read(4, function readCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -226,8 +232,8 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getFloat64(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getFloat64(0, _this.littleEndian), length);
     });
   };
 
@@ -293,7 +299,7 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
+      dataView = new DataView(bytes.buffer);
       cb(null, dataView.getInt8(), length);
     });
   };
@@ -308,12 +314,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
+      dataView = new DataView(bytes.buffer);
       cb(null, dataView.getUint8(), length);
     });
   };
 
   FileDataStream.prototype.peekShort = function peekShort(cb) {
+    var _this = this;
     this.peek(2, function peekCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -323,12 +330,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getInt16(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getInt16(0, _this.littleEndian), length);
     });
   };
 
   FileDataStream.prototype.peekUShort = function peekUShort(cb) {
+    var _this = this;
     this.peek(2, function peekCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -338,12 +346,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getUint16(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getUint16(0, _this.littleEndian), length);
     });
   };
 
   FileDataStream.prototype.peekInteger = function peekInteger(cb) {
+    var _this = this;
     this.peek(4, function peekCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -353,12 +362,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getInt32(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getInt32(0, _this.littleEndian), length);
     });
   };
 
   FileDataStream.prototype.peekUInteger = function peekUInteger(cb) {
+    var _this = this;
     this.peek(4, function peekCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -368,12 +378,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getUint32(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getUint32(0, _this.littleEndian), length);
     });
   };
 
   FileDataStream.prototype.peekFloat = function peekFloat(cb) {
+    var _this = this;
     this.peek(4, function peekCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -383,12 +394,13 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getFloat32(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getFloat32(0, _this.littleEndian), length);
     });
   };
 
   FileDataStream.prototype.peekDouble = function peekDouble(cb) {
+    var _this = this;
     this.peek(8, function peekCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
@@ -398,8 +410,8 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      dataView = new DataView(bytes);
-      cb(null, dataView.getFloat64(), length);
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getFloat64(0, _this.littleEndian), length);
     });
   };
 
@@ -425,53 +437,131 @@ Peeracle.FileDataStream = (function () {
   };
 
   FileDataStream.prototype.write = function write(bytes, cb) {
-    cb(null);
-    return bytes;
+    // @exclude
+    var _this = this;
+    fs.write(this.handle, new Buffer(bytes), 0, bytes.length, this.offset,
+      function writeCb(error, written) {
+        if (error) {
+          cb(error);
+          return;
+        }
+
+        _this.offset += written;
+        cb(null, written);
+      });
+    // @endexclude
   };
 
   FileDataStream.prototype.writeChar = function writeChar(value, cb) {
-    cb(null);
-    return value;
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(1);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setInt8(0, value);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   FileDataStream.prototype.writeByte = function writeByte(value, cb) {
-    cb(null);
-    return value;
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(1);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setUint8(0, value);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   FileDataStream.prototype.writeShort = function writeShort(value, cb) {
-    cb(null);
-    return value;
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(2);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setInt16(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   FileDataStream.prototype.writeUShort = function writeUShort(value, cb) {
-    cb(null);
-    return value;
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(2);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setUint16(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   FileDataStream.prototype.writeInteger = function writeInteger(value, cb) {
-    cb(null);
-    return value;
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(4);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setInt32(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   FileDataStream.prototype.writeUInteger = function writeUInteger(value, cb) {
-    cb(null);
-    return value;
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(4);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setUint32(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   FileDataStream.prototype.writeFloat = function writeFloat(value, cb) {
-    cb(null);
-    return value;
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(4);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setFloat32(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   FileDataStream.prototype.writeDouble = function writeDouble(value, cb) {
-    cb(null);
-    return value;
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(8);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setFloat64(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   FileDataStream.prototype.writeString = function writeString(str, cb) {
-    cb(null);
-    return str;
+    // @exclude
+    var index = 0;
+    var length = str.length;
+    var bytes = new Uint8Array(length + 1);
+
+    while (index < length) {
+      bytes.set([str.charCodeAt(index)], index);
+      ++index;
+    }
+
+    bytes.set([0], index);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   return FileDataStream;
