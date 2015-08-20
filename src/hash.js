@@ -35,6 +35,31 @@ Peeracle.Hash = (function() {
   function Hash(options) {
   }
 
+  /**
+   * @function Hash#create
+   * @param {String} name
+   * @return {?Hash}
+   */
+  Hash.create = function create(name) {
+    var i = 0;
+    var hashInstance;
+    var hashAlgorithms = ['Murmur3Hash'];
+    var hashAlgorithm = hashAlgorithms[i];
+
+    // @exclude
+    Peeracle.Murmur3Hash = require('./murmur3Hash');
+    // @endexclude
+
+    for (i = 0; i < hashAlgorithms.length; ++i) {
+      hashInstance = Peeracle[hashAlgorithm].create(name);
+      if (hashInstance) {
+        return hashInstance;
+      }
+    }
+
+    return null;
+  };
+
   return Hash;
 })();
 
