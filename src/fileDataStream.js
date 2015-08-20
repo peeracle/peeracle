@@ -24,308 +24,449 @@
 var Peeracle = {
   DataStream: require('./dataStream')
 };
+var fs = require('fs');
 // @endexclude
 
 /* eslint-disable */
-Peeracle.FileDataStream = (function() {
-/* eslint-enable */
+Peeracle.FileDataStream = (function () {
+  /* eslint-enable */
   /**
    * @class FileDataStream
    * @memberof {Peeracle}
    * @constructor
    * @implements {DataStream}
+   * @param {DataStreamOptions} options
    * @property {Number} offset - Current stream's offset
    */
   function FileDataStream(options) {
-    this.options = options || {};
+    // @exclude
+    var stat;
+    this.options = options;
+    if (typeof module === 'undefined') {
+    // @endexclude
+      this.handle = options;
+    // @exclude
+    }
+    // @endexclude
     this.offset = 0;
+    // @exclude
+    if ((typeof this.options) !== 'object') {
+      throw new TypeError('options should be an object');
+    }
+
+    if (!this.options.hasOwnProperty('path') ||
+      (typeof this.options.path) !== 'string') {
+      throw new TypeError('options.path should be a string');
+    }
+
+    if (!this.options.hasOwnProperty('mode') ||
+      (typeof this.options.mode) !== 'string') {
+      this.options.mode = 'r';
+    }
+
+    try {
+      this.handle = fs.openSync(this.options.path, this.options.mode);
+      stat = fs.fstatSync(this.handle);
+      this.length = stat.size;
+    } catch (e) {
+      throw e;
+    }
+    // @endexclude
   }
 
   FileDataStream.prototype = Object.create(Peeracle.DataStream.prototype);
   FileDataStream.prototype.constructor = FileDataStream;
 
-  /**
-   * @function FileDataStream#length
-   * @return {Number}
-   */
+  FileDataStream.prototype.close = function close() {
+    // @exclude
+    fs.closeSync(this.handle);
+    // @endexclude
+  };
+
   FileDataStream.prototype.length = function length() {
+    return this.length;
   };
 
-  /**
-   * @function FileDataStream#tell
-   * @return {Number}
-   */
   FileDataStream.prototype.tell = function tell() {
+    return this.offset;
   };
 
-  /**
-   * @function FileDataStream#seek
-   * @param {Number} position
-   * @return {Number}
-   */
   FileDataStream.prototype.seek = function seek(position) {
     this.offset = position;
   };
 
-  /**
-   * @function FileDataStream#read
-   * @param {Number} length
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.read = function read(length, cb) {
-    this.offset += length;
-    cb(null);
+    var _this = this;
+
+    this.peek(length, function peekCb(error, bytes, count) {
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      _this.offset += count;
+      cb(null, bytes, count);
+    });
   };
 
-  /**
-   * @function FileDataStream#readChar
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.readChar = function readChar(cb) {
-    cb(null);
+    this.read(1, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getInt8(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#readByte
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.readByte = function readByte(cb) {
-    cb(null);
+    this.read(1, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getUint8(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#readShort
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.readShort = function readShort(cb) {
-    cb(null);
+    this.read(2, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getInt16(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#readUShort
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.readUShort = function readUShort(cb) {
-    cb(null);
+    this.read(2, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getUint16(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#readInteger
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.readInteger = function readInteger(cb) {
-    cb(null);
+    this.read(4, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getInt32(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#readUInteger
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.readUInteger = function readUInteger(cb) {
-    cb(null);
+    this.read(4, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getUint32(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#readFloat
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.readFloat = function readFloat(cb) {
-    cb(null);
+    this.read(4, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getFloat32(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#readDouble
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.readDouble = function readDouble(cb) {
-    cb(null);
+    this.read(4, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getFloat64(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#readString
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.readString = function readString(cb) {
-    cb(null);
+    var stringLength = 0;
+    var str = '';
+
+    this.readChar(function peekCharCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      if (!value || !length) {
+        cb(null, str, stringLength);
+        return;
+      }
+
+      str += value;
+      ++stringLength;
+      this.readChar(peekCharCb);
+    });
   };
 
-  /**
-   * @function FileDataStream#peek
-   * @param {Number} length
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.peek = function peek(length, cb) {
-    cb(null);
-    return length;
+    var reader;
+    // @exclude
+    if (typeof module !== 'undefined') {
+      fs.read(this.handle, new Buffer(length), 0, length, this.offset,
+        function peekCb(error, bytesRead, buffer) {
+          if (error) {
+            cb(error);
+            return;
+          }
+
+          cb(null, new Uint8Array(buffer), bytesRead);
+        });
+      return;
+    }
+    // @endexclude
+    reader = new FileReader();
+    reader.onabort = function onabortCb() {
+      cb(new Error('Aborted'));
+    };
+    reader.onerror = function onerrorCb(e) {
+      cb(e);
+    };
+    reader.onloadend = function onloadendCb(e) {
+      var bytes = new Uint8Array(e.target.result);
+      cb(null, bytes, bytes.length);
+    };
+    reader.readAsArrayBuffer(this.handle.slice(this.offset,
+      this.offset + length));
   };
 
-  /**
-   * @function FileDataStream#peekChar
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.peekChar = function peekChar(cb) {
-    cb(null);
+    this.peek(1, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getInt8(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#peekByte
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.peekByte = function peekByte(cb) {
-    cb(null);
+    this.peek(1, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getUint8(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#peekShort
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.peekShort = function peekShort(cb) {
-    cb(null);
+    this.peek(2, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getInt16(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#peekUShort
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.peekUShort = function peekUShort(cb) {
-    cb(null);
+    this.peek(2, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getUint16(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#peekInteger
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.peekInteger = function peekInteger(cb) {
-    cb(null);
+    this.peek(4, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getInt32(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#peekUInteger
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.peekUInteger = function peekUInteger(cb) {
-    cb(null);
+    this.peek(4, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getUint32(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#peekFloat
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.peekFloat = function peekFloat(cb) {
-    cb(null);
+    this.peek(4, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getFloat32(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#peekDouble
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.peekDouble = function peekDouble(cb) {
-    cb(null);
+    this.peek(8, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes);
+      cb(null, dataView.getFloat64(), length);
+    });
   };
 
-  /**
-   * @function FileDataStream#peekString
-   * @param {DataStream~readCallback} cb
-   */
   FileDataStream.prototype.peekString = function peekString(cb) {
-    cb(null);
+    var stringLength = 0;
+    var str = '';
+
+    this.peekChar(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      if (!value || !length) {
+        cb(null, str, stringLength);
+        return;
+      }
+
+      str += value;
+      ++stringLength;
+      this.readChar(peekCb);
+    });
   };
 
-  /**
-   * @function FileDataStream#write
-   * @param {Uint8Array} bytes
-   * @param {DataStream~writeCallback} cb
-   */
   FileDataStream.prototype.write = function write(bytes, cb) {
     cb(null);
     return bytes;
   };
 
-  /**
-   * @function FileDataStream#writeChar
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
   FileDataStream.prototype.writeChar = function writeChar(value, cb) {
     cb(null);
     return value;
   };
 
-  /**
-   * @function FileDataStream#writeByte
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
   FileDataStream.prototype.writeByte = function writeByte(value, cb) {
     cb(null);
     return value;
   };
 
-  /**
-   * @function FileDataStream#writeShort
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
   FileDataStream.prototype.writeShort = function writeShort(value, cb) {
     cb(null);
     return value;
   };
 
-  /**
-   * @function FileDataStream#writeUShort
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
   FileDataStream.prototype.writeUShort = function writeUShort(value, cb) {
     cb(null);
     return value;
   };
 
-  /**
-   * @function FileDataStream#writeInteger
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
   FileDataStream.prototype.writeInteger = function writeInteger(value, cb) {
     cb(null);
     return value;
   };
 
-  /**
-   * @function FileDataStream#writeUInteger
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
   FileDataStream.prototype.writeUInteger = function writeUInteger(value, cb) {
     cb(null);
     return value;
   };
 
-  /**
-   * @function FileDataStream#writeFloat
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
   FileDataStream.prototype.writeFloat = function writeFloat(value, cb) {
     cb(null);
     return value;
   };
 
-  /**
-   * @function FileDataStream#writeDouble
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
   FileDataStream.prototype.writeDouble = function writeDouble(value, cb) {
     cb(null);
     return value;
   };
 
-  /**
-   * @function FileDataStream#writeString
-   * @param {String} str
-   * @param {DataStream~writeCallback} cb
-   */
   FileDataStream.prototype.writeString = function writeString(str, cb) {
     cb(null);
     return str;

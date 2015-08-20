@@ -24,7 +24,7 @@
 
 var Peeracle = {
   DataStream: require('./src/dataStream'),
-  // FileDataStream: require('./src/fileDataStream'),
+  FileDataStream: require('./src/fileDataStream'),
   // HttpDataStream: require('./src/httpDataStream'),
   MemoryDataStream: require('./src/memoryDataStream'),
 
