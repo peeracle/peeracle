@@ -30,6 +30,8 @@ Peeracle.DataStream = (function() {
   /**
    * @typedef {Object} DataStreamOptions
    * @property {Uint8Array} buffer
+   * @property {String} path
+   * @property {String} mode
    */
 
   /**
