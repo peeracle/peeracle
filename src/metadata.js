@@ -23,37 +23,56 @@
 // @exclude
 var Peeracle = {
   DataStream: require('./dataStream'),
+  Hash: require('./hash'),
   MetadataStream: require('./metadataStream'),
   Media: require('./media')
 };
 // @endexclude
 
 /* eslint-disable */
-Peeracle.Metadata = (function() {
+Peeracle.Metadata = (function () {
   /* eslint-enable */
   /**
    * @class Metadata
    * @memberof {Peeracle}
    * @constructor
+   * @param {String} checksumAlgorithmName
    * @property {Number} version
-   * @property {String} checksumAlgorithm
+   * @property {String} checksumAlgorithmName
+   * @property {Hash} checksumAlgorithm
    * @property {Number} timecodeScale
    * @property {Number} duration
    * @property {Array.<String>} trackerUrls
    * @property {Array.<MetadataStream>} streams
    */
-  function Metadata() {
-    this.version = 0;
-    this.checksumAlgorithm = '';
+  function Metadata(checksumAlgorithmName) {
+    this.magic = Metadata.MAGIC;
+    this.version = Metadata.VERSION;
+    this.checksumAlgorithmName = checksumAlgorithmName ?
+      checksumAlgorithmName : 'murmur3_x86_128';
+    this.checksumAlgorithm = Peeracle.Hash.create(this.checksumAlgorithmName);
+    if (!this.checksumAlgorithm) {
+      throw new Error('Invalid checksum algorithm');
+    }
     this.timecodeScale = 0;
     this.duration = 0;
     this.trackerUrls = [];
     this.streams = [];
   }
 
+  Metadata.MAGIC = 0x5052434C;
+  Metadata.VERSION = 2;
+  Metadata.HEADER_FIELDS = [
+    {name: 'magic', type: 'UInteger'},
+    {name: 'version', type: 'UInteger'},
+    {name: 'checksumAlgorithmName', type: 'String'},
+    {name: 'timecodeScale', type: 'UInteger'},
+    {name: 'duration', type: 'Double'}
+  ];
+
   /**
    * @function Metadata#addMedia
-   * @param {Media} media
+   * @param {Peeracle.Media} media
    * @param {Metadata~genericCallback} cb
    */
   Metadata.prototype.addMedia = function addMedia(media, cb) {
@@ -75,7 +94,8 @@ Peeracle.Metadata = (function() {
       _this.timecodeScale = media.timecodeScale;
       _this.duration = media.duration;
 
-      stream = new Peeracle.MetadataStream(media, bytes);
+      stream = new Peeracle.MetadataStream(_this.checksumAlgorithmName, media,
+        bytes);
       stream.addMediaSegments(function addMediaSegmentsCb(err) {
         if (err) {
           cb(err);
@@ -83,6 +103,7 @@ Peeracle.Metadata = (function() {
         }
 
         _this.streams.push(stream);
+        cb(null);
       });
     });
   };
@@ -102,31 +123,118 @@ Peeracle.Metadata = (function() {
   };
 
   /**
-   * @function Metadata#serialize
-   * @param {DataStream} dataStream
-   * @return {Number}
-   * @throws {TypeError}
+   * @function Metadata#serializeStreams_
+   * @param {Peeracle.DataStream} dataStream
+   * @param {Metadata~genericCallback} cb
+   * @private
    */
-  Metadata.prototype.serialize = function serialize(dataStream) {
+  Metadata.prototype.serializeStreams_ =
+    function serializeStreams_(dataStream, cb) {
+      var _this = this;
+      var index = 0;
+      var count = this.streams.length;
+      var stream;
+
+      if (!count) {
+        cb(null);
+        return;
+      }
+
+      stream = this.streams[index];
+      stream.serialize(dataStream, function serializeCb(error) {
+        if (error) {
+          cb(error);
+          return;
+        }
+
+        if (++index < count) {
+          stream = _this.streams[index];
+          stream.serialize(dataStream, serializeCb);
+        } else {
+          cb(null);
+        }
+      });
+    };
+
+  /**
+   * @function Metadata#serializeTrackers_
+   * @param {Peeracle.DataStream} dataStream
+   * @param {Metadata~genericCallback} cb
+   * @private
+   */
+  Metadata.prototype.serializeTrackers_ =
+    function serializeTrackers_(dataStream, cb) {
+      var _this = this;
+      var length = this.trackerUrls.length;
+      dataStream.writeUInteger(length,
+        function writeTrackerCountCb(error) {
+          var index = 0;
+
+          if (error) {
+            cb(error);
+            return;
+          }
+
+          dataStream.writeString(_this.trackerUrls[index],
+            function writeTrackerUrlCb(err) {
+              if (err) {
+                cb(err);
+                return;
+              }
+
+              if (++index < length) {
+                dataStream.writeString(_this.trackerUrls[index],
+                  writeTrackerUrlCb);
+              } else {
+                _this.serializeStreams_(dataStream, cb);
+              }
+            });
+        });
+    };
+
+  /**
+   * @function Metadata#serialize
+   * @param {Peeracle.DataStream} dataStream
+   * @param {Metadata~genericCallback} cb
+   */
+  Metadata.prototype.serialize = function serialize(dataStream, cb) {
+    var field;
+    var index = 0;
+    var length = Metadata.HEADER_FIELDS.length;
+    var _this = this;
+
     if (!(dataStream instanceof Peeracle.DataStream)) {
-      throw new TypeError('argument must be a DataStream');
+      cb(new TypeError('argument must be a DataStream'));
+      return;
     }
 
-    return 0;
+    field = Metadata.HEADER_FIELDS[index];
+    dataStream['write' + field.type](this[field.name],
+      function writeCb(error) {
+        if (error) {
+          cb(error);
+          return;
+        }
+
+        if (++index < length) {
+          field = Metadata.HEADER_FIELDS[index];
+          dataStream['write' + field.type](_this[field.name], writeCb);
+        } else {
+          _this.serializeTrackers_(dataStream, cb);
+        }
+      });
   };
 
   /**
    * @function Metadata#unserialize
    * @param {DataStream} dataStream
-   * @return {Number}
-   * @throws {TypeError}
+   * @param {Metadata~genericCallback} cb
    */
-  Metadata.prototype.unserialize = function unserialize(dataStream) {
+  Metadata.prototype.unserialize = function unserialize(dataStream, cb) {
     if (!(dataStream instanceof Peeracle.DataStream)) {
-      throw new TypeError('argument must be a DataStream');
+      cb(new TypeError('argument must be a DataStream'));
+      return;
     }
-
-    return 0;
   };
 
   /**
