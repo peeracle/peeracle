@@ -34,8 +34,8 @@ Peeracle.MetadataStream = (function () {
    * @class MetadataStream
    * @memberof {Peeracle}
    * @param {String} checksumAlgorithmName
-   * @param {Media} media
-   * @param {Uint8Array} bytes
+   * @param {Media=} media
+   * @param {Uint8Array=} bytes
    *
    * @property {String} checksumAlgorithmName
    * @property {Hash} checksumAlgorithm
@@ -63,14 +63,25 @@ Peeracle.MetadataStream = (function () {
     if (!this.checksumAlgorithm) {
       throw new Error('Invalid checksum algorithm');
     }
-    this.media = media;
-    this.mimeType = media.mimeType;
+    this.media = media ? media : null;
     this.bandwidth = 0;
-    this.initSegment = bytes;
+    this.initSegment = bytes ? bytes : null;
     this.chunkSize = 0;
     this.mediaSegments = [];
     this.streamSize = 0;
 
+    this.type = -1;
+    this.mimeType = null;
+    this.width = -1;
+    this.height = -1;
+    this.numChannels = -1;
+    this.samplingFrequency = -1;
+
+    if (!media) {
+      return;
+    }
+
+    this.mimeType = media.mimeType;
     for (index = 0, count = media.tracks.length; index < count; ++index) {
       track = media.tracks[index];
 
