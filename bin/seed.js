@@ -25,6 +25,14 @@
 var Peeracle = require('..');
 var program = require('commander');
 
+var mediaFileName;
+var mediaFileStream;
+var media;
+
+var metadataFileName;
+var metadataFileStream;
+var metadata;
+
 program
   .version('0.0.1')
   .usage('[options] <metadataFile>')
@@ -36,55 +44,51 @@ if (!process.argv.slice(2).length) {
   process.exit(1);
 }
 
-var metadataFileName = program.args[0];
-var mediaFileName = program.media;
-var mediaFileStream;
-var media;
+metadataFileName = program.args[0];
+mediaFileName = program.media;
 
 try {
-  var metadataFileStream = new Peeracle.FileDataStream({
+  metadataFileStream = new Peeracle.FileDataStream({
     path: metadataFileName,
-    mode: 'w+'
+    mode: 'r'
   });
 } catch (e) {
   console.log('Can\'t open the metadata file:', e.message);
   process.exit(1);
 }
 
-var metadata = new Peeracle.Metadata();
-metadata.unserialize(metadataFileStream);
-
 function start() {
   var session = new Peeracle.Session();
   var handle = session.addMetadata(metadata);
 }
 
-if (mediaFileName) {
-  try {
-    mediaFileStream = new Peeracle.FileDataStream({
-      path: mediaFileName
-    });
-  } catch (e) {
-    console.log('Can\'t open the media file:', e.message);
-    process.exit(1);
-  }
+metadata = new Peeracle.Metadata();
+metadata.unserialize(metadataFileStream, function unserializeCb(error) {
+  if (mediaFileName) {
+    try {
+      mediaFileStream = new Peeracle.FileDataStream({
+        path: mediaFileName
+      });
+    } catch (e) {
+      console.log('Can\'t open the media file:', e.message);
+      process.exit(1);
+    }
 
-  Peeracle.Media.loadFromDataStream(mediaFileStream,
-    function loadFromDataStreamCb(error, instance) {
-      if (error) {
-        throw error;
-      }
-
-      metadata.validateMedia(media, function validateMediaCb(error) {
+    Peeracle.Media.loadFromDataStream(mediaFileStream,
+      function loadFromDataStreamCb(error, instance) {
         if (error) {
           throw error;
         }
 
-        start();
+        metadata.validateMedia(media, function validateMediaCb(error) {
+          if (error) {
+            throw error;
+          }
+
+          start();
+        });
       });
-    });
-
-  return;
-}
-
-start();
+    return;
+  }
+  start();
+});
