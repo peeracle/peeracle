@@ -93,18 +93,26 @@ Peeracle.Murmur3Hash = (function () {
 
   /**
    * @function Murmur3Hash#unserialize
-   * @param {DataStream} dataStream
-   * @return {Uint8Array}
+   * @param {Peeracle.DataStream} dataStream
+   * @param {Function} cb
    */
-  Murmur3Hash.unserialize = function unserialize(dataStream) {
-    var i;
-    var value = new Uint8Array(16);
+  Murmur3Hash.unserialize = function unserialize(dataStream, cb) {
+    dataStream.read(16, function readByteCb(error, bytes) {
+      var i;
+      var str;
 
-    for (i = 0; i < 16; ++i) {
-      value[i] = dataStream.readByte();
-    }
+      if (error) {
+        cb(error);
+        return;
+      }
 
-    return value;
+      str = '';
+      for (i = 0; i < 16; ++i) {
+        str += ('00' + bytes[i].toString(16)).slice(-2);
+      }
+
+      cb(null, str);
+    });
   };
 
   Murmur3Hash.prototype = Object.create(Peeracle.Hash.prototype);
