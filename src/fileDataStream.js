@@ -122,7 +122,7 @@ Peeracle.FileDataStream = (function () {
       }
 
       dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getInt8(), length);
+      cb(null, dataView.getInt8(0), length);
     });
   };
 
@@ -137,7 +137,7 @@ Peeracle.FileDataStream = (function () {
       }
 
       dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getUint8(), length);
+      cb(null, dataView.getUint8(0), length);
     });
   };
 
@@ -223,7 +223,7 @@ Peeracle.FileDataStream = (function () {
 
   FileDataStream.prototype.readDouble = function readDouble(cb) {
     var _this = this;
-    this.read(4, function readCb(error, bytes, length) {
+    this.read(8, function readCb(error, bytes, length) {
       /** @type {DataView} */
       var dataView;
 
@@ -240,6 +240,7 @@ Peeracle.FileDataStream = (function () {
   FileDataStream.prototype.readString = function readString(cb) {
     var stringLength = 0;
     var str = '';
+    var _this = this;
 
     this.readChar(function peekCharCb(error, value, length) {
       if (error) {
@@ -252,9 +253,9 @@ Peeracle.FileDataStream = (function () {
         return;
       }
 
-      str += value;
+      str += String.fromCharCode(value);
       ++stringLength;
-      this.readChar(peekCharCb);
+      _this.readChar(peekCharCb);
     });
   };
 
