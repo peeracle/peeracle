@@ -140,19 +140,26 @@ Peeracle.Metadata = (function () {
         return;
       }
 
-      stream = this.streams[index];
-      stream.serialize(dataStream, function serializeCb(error) {
-        if (error) {
-          cb(error);
+      dataStream.writeUInteger(count, function writeStreamsCountCb(err) {
+        if (err) {
+          cb(err);
           return;
         }
 
-        if (++index < count) {
-          stream = _this.streams[index];
-          stream.serialize(dataStream, serializeCb);
-        } else {
-          cb(null);
-        }
+        stream = _this.streams[index];
+        stream.serialize(dataStream, function serializeCb(error) {
+          if (error) {
+            cb(error);
+            return;
+          }
+
+          if (++index < count) {
+            stream = _this.streams[index];
+            stream.serialize(dataStream, serializeCb);
+          } else {
+            cb(null);
+          }
+        });
       });
     };
 
