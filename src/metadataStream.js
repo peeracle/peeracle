@@ -379,17 +379,170 @@ Peeracle.MetadataStream = (function () {
   };
 
   /**
+   * @function MetadataStream#unserializeChunks_
+   * @param {Array.<Uint8Array>} chunks
+   * @param {Peeracle.DataStream} dataStream
+   * @param {Metadata~genericCallback} cb
+   */
+  MetadataStream.prototype.unserializeChunks_ =
+    function unserializeChunks_(chunks, dataStream, cb) {
+      var _this = this;
+      var index = 0;
+
+      dataStream.readUInteger(function readChunksCount(error, value) {
+        if (error) {
+          cb(error);
+          return;
+        }
+
+        _this.checksumAlgorithm.constructor.unserialize(dataStream,
+          function readChunkCb(err, chunk) {
+            if (err) {
+              cb(err);
+              return;
+            }
+
+            chunks.push(chunk);
+            if (++index < value) {
+              _this.checksumAlgorithm.constructor.unserialize(dataStream,
+                readChunkCb);
+            } else {
+              cb(null);
+            }
+          });
+      });
+    };
+
+  /**
+   * @function MetadataStream#serializeMediaSegments_
+   * @param {MetadataMediaSegment} mediaSegment
+   * @param {Peeracle.DataStream} dataStream
+   * @param {Metadata~genericCallback} cb
+   */
+  MetadataStream.prototype.unserializeMediaSegment_ =
+    function unserializeMediaSegment_(mediaSegment, dataStream, cb) {
+      var field;
+      var index = 0;
+      var length = MetadataStream.MEDIASEGMENT_FIELDS.length;
+      var _this = this;
+
+      field = MetadataStream.MEDIASEGMENT_FIELDS[index];
+      dataStream['read' + field.type](function readCb(error, value) {
+        if (error) {
+          cb(error);
+          return;
+        }
+
+        mediaSegment[field.name] = value;
+        if (++index < length) {
+          field = MetadataStream.MEDIASEGMENT_FIELDS[index];
+          dataStream['read' + field.type](readCb);
+        } else {
+          mediaSegment.chunks = [];
+          _this.unserializeChunks_(mediaSegment.chunks, dataStream, cb);
+        }
+      });
+    };
+
+  /**
+   * @function MetadataStream#unserializeMediaSegments_
+   * @param {Peeracle.DataStream} dataStream
+   * @param {Metadata~genericCallback} cb
+   */
+  MetadataStream.prototype.unserializeMediaSegments_ =
+    function unserializeMediaSegments_(dataStream, cb) {
+      var _this = this;
+      dataStream.readUInteger(function readMediaSegmentsCountCb(error, value) {
+        var index = 0;
+        var mediaSegment;
+
+        if (error) {
+          cb(error);
+          return;
+        }
+
+        if (!value) {
+          cb(null);
+          return;
+        }
+
+        mediaSegment = {};
+        _this.unserializeMediaSegment_(mediaSegment, dataStream,
+          function unserializeMediaSegmentCb(err) {
+            if (err) {
+              cb(err);
+              return;
+            }
+
+            _this.mediaSegments.push(mediaSegment);
+            if (++index < value) {
+              mediaSegment = {};
+              _this.unserializeMediaSegment_(mediaSegment, dataStream,
+                unserializeMediaSegmentCb);
+            } else {
+              cb(null);
+            }
+          });
+      });
+    };
+
+  /**
+   * @function MetadataStream#unserializeInitSegment_
+   * @param {Peeracle.DataStream} dataStream
+   * @param {Metadata~genericCallback} cb
+   */
+  MetadataStream.prototype.unserializeInitSegment_ =
+    function serializeInitSegment_(dataStream, cb) {
+      var _this = this;
+      dataStream.readUInteger(function readInitSegmentLengthCb(error, value) {
+        if (error) {
+          cb(error);
+          return;
+        }
+
+        dataStream.read(value, function readInitSegmentCb(err, bytes) {
+          if (err) {
+            cb(err);
+            return;
+          }
+
+          _this.initSegment = bytes;
+          _this.unserializeMediaSegments_(dataStream, cb);
+        });
+      });
+    };
+
+  /**
    * @function MetadataStream#unserialize
    * @param {DataStream} dataStream
-   * @return {Number}
-   * @throws {TypeError}
+   * @param {Function} cb
    */
-  MetadataStream.prototype.unserialize = function unserialize(dataStream) {
+  MetadataStream.prototype.unserialize = function unserialize(dataStream, cb) {
+    var field;
+    var index = 0;
+    var length = MetadataStream.HEADER_FIELDS.length;
+    var _this = this;
+
     if (!(dataStream instanceof Peeracle.DataStream)) {
-      throw new TypeError('argument must be a DataStream');
+      cb(new TypeError('argument must be a DataStream'));
+      return;
     }
 
-    return 0;
+    field = MetadataStream.HEADER_FIELDS[index];
+    dataStream['read' + field.type](function readCb(error, value) {
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      _this[field.name] = value;
+      if (++index < length) {
+        field = MetadataStream.HEADER_FIELDS[index];
+        dataStream['read' + field.type](readCb);
+      } else {
+        _this.unserializeInitSegment_(dataStream, cb);
+      }
+    });
   };
 
   /**
