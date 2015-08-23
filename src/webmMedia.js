@@ -457,29 +457,6 @@ Peeracle.WebMMedia = (function () {
   };
 
   /**
-   * @function WebMMedia#findSeekHead_
-   * @param {WebMMedia~readEBMLTagCallback} cb
-   * @private
-   */
-  WebMMedia.prototype.findSeekHead_ = function findSeekHead_(cb) {
-    var _this = this;
-    this.readEBMLTag_(function readTagCb(error, tag) {
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      if (tag.id !== WebMMedia.TAG_SEEKHEAD) {
-        _this.dataStream.seek(tag.offset + tag.headerLength + tag.dataLength);
-        _this.readEBMLTag_(readTagCb);
-        return;
-      }
-
-      cb(null, tag);
-    });
-  };
-
-  /**
    * @function WebMMedia#findTag_
    * @param {Number} id
    * @param {WebMMedia~readEBMLTagCallback} cb
@@ -893,7 +870,7 @@ Peeracle.WebMMedia = (function () {
       var track = {
         id: -1,
         type: -1,
-        codec: -1,
+        codec: '',
         width: -1,
         height: -1,
         samplingFrequency: -1,
