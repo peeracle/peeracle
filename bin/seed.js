@@ -27,7 +27,6 @@ var program = require('commander');
 
 var mediaFileName;
 var mediaFileStream;
-var media;
 
 var metadataFileName;
 var metadataFileStream;
@@ -57,9 +56,29 @@ try {
   process.exit(1);
 }
 
-function start() {
+function start(media) {
   var session = new Peeracle.Session();
-  var handle = session.addMetadata(metadata);
+  var handle = session.addMetadata(metadata, media);
+
+  session.on('connect', function onConnectCb(tracker) {
+  });
+
+  session.on('disconnect', function onDisconnectCb(tracker) {
+  });
+
+  handle.on('enter', function onEnterCb(id, got) {
+  });
+
+  handle.on('leave', function onLeaveCb(id) {
+  });
+
+  handle.on('request', function onRequestCb(id, segment) {
+  });
+
+  handle.on('send', function onSendCb(id, segment, bytesSent) {
+  });
+
+  handle.start();
 }
 
 metadata = new Peeracle.Metadata();
@@ -75,20 +94,20 @@ metadata.unserialize(metadataFileStream, function unserializeCb(error) {
     }
 
     Peeracle.Media.loadFromDataStream(mediaFileStream,
-      function loadFromDataStreamCb(error, instance) {
-        if (error) {
-          throw error;
+      function loadFromDataStreamCb(err, instance) {
+        if (err) {
+          throw err;
         }
 
-        metadata.validateMedia(media, function validateMediaCb(error) {
+        start(instance);
+        /*metadata.validateMedia(instance, function validateMediaCb(error) {
           if (error) {
             throw error;
           }
 
-          start();
-        });
+        });*/
       });
     return;
   }
-  start();
+  start(null);
 });
