@@ -58,6 +58,8 @@
   },
   "dependencies": {
     "commander": "^2.8.1",
+    "node-uuid": "^1.4.3",
+    "websocket": "^1.0.21",
     "wrtc": "0.0.57"
   }
 }
