@@ -40,7 +40,7 @@ program
 
 if (!process.argv.slice(2).length) {
   program.outputHelp();
-  process.exit(1);
+  return;
 }
 
 metadataFileName = program.args[0];
@@ -52,45 +52,57 @@ try {
     mode: 'r'
   });
 } catch (e) {
-  console.log('Can\'t open the metadata file:', e.message);
-  process.exit(1);
+  throw new Error('Can\'t open the metadata file:', e.message);
 }
 
 function start(media) {
-  var session = new Peeracle.Session();
-  var handle = session.addMetadata(metadata, media);
+  var storage = new Peeracle.MediaStorage(media);
+  var session = new Peeracle.Session(storage);
 
-  session.on('connect', function onConnectCb(tracker) {
+  session.on('connect', function onConnectCb(tracker, id) {
+    console.log('[Session] Connected to tracker', tracker, 'with id', id);
   });
 
-  session.on('disconnect', function onDisconnectCb(tracker) {
+  session.on('disconnect', function onDisconnectCb(tracker, code, reason) {
+    console.log('[Session] Disconnected from tracker', tracker, code, reason);
   });
 
-  handle.on('enter', function onEnterCb(id, got) {
-  });
+  session.addMetadata(metadata, function addMetadataCb(error, handle) {
+    if (error) {
+      throw error;
+    }
 
-  handle.on('leave', function onLeaveCb(id) {
-  });
+    handle.on('enter', function onEnterCb(id, got) {
+      console.log('[Handle] Peer', id, 'entered with got', got);
+    });
 
-  handle.on('request', function onRequestCb(id, segment) {
-  });
+    handle.on('leave', function onLeaveCb(id) {
+      console.log('[Handle] Peer', id, 'left');
+    });
 
-  handle.on('send', function onSendCb(id, segment, bytesSent) {
-  });
+    handle.on('request', function onRequestCb(id, segment) {
+    });
 
-  handle.start();
+    handle.on('send', function onSendCb(id, segment, bytesSent) {
+    });
+
+    handle.start();
+  });
 }
 
 metadata = new Peeracle.Metadata();
 metadata.unserialize(metadataFileStream, function unserializeCb(error) {
+  if (error) {
+    throw error;
+  }
+
   if (mediaFileName) {
     try {
       mediaFileStream = new Peeracle.FileDataStream({
         path: mediaFileName
       });
     } catch (e) {
-      console.log('Can\'t open the media file:', e.message);
-      process.exit(1);
+      throw new Error('Can\'t open the media file:', e.message);
     }
 
     Peeracle.Media.loadFromDataStream(mediaFileStream,
@@ -100,12 +112,6 @@ metadata.unserialize(metadataFileStream, function unserializeCb(error) {
         }
 
         start(instance);
-        /*metadata.validateMedia(instance, function validateMediaCb(error) {
-          if (error) {
-            throw error;
-          }
-
-        });*/
       });
     return;
   }
