@@ -138,14 +138,21 @@ Peeracle.Murmur3Hash = (function () {
 
   /**
    * @function Murmur3Hash#update
-   * @param {Uint8Array} array
+   * @param {Uint8Array|String} array
    */
   Murmur3Hash.prototype.update = function update(array) {
     var i;
+    var code;
     var l = array.length;
 
-    for (i = 0; i < l; ++i) {
-      this.string += String.fromCharCode(array[i]);
+    if ((typeof array) === 'string' && l === 32) {
+      for (i = 0; i < 32; i += 2) {
+        this.string += String.fromCharCode(parseInt(array.substr(i, 2), 16));
+      }
+    } else {
+      for (i = 0; i < l; ++i) {
+        this.string += String.fromCharCode(array[i]);
+      }
     }
   };
 
