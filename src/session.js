@@ -23,6 +23,8 @@
 // @exclude
 var Peeracle = {
   Listenable: require('./listenable'),
+  SessionHandle: require('./sessionHandle'),
+  TrackerClient: require('./trackerClient')
 };
 // @endexclude
 
@@ -31,18 +33,112 @@ Peeracle.Session = (function() {
   /* eslint-enable */
   /**
    * @class Session
-   * @memberof {Peeracle}
+   * @memberof Peeracle
    * @mixes Peeracle.Listenable
    * @constructor
    * @param {Peeracle.Storage} storage
    */
   function Session(storage) {
     Peeracle.Listenable.call(this);
+
+    this.handles = [];
     this.storage = storage;
+    this.trackers = {};
   }
 
   Session.prototype = Object.create(Peeracle.Listenable.prototype);
   Session.prototype.constructor = Session;
+
+  /**
+   * @function Session#addMetadata
+   * @param {Peeracle.Metadata} metadata
+   * @param {Session~addMetadataCallback} cb
+   */
+  Session.prototype.addMetadata = function addMetadata(metadata, cb) {
+    var handle = new Peeracle.SessionHandle(this, metadata);
+    this.handles[metadata.hash] = handle;
+    handle.validate(function validateCb(error) {
+      if (error) {
+        cb(error);
+        return null;
+      }
+
+      cb(null, handle);
+    });
+  };
+
+  /**
+   * @function Session#announce
+   * @param {String} url
+   * @param {String} hash
+   * @param {Array.<Number>} got
+   */
+  Session.prototype.announce = function announce(url, hash, got) {
+    var tracker;
+    var lowerUrl = url.toLowerCase();
+
+    if (!this.trackers.hasOwnProperty(lowerUrl)) {
+      tracker = new Peeracle.TrackerClient(lowerUrl);
+      this.setupTracker(tracker);
+      this.trackers[lowerUrl] = tracker;
+      tracker.once('connect', function onConnect(id) {
+        tracker.announce(hash, got);
+      });
+      tracker.connect();
+      return;
+    }
+
+    tracker = this.trackers[lowerUrl];
+    tracker.announce(hash, got);
+  };
+
+  Session.prototype.denounce = function denounce(url, hash) {
+    var tracker;
+    var lowerUrl = url.toLowerCase();
+
+    if (!this.trackers.hasOwnProperty(lowerUrl)) {
+      return;
+    }
+
+    tracker = this.trackers[lowerUrl];
+    tracker.denounce(hash);
+  };
+
+  /**
+   * @function Session#setupTracker
+   * @param {Peeracle.TrackerClient} tracker
+   */
+  Session.prototype.setupTracker = function setupTracker(tracker) {
+    var _this = this;
+
+    tracker.on('connect', function onConnect(id) {
+      _this.emit('connect', tracker.url, id);
+    });
+
+    tracker.on('disconnect', function onDisconnect(code, reason) {
+      _this.emit('disconnect', tracker.url, code, reason);
+    });
+
+    tracker.on('enter', function onEnter(hash, id, got) {
+      if (!_this.handles.hasOwnProperty(hash)) {
+        return;
+      }
+      _this.handles[hash].emit('enter', id, got);
+    });
+
+    tracker.on('leave', function onLeave(hash, id) {
+      if (!_this.handles.hasOwnProperty(hash)) {
+        return;
+      }
+      _this.handles[hash].emit('leave', id);
+    });
+  };
+
+  /**
+   * @callback Session~addMetadataCallback
+   * @param {Error} error
+   * @param {Peeracle.SessionHandle} handle
+   */
 
   return Session;
 })();
