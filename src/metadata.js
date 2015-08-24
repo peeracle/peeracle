@@ -39,6 +39,7 @@ Peeracle.Metadata = (function () {
    * @param {String} checksumAlgorithmName
    * @property {Number} version
    * @property {String} checksumAlgorithmName
+   * @property {String} hash
    * @property {Hash} checksumAlgorithm
    * @property {Number} timecodeScale
    * @property {Number} duration
@@ -54,6 +55,7 @@ Peeracle.Metadata = (function () {
     if (!this.checksumAlgorithm) {
       throw new Error('Invalid checksum algorithm');
     }
+    this.hash = '';
     this.timecodeScale = 0;
     this.duration = 0;
     this.trackerUrls = [];
@@ -94,8 +96,8 @@ Peeracle.Metadata = (function () {
       _this.timecodeScale = media.timecodeScale;
       _this.duration = media.duration;
 
-      stream = new Peeracle.MetadataStream(_this.checksumAlgorithmName, media,
-        bytes);
+      _this.checksumAlgorithm.update(bytes);
+      stream = new Peeracle.MetadataStream(_this, media, bytes);
       stream.addMediaSegments(function addMediaSegmentsCb(err) {
         if (err) {
           cb(err);
@@ -103,6 +105,7 @@ Peeracle.Metadata = (function () {
         }
 
         _this.streams.push(stream);
+        _this.hash = _this.checksumAlgorithm.finish();
         cb(null);
       });
     });
@@ -258,7 +261,7 @@ Peeracle.Metadata = (function () {
           return;
         }
 
-        stream = new Peeracle.MetadataStream(_this.checksumAlgorithmName);
+        stream = new Peeracle.MetadataStream(_this);
         stream.unserialize(dataStream, function unserializeCb(error) {
           if (error) {
             cb(error);
@@ -267,10 +270,11 @@ Peeracle.Metadata = (function () {
 
           _this.streams.push(stream);
           if (++index < count) {
-            stream = new Peeracle.MetadataStream(_this.checksumAlgorithmName);
+            stream = new Peeracle.MetadataStream(_this);
             stream.unserialize(dataStream, unserializeCb);
           } else {
             cb(null);
+            _this.hash = _this.checksumAlgorithm.finish();
           }
         });
       });

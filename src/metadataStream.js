@@ -33,7 +33,7 @@ Peeracle.MetadataStream = (function () {
   /**
    * @class MetadataStream
    * @memberof {Peeracle}
-   * @param {String} checksumAlgorithmName
+   * @param {Peeracle.Metadata} metadata
    * @param {Media=} media
    * @param {Uint8Array=} bytes
    *
@@ -53,12 +53,13 @@ Peeracle.MetadataStream = (function () {
    * @property {Number} averageSize
    * @constructor
    */
-  function MetadataStream(checksumAlgorithmName, media, bytes) {
+  function MetadataStream(metadata, media, bytes) {
     var index;
     var count;
     var track;
 
-    this.checksumAlgorithmName = checksumAlgorithmName;
+    this.metadata = metadata;
+    this.checksumAlgorithmName = metadata.checksumAlgorithmName;
     this.checksumAlgorithm = Peeracle.Hash.create(this.checksumAlgorithmName);
     if (!this.checksumAlgorithm) {
       throw new Error('Invalid checksum algorithm');
@@ -204,6 +205,7 @@ Peeracle.MetadataStream = (function () {
     while (index < length) {
       chunk = bytes.subarray(index, index + this.chunkSize);
       checksum = this.checksumAlgorithm.checksum(chunk);
+      this.metadata.checksumAlgorithm.update(checksum);
       chunks.push(checksum);
       index += chunk.length;
     }
@@ -403,6 +405,7 @@ Peeracle.MetadataStream = (function () {
             }
 
             chunks.push(chunk);
+            _this.metadata.checksumAlgorithm.update(chunk);
             if (++index < value) {
               _this.checksumAlgorithm.constructor.unserialize(dataStream,
                 readChunkCb);
@@ -507,6 +510,7 @@ Peeracle.MetadataStream = (function () {
           }
 
           _this.initSegment = bytes;
+          _this.metadata.checksumAlgorithm.update(bytes);
           _this.unserializeMediaSegments_(dataStream, cb);
         });
       });
