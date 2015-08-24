@@ -100,7 +100,8 @@ module.exports = function (grunt) {
           'src/peerConnection.js',
           'src/peer.js',
           'src/trackerClient.js',
-          'src/session.js'
+          'src/session.js',
+          'src/sessionHandle.js'
         ],
         dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.js'
       }
