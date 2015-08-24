@@ -32,6 +32,7 @@ Peeracle.Listenable = (function () {
   /**
    * @class Listenable
    * @memberof Peeracle
+   * @mixin
    * @constructor
    */
   function Listenable() {

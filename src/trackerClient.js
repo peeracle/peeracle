@@ -21,7 +21,9 @@
  */
 
 // @exclude
-var Peeracle = {};
+var Peeracle = {
+  Listenable: require('./listenable'),
+};
 // @endexclude
 
 /* eslint-disable */
@@ -30,10 +32,16 @@ Peeracle.TrackerClient = (function() {
   /**
    * @class TrackerClient
    * @memberof {Peeracle}
+   * @mixes Peeracle.Listenable
    * @constructor
    */
   function TrackerClient() {
+    Peeracle.Listenable.call(this);
   }
+
+  TrackerClient.prototype = Object.create(Peeracle.Listenable.prototype);
+  TrackerClient.prototype.constructor = TrackerClient;
+
 
   return TrackerClient;
 })();

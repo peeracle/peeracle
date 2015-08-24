@@ -81,6 +81,7 @@ module.exports = function (grunt) {
       },
       dist: {
         src: [
+          'src/listenable.js',
           'src/dataStream.js',
           'src/fileDataStream.js',
           'src/httpDataStream.js',

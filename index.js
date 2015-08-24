@@ -23,6 +23,8 @@
 'use strict';
 
 var Peeracle = {
+  Listenable: require('./src/listenable'),
+
   DataStream: require('./src/dataStream'),
   FileDataStream: require('./src/fileDataStream'),
   // HttpDataStream: require('./src/httpDataStream'),

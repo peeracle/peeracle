@@ -21,7 +21,9 @@
  */
 
 // @exclude
-var Peeracle = {};
+var Peeracle = {
+  Listenable: require('./listenable'),
+};
 // @endexclude
 
 /* eslint-disable */
@@ -30,10 +32,15 @@ Peeracle.Session = (function() {
   /**
    * @class Session
    * @memberof {Peeracle}
+   * @mixes Peeracle.Listenable
    * @constructor
    */
   function Session() {
+    Peeracle.Listenable.call(this);
   }
+
+  Session.prototype = Object.create(Peeracle.Listenable.prototype);
+  Session.prototype.constructor = Session;
 
   return Session;
 })();
