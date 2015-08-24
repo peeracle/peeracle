@@ -47,6 +47,8 @@ var Peeracle = {
   // TrackerServer: require('./src/trackerServer'),
 
   // Session: require('./src/session')
+  Storage: require('./src/storage'),
+  MediaStorage: require('./src/mediaStorage')
 };
 
 module.exports = Peeracle;

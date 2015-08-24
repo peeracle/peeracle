@@ -21,32 +21,57 @@
  */
 
 // @exclude
-var Peeracle = {
-  Listenable: require('./listenable'),
-};
+var Peeracle = {};
 // @endexclude
 
 /* eslint-disable */
-Peeracle.Session = (function() {
-  /* eslint-enable */
+Peeracle.Storage = (function() {
   /**
-   * @class Session
+   * @interface Peeracle.Storage
    * @memberof {Peeracle}
-   * @mixes Peeracle.Listenable
-   * @constructor
-   * @param {Peeracle.Storage} storage
    */
-  function Session(storage) {
-    Peeracle.Listenable.call(this);
-    this.storage = storage;
+  function Storage() {
   }
 
-  Session.prototype = Object.create(Peeracle.Listenable.prototype);
-  Session.prototype.constructor = Session;
+  /**
+   * @function Storage#retrieveSegment
+   * @param {String} hash
+   * @param {Number} segment
+   * @param {Number} offset
+   * @param {Number} length
+   * @param {Storage~retrieveCallback} cb
+   */
+  Storage.prototype.retrieveSegment =
+    function retrieveSegment(hash, segment, offset, length, cb) {
+    };
 
-  return Session;
+  /**
+   * @function Storage#storeSegment
+   * @param {String} hash
+   * @param {Number} segment
+   * @param {Number} offset
+   * @param {Uint8Array} bytes
+   * @param {Storage~storeCallback} cb
+   */
+  Storage.prototype.storeSegment =
+    function storeSegment(hash, segment, offset, bytes, cb) {
+    };
+
+  /**
+   * @callback Storage~retrieveCallback
+   * @param {Error} error
+   * @param {Uint8Array} bytes
+   */
+
+  /**
+   * @callback Storage~storeCallback
+   * @param {Error} error
+   * @param {Number} length
+   */
+
+  return Storage;
 })();
 
 // @exclude
-module.exports = Peeracle.Session;
+module.exports = Peeracle.Storage;
 // @endexclude
