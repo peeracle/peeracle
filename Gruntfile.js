@@ -94,6 +94,7 @@ module.exports = function (grunt) {
           'src/webmMedia.js',
           'src/storage.js',
           'src/mediaStorage.js',
+          'src/memoryStorage.js',
           'src/metadataStream.js',
           'src/metadata.js',
           'src/trackerMessage.js',

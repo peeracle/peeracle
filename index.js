@@ -27,7 +27,7 @@ var Peeracle = {
 
   DataStream: require('./src/dataStream'),
   FileDataStream: require('./src/fileDataStream'),
-  // HttpDataStream: require('./src/httpDataStream'),
+  HttpDataStream: require('./src/httpDataStream'),
   MemoryDataStream: require('./src/memoryDataStream'),
 
   Hash: require('./src/hash'),
@@ -49,7 +49,8 @@ var Peeracle = {
 
   Session: require('./src/session'),
   Storage: require('./src/storage'),
-  MediaStorage: require('./src/mediaStorage')
+  MediaStorage: require('./src/mediaStorage'),
+  MemoryStorage: require('./src/memoryStorage')
 };
 
 module.exports = Peeracle;
