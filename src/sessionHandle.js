@@ -123,8 +123,8 @@ Peeracle.SessionHandle = (function () {
             return true;
           }
           if (++gotOffset >= 32) {
-            if (++gotIndex >= theirGot[gotIndex].length &&
-              theirGot[gotIndex].length < myGot[gotIndex].length) {
+            ++gotIndex;
+            if (!theirGot[gotIndex] && myGot[gotIndex]) {
               return true;
             }
             gotOffset = 0;
@@ -264,7 +264,8 @@ Peeracle.SessionHandle = (function () {
    */
   SessionHandle.prototype.onEnter = function onEnter(peer) {
     this.processRequests();
-    if (this.peerMightBeInterested(peer)) {
+    if (!peer.isConnected() && !peer.isConnecting() &&
+      this.peerMightBeInterested(peer)) {
       peer.sendPoke(this.metadata.hash, this.got);
     }
   };
