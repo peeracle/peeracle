@@ -51,6 +51,7 @@ Peeracle.MemoryDataStream = (function () {
       throw new TypeError('buffer should be an Uint8Array');
     }
 
+    this.littleEndian = options.littleEndian ? options.littleEndian : false;
     this.buffer = this.options.buffer;
     this.dataview = new DataView(this.buffer.buffer);
     this.offset = 0;
@@ -338,10 +339,10 @@ Peeracle.MemoryDataStream = (function () {
     }
 
     if (cb) {
-      cb(null, this.dataview.getInt16(this.offset), 2);
+      cb(null, this.dataview.getInt16(this.offset, this.littleEndian), 2);
       return null;
     }
-    return this.dataview.getInt16(this.offset);
+    return this.dataview.getInt16(this.offset, this.littleEndian);
   };
 
   MemoryDataStream.prototype.peekUShort = function peekUShort(cb) {
@@ -354,10 +355,10 @@ Peeracle.MemoryDataStream = (function () {
     }
 
     if (cb) {
-      cb(null, this.dataview.getUint16(this.offset), 2);
+      cb(null, this.dataview.getUint16(this.offset, this.littleEndian), 2);
       return null;
     }
-    return this.dataview.getUint16(this.offset);
+    return this.dataview.getUint16(this.offset, this.littleEndian);
   };
 
   MemoryDataStream.prototype.peekInteger = function peekInteger(cb) {
@@ -370,10 +371,10 @@ Peeracle.MemoryDataStream = (function () {
     }
 
     if (cb) {
-      cb(null, this.dataview.getInt32(this.offset), 4);
+      cb(null, this.dataview.getInt32(this.offset, this.littleEndian), 4);
       return null;
     }
-    return this.dataview.getInt32(this.offset);
+    return this.dataview.getInt32(this.offset, this.littleEndian);
   };
 
   MemoryDataStream.prototype.peekUInteger = function peekUInteger(cb) {
@@ -386,10 +387,10 @@ Peeracle.MemoryDataStream = (function () {
     }
 
     if (cb) {
-      cb(null, this.dataview.getUint32(this.offset), 4);
+      cb(null, this.dataview.getUint32(this.offset, this.littleEndian), 4);
       return null;
     }
-    return this.dataview.getUint32(this.offset);
+    return this.dataview.getUint32(this.offset, this.littleEndian);
   };
 
   MemoryDataStream.prototype.peekFloat = function peekFloat(cb) {
@@ -402,10 +403,10 @@ Peeracle.MemoryDataStream = (function () {
     }
 
     if (cb) {
-      cb(null, this.dataview.getFloat32(this.offset), 4);
+      cb(null, this.dataview.getFloat32(this.offset, this.littleEndian), 4);
       return null;
     }
-    return this.dataview.getFloat32(this.offset);
+    return this.dataview.getFloat32(this.offset, this.littleEndian);
   };
 
   MemoryDataStream.prototype.peekDouble = function peekDouble(cb) {
@@ -418,13 +419,14 @@ Peeracle.MemoryDataStream = (function () {
     }
 
     if (cb) {
-      cb(null, this.dataview.getFloat64(this.offset), 8);
+      cb(null, this.dataview.getFloat64(this.offset, this.littleEndian), 8);
       return null;
     }
-    return this.dataview.getFloat64(this.offset);
+    return this.dataview.getFloat64(this.offset, this.littleEndian);
   };
 
   MemoryDataStream.prototype.peekString = function peekString(cb) {
+    var bytesRead = 0;
     var index = this.offset;
     var length = this.buffer.length;
     var str = null;
@@ -441,6 +443,7 @@ Peeracle.MemoryDataStream = (function () {
     while (index < length) {
       charCode = this.buffer[index++];
 
+      ++bytesRead;
       if (charCode === 0) {
         break;
       }
@@ -453,7 +456,7 @@ Peeracle.MemoryDataStream = (function () {
     }
 
     if (cb) {
-      cb(null, str, index);
+      cb(null, str, bytesRead);
       return null;
     }
     return str;
@@ -557,7 +560,7 @@ Peeracle.MemoryDataStream = (function () {
       throw new RangeError('index out of bounds');
     }
 
-    this.dataview.setInt16(this.offset, value);
+    this.dataview.setInt16(this.offset, value, this.littleEndian);
     this.offset += 2;
     if (cb) {
       cb(null, 2);
@@ -583,7 +586,7 @@ Peeracle.MemoryDataStream = (function () {
       throw new RangeError('index out of bounds');
     }
 
-    this.dataview.setUint16(this.offset, value);
+    this.dataview.setUint16(this.offset, value, this.littleEndian);
     this.offset += 2;
     if (cb) {
       cb(null, 2);
@@ -609,7 +612,7 @@ Peeracle.MemoryDataStream = (function () {
       throw new RangeError('index out of bounds');
     }
 
-    this.dataview.setInt32(this.offset, value);
+    this.dataview.setInt32(this.offset, value, this.littleEndian);
     this.offset += 4;
     if (cb) {
       cb(null, 4);
@@ -635,7 +638,7 @@ Peeracle.MemoryDataStream = (function () {
       throw new RangeError('index out of bounds');
     }
 
-    this.dataview.setUint32(this.offset, value);
+    this.dataview.setUint32(this.offset, value, this.littleEndian);
     this.offset += 4;
     if (cb) {
       cb(null, 4);
@@ -661,7 +664,7 @@ Peeracle.MemoryDataStream = (function () {
       throw new RangeError('index out of bounds');
     }
 
-    this.dataview.setFloat32(this.offset, value);
+    this.dataview.setFloat32(this.offset, value, this.littleEndian);
     this.offset += 4;
     if (cb) {
       cb(null, 4);
@@ -687,7 +690,7 @@ Peeracle.MemoryDataStream = (function () {
       throw new RangeError('index out of bounds');
     }
 
-    this.dataview.setFloat64(this.offset, value);
+    this.dataview.setFloat64(this.offset, value, this.littleEndian);
     this.offset += 8;
     if (cb) {
       cb(null, 8);
