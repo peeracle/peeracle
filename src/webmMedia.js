@@ -166,7 +166,8 @@ Peeracle.WebMMedia = (function () {
 
     this.dataStream.seek(cues['' + timecode]);
     this.readEBMLTag_(function readTagCb(error, tag) {
-      _this.dataStream.read(tag.dataLength,
+      _this.dataStream.seek(tag.offset);
+      _this.dataStream.read(tag.headerLength + tag.dataLength,
         function readCb(err, bytes) {
           if (err) {
             cb(err);
