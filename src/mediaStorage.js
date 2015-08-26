@@ -106,18 +106,6 @@ Peeracle.MediaStorage = (function () {
       cb(new Error('Unsupported'));
     };
 
-  /**
-   * @callback Storage~retrieveCallback
-   * @param {Error} error
-   * @param {Uint8Array} bytes
-   */
-
-  /**
-   * @callback Storage~storeCallback
-   * @param {Error} error
-   * @param {Number} length
-   */
-
   return MediaStorage;
 })();
 
