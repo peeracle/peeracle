@@ -55,8 +55,8 @@ try {
   throw new Error('Can\'t open the metadata file:', e.message);
 }
 
-function start(media) {
-  var storage = new Peeracle.MediaStorage(media);
+function start(metadata, media) {
+  var storage = new Peeracle.MediaStorage(metadata, media);
   var session = new Peeracle.Session(storage);
 
   session.on('connect', function onConnectCb(tracker, id) {
@@ -68,12 +68,15 @@ function start(media) {
   });
 
   session.addMetadata(metadata, function addMetadataCb(error, handle) {
+    var index = 0;
+    var count = metadata.streams[0].mediaSegments.length;
+
     if (error) {
       throw error;
     }
 
-    handle.on('enter', function onEnterCb(id, got) {
-      console.log('[Handle] Peer', id, 'entered with got', got);
+    handle.on('enter', function onEnterCb(peer) {
+      console.log('[Handle] Peer', peer.id, 'entered');
     });
 
     handle.on('leave', function onLeaveCb(id) {
@@ -87,6 +90,19 @@ function start(media) {
     });
 
     handle.start();
+
+    if (!media) {
+      if (index < count) {
+        handle.retrieveMediaSegment(index, function onComplete(error, bytes) {
+          console.log('got segment', index, error, bytes ? bytes.length : 0);
+          if (++index < count) {
+            handle.retrieveMediaSegment(index, onComplete);
+          } else {
+            console.log('got every segments!');
+          }
+        });
+      }
+    }
   });
 }
 
@@ -111,9 +127,9 @@ metadata.unserialize(metadataFileStream, function unserializeCb(error) {
           throw err;
         }
 
-        start(instance);
+        start(metadata, instance);
       });
     return;
   }
-  start(null);
+  start(metadata, null);
 });

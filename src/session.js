@@ -23,13 +23,14 @@
 // @exclude
 var Peeracle = {
   Listenable: require('./listenable'),
+  Peer: require('./peer'),
   SessionHandle: require('./sessionHandle'),
   TrackerClient: require('./trackerClient')
 };
 // @endexclude
 
 /* eslint-disable */
-Peeracle.Session = (function() {
+Peeracle.Session = (function () {
   /* eslint-enable */
   /**
    * @class Session
@@ -37,13 +38,18 @@ Peeracle.Session = (function() {
    * @mixes Peeracle.Listenable
    * @constructor
    * @param {Peeracle.Storage} storage
+   * @property {Object.<String, Peeracle.SessionHandle>} handles
+   * @property {Peeracle.Storage} storage
+   * @property {Object.<String, Peeracle.TrackerClient>} trackers
+   * @property {Object.<String, Peeracle.Peer>} peers
    */
   function Session(storage) {
     Peeracle.Listenable.call(this);
 
-    this.handles = [];
+    this.handles = {};
     this.storage = storage;
     this.trackers = {};
+    this.peers = {};
   }
 
   Session.prototype = Object.create(Peeracle.Listenable.prototype);
@@ -55,16 +61,69 @@ Peeracle.Session = (function() {
    * @param {Session~addMetadataCallback} cb
    */
   Session.prototype.addMetadata = function addMetadata(metadata, cb) {
-    var handle = new Peeracle.SessionHandle(this, metadata);
-    this.handles[metadata.hash] = handle;
-    handle.validate(function validateCb(error) {
-      if (error) {
-        cb(error);
-        return null;
-      }
+    var _this = this;
+    var got = [];
+    var gotIndex = 0;
+    var currentGot = 0;
+    var stream = metadata.streams[0];
+    var index = 0;
+    var count = stream.mediaSegments.length;
+    var segment;
 
-      cb(null, handle);
-    });
+    if (!count) {
+      cb(null, null);
+      return;
+    }
+
+    segment = stream.mediaSegments[index];
+    this.storage.retrieveSegment(metadata.hash, index, 0, segment.length,
+      function retrieveSegmentCb(error, bytes) {
+        var handle;
+        var checksum;
+        var chunkIndex;
+        var chunkCount = segment.chunks.length;
+
+        if (error) {
+          cb(error);
+          return;
+        }
+
+        if (!bytes) {
+          handle = new Peeracle.SessionHandle(_this, metadata, got);
+          _this.handles[metadata.hash] = handle;
+          cb(null, handle);
+          return;
+        }
+
+        for (chunkIndex = 0; chunkIndex < chunkCount; ++chunkIndex) {
+          checksum = metadata.checksumAlgorithm.checksum(
+            bytes.subarray(chunkIndex * stream.chunkSize, stream.chunkSize +
+              (chunkIndex * stream.chunkSize)));
+          if (checksum === segment.chunks[chunkIndex]) {
+            currentGot += (1 << gotIndex);
+          }
+
+          if (++gotIndex === 32) {
+            gotIndex = 0;
+            got.push(currentGot);
+            currentGot = 0;
+          }
+        }
+
+        if (++index < count) {
+          segment = stream.mediaSegments[index];
+          _this.storage.retrieveSegment(metadata.hash, index, 0, segment.length,
+            retrieveSegmentCb);
+        } else {
+          if (gotIndex < 32) {
+            got.push(currentGot);
+          }
+
+          handle = new Peeracle.SessionHandle(_this, metadata, got);
+          _this.handles[metadata.hash] = handle;
+          cb(null, handle);
+        }
+      });
   };
 
   /**
@@ -81,7 +140,7 @@ Peeracle.Session = (function() {
       tracker = new Peeracle.TrackerClient(lowerUrl);
       this.setupTracker(tracker);
       this.trackers[lowerUrl] = tracker;
-      tracker.once('connect', function onConnect(id) {
+      tracker.once('connect', function onConnect() {
         tracker.announce(hash, got);
       });
       tracker.connect();
@@ -104,6 +163,30 @@ Peeracle.Session = (function() {
     tracker.denounce(hash);
   };
 
+  Session.prototype.onPeerRequest =
+    function onPeerRequest(hash, peer, segment, chunk) {
+      this.handles[hash].emit('request', peer, segment, chunk);
+    };
+
+  Session.prototype.onPeerChunk =
+    function onPeerChunk(hash, peer, segment, chunk, offset, bytes) {
+      this.handles[hash].emit('chunk', peer, segment, chunk, offset, bytes);
+    };
+
+  Session.prototype.initPeer = function initPeer(id, tracker) {
+    var _this = this;
+
+    var peer = new Peeracle.Peer(id, tracker);
+    peer.on('request', function onRequest(hash, segment, chunk) {
+      _this.onPeerRequest(hash, peer, segment, chunk);
+    });
+    peer.on('chunk', function onChunk(hash, segment, chunk, offset, bytes) {
+      _this.onPeerChunk(hash, peer, segment, chunk, offset, bytes);
+    });
+
+    return peer;
+  };
+
   /**
    * @function Session#setupTracker
    * @param {Peeracle.TrackerClient} tracker
@@ -120,10 +203,19 @@ Peeracle.Session = (function() {
     });
 
     tracker.on('enter', function onEnter(hash, id, got) {
+      var peer;
+
       if (!_this.handles.hasOwnProperty(hash)) {
         return;
       }
-      _this.handles[hash].emit('enter', id, got);
+
+      if (!_this.peers.hasOwnProperty(id)) {
+        _this.peers[id] = _this.initPeer(id, tracker);
+      }
+      peer = _this.peers[id];
+      peer.addHash(hash, got);
+
+      _this.handles[hash].emit('enter', peer);
     });
 
     tracker.on('leave', function onLeave(hash, id) {
@@ -131,6 +223,16 @@ Peeracle.Session = (function() {
         return;
       }
       _this.handles[hash].emit('leave', id);
+    });
+
+    tracker.on('sdp', function onSdp(hash, id, sdp) {
+      if (!_this.handles.hasOwnProperty(hash)) {
+        return;
+      }
+      if (!_this.peers.hasOwnProperty(id)) {
+        _this.peers[id] = _this.initPeer(id, tracker);
+      }
+      _this.peers[id].processSdp(sdp, hash);
     });
   };
 
@@ -146,3 +248,5 @@ Peeracle.Session = (function() {
 // @exclude
 module.exports = Peeracle.Session;
 // @endexclude
+
+

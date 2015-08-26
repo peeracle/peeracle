@@ -273,8 +273,8 @@ Peeracle.Metadata = (function () {
             stream = new Peeracle.MetadataStream(_this);
             stream.unserialize(dataStream, unserializeCb);
           } else {
-            cb(null);
             _this.hash = _this.checksumAlgorithm.finish();
+            cb(null);
           }
         });
       });

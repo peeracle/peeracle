@@ -123,7 +123,7 @@ Peeracle.WebMMedia = (function () {
     var _this = this;
 
     if (!this.initialized) {
-      this.init_(function initCb(error) {
+      this.init(function initCb(error) {
         if (error) {
           cb(error);
           return;
@@ -140,6 +140,18 @@ Peeracle.WebMMedia = (function () {
   WebMMedia.prototype.getMediaSegment = function getMediaSegment(timecode, cb) {
     var _this = this;
     var cues;
+
+    if (!this.initialized) {
+      this.init(function initCb(error) {
+        if (error) {
+          cb(error);
+          return;
+        }
+
+        _this.getMediaSegment(timecode, cb);
+      });
+      return;
+    }
 
     if (!this.cues.hasOwnProperty('' + this.tracks[0].id)) {
       cb(new Error('Unknown timecode'));
@@ -1126,8 +1138,13 @@ Peeracle.WebMMedia = (function () {
    * @param {WebMMedia~initCallback} cb
    * @private
    */
-  WebMMedia.prototype.init_ = function init_(cb) {
+  WebMMedia.prototype.init = function init_(cb) {
     var _this = this;
+
+    if (this.initialized) {
+      cb(null);
+      return;
+    }
 
     this.dataStream.seek(0);
     this.readEBMLTag_(function readEBMLCb(readErr, ebml) {

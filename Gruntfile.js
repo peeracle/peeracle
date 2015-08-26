@@ -97,6 +97,7 @@ module.exports = function (grunt) {
           'src/metadataStream.js',
           'src/metadata.js',
           'src/trackerMessage.js',
+          'src/peerMessage.js',
           'src/peerConnection.js',
           'src/peer.js',
           'src/trackerClient.js',

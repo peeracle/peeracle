@@ -41,33 +41,31 @@ Peeracle.FileDataStream = (function () {
   function FileDataStream(options) {
     // @exclude
     var stat;
-    this.options = options;
     if (typeof module === 'undefined') {
     // @endexclude
-      this.handle = options;
+      this.handle = options.handle;
     // @exclude
     }
     // @endexclude
     this.offset = 0;
-    this.littleEndian = this.options.littleEndian ?
-      this.options.littleEndian : false;
+    this.littleEndian = options.littleEndian ? options.littleEndian : false;
     // @exclude
-    if ((typeof this.options) !== 'object') {
+    if ((typeof options) !== 'object') {
       throw new TypeError('options should be an object');
     }
 
-    if (!this.options.hasOwnProperty('path') ||
-      (typeof this.options.path) !== 'string') {
+    if (!options.hasOwnProperty('path') ||
+      (typeof options.path) !== 'string') {
       throw new TypeError('options.path should be a string');
     }
 
-    if (!this.options.hasOwnProperty('mode') ||
-      (typeof this.options.mode) !== 'string') {
-      this.options.mode = 'r';
+    if (!options.hasOwnProperty('mode') ||
+      (typeof options.mode) !== 'string') {
+      options.mode = 'r';
     }
 
     try {
-      this.handle = fs.openSync(this.options.path, this.options.mode);
+      this.handle = fs.openSync(options.path, options.mode);
       stat = fs.fstatSync(this.handle);
       this.length = stat.size;
     } catch (e) {

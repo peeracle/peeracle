@@ -27,18 +27,18 @@ var Peeracle = {
 // @endexclude
 
 /* eslint-disable */
-Peeracle.MediaStorage = (function() {
+Peeracle.MediaStorage = (function () {
   /* eslint-enable */
   /**
    * @class MediaStorage
    * @memberof {Peeracle}
    * @constructor
    * @implements {Peeracle.Storage}
-   * @param {String} hash
+   * @param {Peeracle.Metadata} metadata
    * @param {Peeracle.Media} media
    */
-  function MediaStorage(hash, media) {
-    this.hash = hash;
+  function MediaStorage(metadata, media) {
+    this.hash = metadata.hash;
     this.media = media;
   }
 
@@ -55,28 +55,42 @@ Peeracle.MediaStorage = (function() {
    */
   MediaStorage.prototype.retrieveSegment =
     function retrieveSegment(hash, segment, offset, length, cb) {
-      var timecodes;
+      var _this = this;
+
+      if (!this.media) {
+        cb(null, null);
+        return;
+      }
 
       if (hash !== this.hash) {
         cb(new Error('Hash mismatch'));
         return;
       }
 
-      timecodes = Object.keys(this.media.cues);
-      if (segment < 0 || segment > timecodes.length) {
-        cb(null, null);
-        return;
-      }
+      this.media.init(function initCb(error) {
+        var timecodes;
 
-      this.media.getMediaSegment(parseInt(timecodes[segment], 10),
-        function getMediaSegmentCb(error, bytes) {
-          if (error) {
-            cb(error);
-            return;
-          }
+        if (error) {
+          cb(error);
+          return;
+        }
 
-          cb(null, bytes.subarray(offset, length));
-        });
+        timecodes = Object.keys(_this.media.cues['' + _this.media.tracks[0].id]);
+        if (segment < 0 || segment > timecodes.length) {
+          cb(null, null);
+          return;
+        }
+
+        _this.media.getMediaSegment(parseInt(timecodes[segment], 10),
+          function getMediaSegmentCb(err, bytes) {
+            if (err) {
+              cb(err);
+              return;
+            }
+
+            cb(null, bytes.subarray(offset, offset + length));
+          });
+      });
     };
 
   /**

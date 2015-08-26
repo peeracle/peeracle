@@ -48,7 +48,10 @@ Peeracle.TrackerMessage = (function () {
     Announce: 3,
     Denounce: 4,
     Enter: 5,
-    Leave: 6
+    Leave: 6,
+    Sdp: 7,
+    Request: 8,
+    Poke: 9
   };
 
   TrackerMessage.Types = [
@@ -58,7 +61,10 @@ Peeracle.TrackerMessage = (function () {
     {name: 'Announce'},
     {name: 'Denounce'},
     {name: 'Enter'},
-    {name: 'Leave'}
+    {name: 'Leave'},
+    {name: 'Sdp'},
+    {name: 'Request'},
+    {name: 'Poke'}
   ];
 
   TrackerMessage.prototype.createFromObject =
@@ -151,6 +157,24 @@ Peeracle.TrackerMessage = (function () {
     return bytes;
   };
 
+  TrackerMessage.prototype.serializeSdp = function serializeSdp() {
+    var dataStream;
+    var bytes;
+
+    bytes = new Uint8Array(this.props.id.length + 1 +
+      this.props.hash.length + 1 + this.props.sdp.length + 1);
+
+    dataStream = new Peeracle.MemoryDataStream({buffer: bytes});
+    dataStream.writeString(this.props.id);
+    dataStream.writeString(this.props.hash);
+    dataStream.writeString(this.props.sdp);
+    return bytes;
+  };
+
+  TrackerMessage.prototype.serializePoke = function serializePoke() {
+    return this.serializeEnter();
+  };
+
   TrackerMessage.prototype.serialize = function serialize() {
     var bytes;
     var result;
@@ -170,7 +194,7 @@ Peeracle.TrackerMessage = (function () {
   };
 
   TrackerMessage.prototype.unserializeHello =
-    function unserializeHello(dataStream) {
+    function unserializeHello() {
     };
 
   TrackerMessage.prototype.unserializeWelcome =
@@ -216,6 +240,18 @@ Peeracle.TrackerMessage = (function () {
     function unserializeLeave(dataStream) {
       this.props.hash = dataStream.readString();
       this.props.id = dataStream.readString();
+    };
+
+  TrackerMessage.prototype.unserializeSdp =
+    function unserializeLeave(dataStream) {
+      this.props.id = dataStream.readString();
+      this.props.hash = dataStream.readString();
+      this.props.sdp = dataStream.readString();
+    };
+
+  TrackerMessage.prototype.unserializePoke =
+    function unserializePoke(dataStream) {
+      this.unserializeEnter(dataStream);
     };
 
   TrackerMessage.prototype.unserialize = function unserialize(bytes) {

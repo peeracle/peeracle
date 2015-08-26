@@ -39,14 +39,15 @@ var Peeracle = {
 
   Metadata: require('./src/metadata'),
 
-  // PeerConnection: require('./src/peerConnection'),
-  // Peer: require('./src/peer'),
+  PeerConnection: require('./src/peerConnection'),
+  PeerMessage: require('./src/peerMessage'),
+  Peer: require('./src/peer'),
 
-  // TrackerClient: require('./src/trackerClient'),
-  // TrackerMessage: require('./src/trackerMessage'),
-  // TrackerServer: require('./src/trackerServer'),
+  TrackerClient: require('./src/trackerClient'),
+  TrackerMessage: require('./src/trackerMessage'),
+  TrackerServer: require('./src/trackerServer'),
 
-  // Session: require('./src/session')
+  Session: require('./src/session'),
   Storage: require('./src/storage'),
   MediaStorage: require('./src/mediaStorage')
 };

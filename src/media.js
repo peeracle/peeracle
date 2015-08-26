@@ -76,6 +76,13 @@ Peeracle.Media = (function () {
   };
 
   /**
+   * @function Media#init
+   * @param {Media~segmentCallback} cb
+   */
+  Media.prototype.init = function init(cb) {
+  };
+
+  /**
    * @function Media#getInitSegment
    * @param {Media~segmentCallback} cb
    * @return {?Media}

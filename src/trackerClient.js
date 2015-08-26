@@ -35,7 +35,7 @@ var window = {
 // @endexclude
 
 /* eslint-disable */
-Peeracle.TrackerClient = (function() {
+Peeracle.TrackerClient = (function () {
   /* eslint-enable */
   /**
    * @class TrackerClient
@@ -110,6 +110,41 @@ Peeracle.TrackerClient = (function() {
     this.ws.send(bytes);
   };
 
+  TrackerClient.prototype.sendSdp = function sendSdp(id, hash, sdp) {
+    var msg = new Peeracle.TrackerMessage({
+      type: Peeracle.TrackerMessage.MessageType.Sdp,
+      id: id,
+      hash: hash,
+      sdp: sdp
+    });
+    var bytes = msg.serialize();
+    this.ws.send(bytes);
+  };
+
+  TrackerClient.prototype.sendPoke = function sendPoke(id, hash, got) {
+    var msg = new Peeracle.TrackerMessage({
+      type: Peeracle.TrackerMessage.MessageType.Poke,
+      id: id,
+      hash: hash,
+      got: got
+    });
+    var bytes = msg.serialize();
+    this.ws.send(bytes);
+  };
+
+  TrackerClient.prototype.sendRequest =
+    function sendRequest(id, hash, segment, chunk) {
+      var msg = new Peeracle.TrackerMessage({
+        type: Peeracle.TrackerMessage.MessageType.Request,
+        id: id,
+        hash: hash,
+        segment: segment,
+        chunk: chunk
+      });
+      var bytes = msg.serialize();
+      this.ws.send(bytes);
+    };
+
   TrackerClient.prototype.handleWelcome = function handleWelcome(msg) {
     this.emit('connect', msg.props.id);
   };
@@ -120,6 +155,14 @@ Peeracle.TrackerClient = (function() {
 
   TrackerClient.prototype.handleLeave = function handleLeave(msg) {
     this.emit('leave', msg.props.hash, msg.props.id);
+  };
+
+  TrackerClient.prototype.handleSdp = function handleSdp(msg) {
+    this.emit('sdp', msg.props.hash, msg.props.id, msg.props.sdp);
+  };
+
+  TrackerClient.prototype.handlePoke = function handlePoke(msg) {
+    this.handleEnter(msg);
   };
 
   return TrackerClient;

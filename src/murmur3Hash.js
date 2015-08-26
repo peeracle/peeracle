@@ -142,7 +142,6 @@ Peeracle.Murmur3Hash = (function () {
    */
   Murmur3Hash.prototype.update = function update(array) {
     var i;
-    var code;
     var l = array.length;
 
     if ((typeof array) === 'string' && l === 32) {

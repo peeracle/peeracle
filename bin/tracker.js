@@ -24,7 +24,22 @@
 
 var Peeracle = require('..');
 var program = require('commander');
+var raven = require('raven');
+var winston = require('winston');
 var tracker;
+
+var logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)({
+      json: false,
+      timestamp: true
+    })
+  ],
+  exceptionHandlers: [
+    new (winston.transports.Console)({json: false, timestamp: true})
+  ],
+  exitOnError: false
+});
 
 program
   .version('0.0.1')
@@ -33,5 +48,9 @@ program
   .option('-p, --port [port]', 'Port number')
   .parse(process.argv);
 
-tracker = new Peeracle.TrackerServer();
+if (process.env.hasOwnProperty('SENTRY_DSN')) {
+  raven.patchGlobal(process.env.SENTRY_DSN);
+}
+
+tracker = new Peeracle.TrackerServer(logger);
 tracker.listen(program.host || '127.0.0.1', program.port || 8080);
