@@ -24,6 +24,7 @@
 var Peeracle = {
   DataStream: require('./dataStream')
 };
+// var XMLHttpRequest = require('xhr2');
 // @endexclude
 
 /* eslint-disable */
@@ -31,9 +32,9 @@ Peeracle.HttpDataStream = (function() {
   /* eslint-enable */
   /**
    * @class HttpDataStream
-   * @memberof {Peeracle}
+   * @memberof Peeracle
    * @constructor
-   * @implements {DataStream}
+   * @implements DataStream
    * @property {Number} offset - Current stream's offset
    */
   function HttpDataStream(options) {
@@ -156,7 +157,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.peek = function peek(length, cb) {
     cb(null);
-    return length;
   };
 
   /**
@@ -238,7 +238,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.write = function write(bytes, cb) {
     cb(null);
-    return bytes;
   };
 
   /**
@@ -248,7 +247,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.writeChar = function writeChar(value, cb) {
     cb(null);
-    return value;
   };
 
   /**
@@ -258,7 +256,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.writeByte = function writeByte(value, cb) {
     cb(null);
-    return value;
   };
 
   /**
@@ -268,7 +265,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.writeShort = function writeShort(value, cb) {
     cb(null);
-    return value;
   };
 
   /**
@@ -278,7 +274,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.writeUShort = function writeUShort(value, cb) {
     cb(null);
-    return value;
   };
 
   /**
@@ -288,7 +283,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.writeInteger = function writeInteger(value, cb) {
     cb(null);
-    return value;
   };
 
   /**
@@ -298,7 +292,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.writeUInteger = function writeUInteger(value, cb) {
     cb(null);
-    return value;
   };
 
   /**
@@ -308,7 +301,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.writeFloat = function writeFloat(value, cb) {
     cb(null);
-    return value;
   };
 
   /**
@@ -318,7 +310,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.writeDouble = function writeDouble(value, cb) {
     cb(null);
-    return value;
   };
 
   /**
@@ -328,7 +319,6 @@ Peeracle.HttpDataStream = (function() {
    */
   HttpDataStream.prototype.writeString = function writeString(str, cb) {
     cb(null);
-    return str;
   };
 
   return HttpDataStream;
