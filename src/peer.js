@@ -58,6 +58,7 @@ Peeracle.Peer = (function () {
     this.hashes = {};
     this.connection = null;
     this.request = null;
+    this.sending = null;
   }
 
   Peer.prototype = Object.create(Peeracle.Listenable.prototype);
@@ -92,6 +93,19 @@ Peeracle.Peer = (function () {
     return this.connection.state === Peeracle.PeerConnection.State.Connecting;
   };
 
+  Peer.prototype.close = function close() {
+    if (!this.connection) {
+      return;
+    }
+
+    this.connection.state = Peeracle.PeerConnection.State.Disconnected;
+    this.connection.off('icecandidate');
+    this.connection.off('request');
+    this.connection.off('chunk');
+    this.connection.off('disconnect');
+    this.connection.close();
+  };
+
   Peer.prototype.onIceCandidate = function onIceCandidate(hash, ice) {
     if (!this.isConnecting() || !ice) {
       this.connection.off('icecandidate');
@@ -110,6 +124,10 @@ Peeracle.Peer = (function () {
     this.emit('request', hash, segment, chunk);
   };
 
+  Peer.prototype.onDisconnect = function onDisconnect() {
+    this.emit('disconnect');
+  };
+
   Peer.prototype.setupConnection = function setupConnection(hash) {
     if (this.connection) {
       return;
@@ -119,6 +137,7 @@ Peeracle.Peer = (function () {
     this.connection.on('icecandidate', this.onIceCandidate.bind(this, hash));
     this.connection.on('request', this.onRequest.bind(this));
     this.connection.on('chunk', this.onChunk.bind(this));
+    this.connection.on('disconnect', this.onDisconnect.bind(this));
   };
 
   Peer.prototype.processSdp = function processSdp(sdp, hash) {
@@ -144,6 +163,19 @@ Peeracle.Peer = (function () {
       this.connection.addICECandidate(sdp, function onAddICECandidate() {
       });
     }
+  };
+
+  Peer.prototype.sendStop = function sendStop() {
+    var _this = this;
+    var msg = new Peeracle.PeerMessage({
+      type: Peeracle.PeerMessage.MessageType.Stop
+    });
+
+    if (!this.connection || !this.isConnected()) {
+      return;
+    }
+
+    _this.connection.send(msg);
   };
 
   Peer.prototype.sendRequest = function sendRequest(hash, segment, chunk) {
@@ -192,7 +224,27 @@ Peeracle.Peer = (function () {
       bytes: null
     });
 
-    var interval = window.setInterval(function sendIt() {
+    if (this.sending) {
+      console.log('already sending something to', this.id, ', clearing');
+      window.clearInterval(this.sending);
+    }
+
+    this.sending = window.setInterval(function sendIt() {
+      if (!_this.connection ||
+        _this.connection.state !== Peeracle.PeerConnection.State.Connected) {
+        window.clearInterval(_this.sending);
+        _this.sending = null;
+        return;
+      }
+
+      if (_this.connection.cancelling) {
+        console.log('Stop requested');
+        _this.connection.cancelling = false;
+        window.clearInterval(_this.sending);
+        _this.sending = null;
+        return;
+      }
+
       if (_this.connection.dataChannel.bufferedAmount > 0) {
         return;
       }
@@ -203,8 +255,13 @@ Peeracle.Peer = (function () {
       offset += msg.props.bytes.length;
       _this.connection.send(msg);
 
+      _this.emit('sending', hash, index, chunk,
+        msg.props.bytes.length, offset, bytes.length);
+
       if (offset >= bytes.length) {
-        window.clearInterval(interval);
+        window.clearInterval(_this.sending);
+        _this.sending = null;
+        _this.emit('sent', hash, index, chunk, bytes.length);
       }
     }, 0);
   };

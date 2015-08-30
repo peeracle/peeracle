@@ -77,6 +77,7 @@ Peeracle.PeerConnection = (function () {
         OfferToReceiveVideo: false
       }
     };
+    this.cancelling = false;
   }
 
   PeerConnection.prototype = Object.create(Peeracle.Listenable.prototype);
@@ -111,6 +112,23 @@ Peeracle.PeerConnection = (function () {
     this.conn.ondatachannel = this.onDataChannel.bind(this);
   };
 
+  PeerConnection.prototype.close = function close() {
+    if (this.dataChannel) {
+      this.dataChannel.close();
+      delete this.dataChannel;
+    }
+
+    if (this.conn) {
+      this.conn.onicecandidate = null;
+      this.conn.onsignalingstatechange = null;
+      this.conn.oniceconnectionstatechange = null;
+      this.conn.onicegatheringstatechange = null;
+      this.conn.ondatachannel = null;
+      this.conn.close();
+      delete this.conn;
+    }
+  };
+
   /**
    * @function PeerConnection#createOffer
    * @param {Function} cb
@@ -126,18 +144,13 @@ Peeracle.PeerConnection = (function () {
 
     this.dataChannel = this.conn.createDataChannel('prcl');
     this.setupDataChannel();
-    console.log('call createOffer');
     this.conn.createOffer(function createSuccess(offerSdp) {
-      console.log('createSuccess');
       _this.conn.setLocalDescription(offerSdp, function setSuccess() {
-        console.log('setSuccess');
         cb(null, JSON.stringify(offerSdp));
       }, function setFailure(e) {
-        console.log('setFailure');
         cb(e);
       }, _this.mediaConstraints);
     }, function createFailure(e) {
-      console.log('failure');
       cb(e);
     });
   };
@@ -163,24 +176,17 @@ Peeracle.PeerConnection = (function () {
       cb(e);
     }
 
-    console.log('call setRemoteDescription');
     this.conn.setRemoteDescription(sessionDescription, function successCb() {
-      console.log('successCb');
       _this.conn.createAnswer(function createSuccess(answerSdp) {
-        console.log('createSuccess');
         _this.conn.setLocalDescription(answerSdp, function setSuccess() {
-          console.log('setSuccess');
           cb(null, JSON.stringify(answerSdp));
         }, function setFailure(e) {
-          console.log('setFailure');
           cb(e);
         }, _this.mediaConstraints);
       }, function createFailure(e) {
-        console.log('createFailure');
         cb(e);
       });
     }, function setFailure(e) {
-      console.log('setFailure');
       cb(e);
     });
   };
@@ -238,17 +244,20 @@ Peeracle.PeerConnection = (function () {
   };
 
   PeerConnection.prototype.onIceConnection = function onIceConnection() {
-    console.log('onIceConnection', this.conn.iceConnectionState);
+    if (!this.conn) {
+      return;
+    }
+
     if ((this.conn.iceConnectionState === 'disconnected' ||
       this.conn.iceConnectionState === 'closed') &&
       this.state !== PeerConnection.State.Disconnected) {
       this.state = PeerConnection.State.Disconnected;
+      this.close();
       this.emit('disconnect');
     }
   };
 
   PeerConnection.prototype.onIceGathering = function onIceGathering() {
-    console.log('onIceGathering', this.conn.iceGatheringState);
   };
 
   PeerConnection.prototype.onDataChannel = function onDataChannel(e) {
@@ -262,13 +271,10 @@ Peeracle.PeerConnection = (function () {
 
   PeerConnection.prototype.addICECandidate =
     function addICECandidate(sdp, cb) {
-      console.log('addIceCandidate');
       this.conn.addIceCandidate(new RTCIceCandidate(JSON.parse(sdp)),
         function successCb() {
-          console.log('successCb');
           cb(true);
         }, function failureCb() {
-          console.log('failureCb');
           cb(false);
         });
     };
@@ -302,9 +308,12 @@ Peeracle.PeerConnection = (function () {
   PeerConnection.prototype.handlePing = function handlePing() {
     if (this.state === PeerConnection.State.Connecting) {
       this.state = PeerConnection.State.Connected;
-      console.log('ping received, connected!');
       this.emit('connect');
     }
+  };
+
+  PeerConnection.prototype.handleStop = function handleStop() {
+    this.cancelling = true;
   };
 
   PeerConnection.prototype.handleRequest = function handleRequest(msg) {
@@ -321,7 +330,6 @@ Peeracle.PeerConnection = (function () {
       type: Peeracle.PeerMessage.MessageType.Ping
     });
 
-    console.log('onDataChannelOpen');
     this.state = PeerConnection.State.Connecting;
     this.send(msg);
   };

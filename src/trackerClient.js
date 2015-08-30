@@ -31,6 +31,8 @@ var window = {
   setInterval: setInterval,
   clearInterval: clearInterval
 };
+var os = require('os');
+var git = require('git-rev-sync');
 /* eslint-enable */
 // @endexclude
 
@@ -83,7 +85,36 @@ Peeracle.TrackerClient = (function () {
   };
 
   TrackerClient.prototype.connect = function connect() {
-    this.ws = new WebSocket(this.url, 'prcl-0.0.1');
+    // @exclude
+    var platform = os.platform();
+    var arch = os.arch();
+    var headers = {};
+
+    if (platform === 'linux') {
+      platform = 'Linux';
+    } else if (platform === 'win32') {
+      platform = 'Windows';
+    } else if (platform === 'darwin') {
+      platform = 'Mac OS X ' + os.release();
+    }
+
+    if (arch === 'x64') {
+      arch = 'x86_64';
+    } else {
+      arch = 'i386';
+    }
+
+    headers['user-agent'] = 'NodeJS/' + process.version + ' (' + platform + ' '
+      + arch + ') Peeracle' + '/' + git.short();
+
+    if (typeof navigator === 'undefined') {
+      this.ws = new WebSocket(this.url, 'prcl-0.0.1', undefined, headers);
+    } else {
+      // @endexclude
+      this.ws = new WebSocket(this.url, 'prcl-0.0.1');
+      // @exclude
+    }
+    // @endexclude
     this.ws.binaryType = 'arraybuffer';
     this.ws.onopen = this.onOpen.bind(this);
     this.ws.onmessage = this.onMessage.bind(this);
@@ -150,7 +181,8 @@ Peeracle.TrackerClient = (function () {
   };
 
   TrackerClient.prototype.handleEnter = function handleEnter(msg) {
-    this.emit('enter', msg.props.hash, msg.props.id, msg.props.got);
+    this.emit('enter', msg.props.hash, msg.props.id, msg.props.got,
+      msg.props.os, msg.props.browser, msg.props.device);
   };
 
   TrackerClient.prototype.handleLeave = function handleLeave(msg) {

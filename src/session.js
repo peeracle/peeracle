@@ -173,6 +173,32 @@ Peeracle.Session = (function () {
       this.handles[hash].emit('chunk', peer, segment, chunk, offset, bytes);
     };
 
+  Session.prototype.onPeerDisconnect =
+    function onPeerDisconnect(peer) {
+      var index;
+      var hashes;
+      var count;
+
+      if (!this.peers.hasOwnProperty(peer.id)) {
+        return;
+      }
+
+      hashes = Object.keys(this.peers[peer.id].hashes);
+      count = hashes.length;
+
+      peer.close();
+
+      for (index = 0; index < count; ++index) {
+        if (!this.handles.hasOwnProperty(hashes[index])) {
+          continue;
+        }
+
+        this.handles[hashes[index]].emit('leave', peer);
+      }
+
+      delete this.peers[peer.id];
+    };
+
   Session.prototype.initPeer = function initPeer(id, tracker) {
     var _this = this;
 
@@ -182,6 +208,9 @@ Peeracle.Session = (function () {
     });
     peer.on('chunk', function onChunk(hash, segment, chunk, offset, bytes) {
       _this.onPeerChunk(hash, peer, segment, chunk, offset, bytes);
+    });
+    peer.on('disconnect', function onDisconnect() {
+      _this.onPeerDisconnect(peer);
     });
 
     return peer;
@@ -202,8 +231,9 @@ Peeracle.Session = (function () {
       _this.emit('disconnect', tracker.url, code, reason);
     });
 
-    tracker.on('enter', function onEnter(hash, id, got) {
+    tracker.on('enter', function onEnter(hash, id, got, os, browser, device) {
       var peer;
+      var isUpdating = false;
 
       if (!_this.handles.hasOwnProperty(hash)) {
         return;
@@ -211,18 +241,36 @@ Peeracle.Session = (function () {
 
       if (!_this.peers.hasOwnProperty(id)) {
         _this.peers[id] = _this.initPeer(id, tracker);
+        _this.peers[id].browser = browser;
+        _this.peers[id].os = os;
+        _this.peers[id].device = device;
       }
+
       peer = _this.peers[id];
+
+      isUpdating = peer.hashes.hasOwnProperty(hash);
       peer.addHash(hash, got);
 
-      _this.handles[hash].emit('enter', peer);
+      if (!isUpdating) {
+        _this.handles[hash].emit('enter', peer);
+      }
     });
 
     tracker.on('leave', function onLeave(hash, id) {
+      var peer;
+
       if (!_this.handles.hasOwnProperty(hash)) {
         return;
       }
-      _this.handles[hash].emit('leave', id);
+
+      if (!_this.peers.hasOwnProperty(id)) {
+        return;
+      }
+
+      peer = _this.peers[id];
+      peer.removeHash(hash);
+
+      _this.handles[hash].emit('leave', peer);
     });
 
     tracker.on('sdp', function onSdp(hash, id, sdp) {

@@ -56,8 +56,15 @@ try {
 }
 
 function start(metadata, media) {
-  var storage = new Peeracle.MediaStorage(metadata, media);
-  var session = new Peeracle.Session(storage);
+  var storage;
+  var session;
+
+  if (media) {
+    storage = new Peeracle.MediaStorage(metadata, media);
+  } else {
+    storage = new Peeracle.MemoryStorage();
+  }
+  session = new Peeracle.Session(storage);
 
   session.on('connect', function onConnectCb(tracker, id) {
     console.log('[Session] Connected to tracker', tracker, 'with id', id);

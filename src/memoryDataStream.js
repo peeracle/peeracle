@@ -459,7 +459,7 @@ Peeracle.MemoryDataStream = (function () {
       cb(null, str, bytesRead);
       return null;
     }
-    return str;
+    return str ? str : '';
   };
 
   MemoryDataStream.prototype.write = function write(bytes, cb) {

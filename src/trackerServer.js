@@ -23,6 +23,7 @@
 var uuid = require('node-uuid');
 var http = require('http');
 var WebSocketServer = require('websocket').server;
+var uaparser = require('ua-parser');
 
 var Peeracle = {
   TrackerMessage: require('./trackerMessage')
@@ -100,8 +101,15 @@ Peeracle.TrackerServer = (function () {
     sock.on('message', this.onMessage.bind(this, sock));
     sock.on('close', this.onClose.bind(this, sock));
 
-    this.logger.info('accepted %s:%d from %s', request.socket.remoteAddress,
-      request.socket.remotePort, request.origin);
+    sock.infos = uaparser.parse(request.httpRequest.headers['user-agent']);
+    sock.browser = sock.infos.ua.toString();
+    sock.os = sock.infos.os.toString();
+    sock.device = sock.infos.device.toString();
+
+    console.log(request.httpRequest.headers['user-agent']);
+    this.logger.info('accepted %s:%d from %s (Browser: %s, OS: %s, Device: %s)',
+      request.socket.remoteAddress, request.socket.remotePort, request.origin,
+      sock.browser, sock.os, sock.device);
   };
 
   TrackerServer.prototype.onMessage = function onMessage(sock, message) {
@@ -215,7 +223,10 @@ Peeracle.TrackerServer = (function () {
       type: Peeracle.TrackerMessage.MessageType.Poke,
       hash: hash,
       id: sock.id,
-      got: got
+      got: got,
+      os: sock.os,
+      browser: sock.browser,
+      device: sock.device
     }), [target], [sock.id]);
   };
 
@@ -246,7 +257,10 @@ Peeracle.TrackerServer = (function () {
         type: Peeracle.TrackerMessage.MessageType.Enter,
         hash: hash,
         id: sock.id,
-        got: got
+        got: got,
+        os: sock.os,
+        browser: sock.browser,
+        device: sock.device
       }), entries, [sock.id]);
     };
 

@@ -108,7 +108,11 @@ Peeracle.TrackerMessage = (function () {
     dataStream.writeUInteger(count);
 
     for (index = 0; index < count; ++index) {
-      dataStream.writeUInteger(this.props.got[index]);
+      if (this.props.got[index]) {
+        dataStream.writeUInteger(this.props.got[index]);
+      } else {
+        dataStream.writeUInteger(0);
+      }
     }
     return bytes;
   };
@@ -130,8 +134,10 @@ Peeracle.TrackerMessage = (function () {
     var count = this.props.got.length;
 
     bytes = new Uint8Array(this.props.hash.length + 1 +
-      this.props.id.length + 1 +
-      4 + (4 * count));
+      this.props.id.length + 1 + 4 + (4 * count) +
+      (this.props.os ? this.props.os.length : 0) + 1 +
+      (this.props.browser ? this.props.browser.length : 0) + 1 +
+      (this.props.device ? this.props.device.length : 0) + 1);
 
     dataStream = new Peeracle.MemoryDataStream({buffer: bytes});
     dataStream.writeString(this.props.hash);
@@ -139,8 +145,16 @@ Peeracle.TrackerMessage = (function () {
     dataStream.writeUInteger(count);
 
     for (index = 0; index < count; ++index) {
-      dataStream.writeUInteger(this.props.got[index]);
+      if (this.props.got[index]) {
+        dataStream.writeUInteger(this.props.got[index]);
+      } else {
+        dataStream.writeUInteger(0);
+      }
     }
+
+    dataStream.writeString(this.props.os ? this.props.os : '');
+    dataStream.writeString(this.props.browser ? this.props.browser : '');
+    dataStream.writeString(this.props.device ? this.props.device : '');
     return bytes;
   };
 
@@ -234,6 +248,10 @@ Peeracle.TrackerMessage = (function () {
       for (index = 0; index < count; ++index) {
         this.props.got.push(dataStream.readUInteger());
       }
+
+      this.props.os = dataStream.readString();
+      this.props.browser = dataStream.readString();
+      this.props.device = dataStream.readString();
     };
 
   TrackerMessage.prototype.unserializeLeave =

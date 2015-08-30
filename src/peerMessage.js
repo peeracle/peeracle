@@ -44,13 +44,15 @@ Peeracle.PeerMessage = (function () {
   PeerMessage.MessageType = {
     Ping: 0,
     Request: 1,
-    Chunk: 2
+    Chunk: 2,
+    Stop: 3
   };
 
   PeerMessage.Types = [
     {name: 'Ping'},
     {name: 'Request'},
-    {name: 'Chunk'}
+    {name: 'Chunk'},
+    {name: 'Stop'}
   ];
 
   PeerMessage.prototype.createFromObject =
@@ -66,6 +68,10 @@ Peeracle.PeerMessage = (function () {
     };
 
   PeerMessage.prototype.serializePing = function serializePing() {
+    return new Uint8Array([]);
+  };
+
+  PeerMessage.prototype.serializeStop = function serializeStop() {
     return new Uint8Array([]);
   };
 
@@ -116,6 +122,10 @@ Peeracle.PeerMessage = (function () {
 
   PeerMessage.prototype.unserializePing =
     function unserializePing() {
+    };
+
+  PeerMessage.prototype.unserializeStop =
+    function unserializeStop() {
     };
 
   PeerMessage.prototype.unserializeRequest =
