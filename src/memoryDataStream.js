@@ -60,7 +60,7 @@ Peeracle.MemoryDataStream = (function () {
   MemoryDataStream.prototype = Object.create(Peeracle.DataStream.prototype);
   MemoryDataStream.prototype.constructor = MemoryDataStream;
 
-  MemoryDataStream.prototype.length = function length() {
+  MemoryDataStream.prototype.size = function size() {
     return this.buffer.length;
   };
 
@@ -79,6 +79,10 @@ Peeracle.MemoryDataStream = (function () {
 
     this.offset = position;
     return position;
+  };
+
+  MemoryDataStream.prototype.skip = function skip(length) {
+    this.offset += length;
   };
 
   MemoryDataStream.prototype.read = function read(length, cb) {

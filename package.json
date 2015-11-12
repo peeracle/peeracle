@@ -63,9 +63,9 @@
     "node-uuid": "^1.4.3",
     "raven": "^0.8.1",
     "ua-parser": "^0.3.5",
+    "webrtc-native": "^1.2.2",
     "websocket": "^1.0.21",
     "winston": "^1.0.1",
-    "wrtc": "0.0.57",
     "xhr2": "^0.1.3"
   }
 }

@@ -38,9 +38,10 @@ Peeracle.WebMMedia = (function () {
    *
    * @property {DataStream} dataStream;
    * @property {Boolean} initialized;
+   * @property {Uint8Array} initSegment;
    * @property {EBMLTag} seekHeadTag;
    * @property {EBMLSeekTable} seeks;
-   * @property {Object.<String, Number>} cues;
+   * @property {Array.<MediaCue>} cues;
    * @property {Array.<MediaTrack>} tracks;
    * @property {Number} timecodeScale;
    * @property {Number} duration;
@@ -49,9 +50,10 @@ Peeracle.WebMMedia = (function () {
   function WebMMedia(dataStream) {
     this.dataStream = dataStream;
     this.initialized = false;
+    this.initSegment = null;
     this.seekHeadTag = null;
     this.seeks = {};
-    this.cues = {};
+    this.cues = [];
     this.tracks = [];
     this.timecodeScale = -1;
     this.duration = -1;
@@ -137,9 +139,24 @@ Peeracle.WebMMedia = (function () {
     cb(null, this.initSegment);
   };
 
+  WebMMedia.prototype.findCueAtTimecode = function findCueAtTimecode(timecode) {
+    var index;
+    var length = this.cues.length;
+    var cue;
+
+    for (index = 0; index < length; ++index) {
+      cue = this.cues[index];
+      if (cue.timecode === timecode) {
+        return cue;
+      }
+    }
+
+    return null;
+  };
+
   WebMMedia.prototype.getMediaSegment = function getMediaSegment(timecode, cb) {
     var _this = this;
-    var cues;
+    var cue;
 
     if (!this.initialized) {
       this.init(function initCb(error) {
@@ -153,18 +170,13 @@ Peeracle.WebMMedia = (function () {
       return;
     }
 
-    if (!this.cues.hasOwnProperty('' + this.tracks[0].id)) {
+    cue = this.findCueAtTimecode(timecode);
+    if (!cue) {
       cb(new Error('Unknown timecode'));
       return;
     }
 
-    cues = this.cues['' + this.tracks[0].id];
-    if (!cues.hasOwnProperty('' + timecode)) {
-      cb(new Error('Unknown timecode'));
-      return;
-    }
-
-    this.dataStream.seek(cues['' + timecode]);
+    this.dataStream.seek(cue.offset);
     this.readEBMLTag_(function readTagCb(error, tag) {
       _this.dataStream.seek(tag.offset);
       _this.dataStream.read(tag.headerLength + tag.dataLength,
@@ -726,12 +738,10 @@ Peeracle.WebMMedia = (function () {
       throw new Error('Parsed an invalid CuePoint');
     }
 
-    if (!this.cues.hasOwnProperty('' + cue.track)) {
-      this.cues['' + cue.track] = {};
-    }
-
-    this.cues['' + cue.track]['' + cue.timecode] = cue.clusterPosition +
-      this.seekHeadTag.offset;
+    this.cues.push({
+      timecode: cue.timecode,
+      offset: cue.clusterPosition + this.seekHeadTag.offset
+    });
   };
 
   /**
