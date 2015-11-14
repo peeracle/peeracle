@@ -68,6 +68,10 @@ Peeracle.HttpDataStream = (function() {
     this.offset = position;
   };
 
+  HttpDataStream.prototype.skip = function skip(length) {
+    this.offset += length;
+  };
+
   /**
    * @function HttpDataStream#read
    * @param {Number} length

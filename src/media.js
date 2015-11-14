@@ -30,7 +30,7 @@ Peeracle.Media = (function () {
   /**
    * @interface Media
    * @memberof {Peeracle}
-   * @property {Object.<String, Number>} cues;
+   * @property {Array.<MediaCue>} cues;
    * @property {Array.<MediaTrack>} tracks;
    * @property {Number} timecodeScale;
    * @property {Number} duration;
@@ -122,6 +122,13 @@ Peeracle.Media = (function () {
    * @property {Number} samplingFrequency
    * @property {Number} channels
    * @property {Number} bitDepth
+   */
+
+  /**
+   * @typedef {Object} MediaCue
+   * @property {Number} timecode
+   * @property {Number} offset
+   * @property {Number} length
    */
 
   return Media;

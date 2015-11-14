@@ -75,13 +75,13 @@ Peeracle.MediaStorage = (function () {
           return;
         }
 
-        timecodes = Object.keys(_this.media.cues['' + _this.media.tracks[0].id]);
+        timecodes = _this.media.cues;
         if (segment < 0 || segment > timecodes.length) {
           cb(null, null);
           return;
         }
 
-        _this.media.getMediaSegment(parseInt(timecodes[segment], 10),
+        _this.media.getMediaSegment(timecodes[segment].timecode,
           function getMediaSegmentCb(err, bytes) {
             if (err) {
               cb(err);

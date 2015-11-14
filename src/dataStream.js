@@ -50,7 +50,7 @@ Peeracle.DataStream = (function() {
    * @return {Number}
    */
   /* istanbul ignore next */
-  DataStream.prototype.length = function length() {
+  DataStream.prototype.size = function size() {
   };
 
   /**
@@ -70,6 +70,15 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.seek = function seek(position) {
+  };
+
+  /**
+   * Skip bytes.
+   * @function DataStream#skip
+   * @param {Number} length
+   */
+  /* istanbul ignore next */
+  DataStream.prototype.skip = function skip(length) {
   };
 
   /**
@@ -141,6 +150,16 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readUInteger = function readUInteger(cb) {
+  };
+
+  /**
+   * Reads one 64-bits unsigned integer starting at the internal cursor,
+   * then pass it as an argument inside cb and increase the internal cursor.
+   * @function DataStream#readUInteger64
+   * @param {DataStream~readCallback} cb
+   */
+  /* istanbul ignore next */
+  DataStream.prototype.readUInteger64 = function readUInteger64(cb) {
   };
 
   /**

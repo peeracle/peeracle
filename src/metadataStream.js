@@ -130,10 +130,9 @@ Peeracle.MetadataStream = (function () {
   MetadataStream.prototype.addMediaSegments = function addMediaSegments(cb) {
     var _this = this;
     var index = 0;
-    var cues = this.media.cues['' + this.media.tracks[0].id];
-    var timecodes = Object.keys(cues);
-    var count = timecodes.length;
-    var timecode = parseInt(timecodes[index], 10);
+    var cues = this.media.cues;
+    var count = cues.length;
+    var timecode = cues[index].timecode;
 
     this.calculateStreamSize_(cues);
     this.media.getMediaSegment(timecode,
@@ -153,9 +152,8 @@ Peeracle.MetadataStream = (function () {
         _this.mediaSegments.push(mediaSegment);
 
         if (++index < count) {
-          timecode = parseInt(timecodes[index], 10);
-          _this.media.getMediaSegment(timecode,
-            getMediaSegmentCb);
+          timecode = cues[index].timecode;
+          _this.media.getMediaSegment(timecode, getMediaSegmentCb);
         } else {
           cb(null);
         }
@@ -171,11 +169,10 @@ Peeracle.MetadataStream = (function () {
       var index;
       var currentOffset;
       var previousOffset = 0;
-      var timecodes = Object.keys(cues);
-      var count = timecodes.length;
+      var count = cues.length;
 
       for (index = 0; index < count; ++index) {
-        currentOffset = cues[timecodes[index]];
+        currentOffset = cues[index].offset;
         this.streamSize += currentOffset - previousOffset;
         previousOffset = currentOffset;
       }

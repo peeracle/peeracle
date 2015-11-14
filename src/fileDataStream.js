@@ -83,7 +83,7 @@ Peeracle.FileDataStream = (function () {
     // @endexclude
   };
 
-  FileDataStream.prototype.length = function length() {
+  FileDataStream.prototype.size = function size() {
     return this.length;
   };
 
@@ -93,6 +93,10 @@ Peeracle.FileDataStream = (function () {
 
   FileDataStream.prototype.seek = function seek(position) {
     this.offset = position;
+  };
+
+  FileDataStream.prototype.skip = function skip(length) {
+    this.offset += length;
   };
 
   FileDataStream.prototype.read = function read(length, cb) {
@@ -203,6 +207,39 @@ Peeracle.FileDataStream = (function () {
     });
   };
 
+  FileDataStream.prototype.readUInteger64 = function readUInteger(cb) {
+    var _this = this;
+    var high;
+    var low;
+
+    this.read(8, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+
+      if (_this.littleEndian) {
+        low = dataView.getUint32(0, true);
+        high = dataView.getUint32(4, true);
+      } else {
+        high = dataView.getUint32(0, false);
+        low = dataView.getUint32(4, false);
+      }
+
+      if (high > 0x1FFFFF) {
+        cb(new RangeError('Overflow reading 64-bit value.'));
+        return;
+      }
+
+      cb(null, (high * Math.pow(2, 32)) + low, length);
+    });
+  };
+
   FileDataStream.prototype.readFloat = function readFloat(cb) {
     var _this = this;
     this.read(4, function readCb(error, bytes, length) {
@@ -235,19 +272,20 @@ Peeracle.FileDataStream = (function () {
     });
   };
 
-  FileDataStream.prototype.readString = function readString(cb) {
+  FileDataStream.prototype.readString = function readString(length, cb) {
     var stringLength = 0;
     var str = '';
     var _this = this;
+    var realCb = ((typeof length) === 'function') ? length : cb;
 
-    this.readChar(function peekCharCb(error, value, length) {
+    this.readChar(function peekCharCb(error, value, count) {
       if (error) {
-        cb(error);
+        realCb(error);
         return;
       }
 
-      if (!value || !length) {
-        cb(null, str, stringLength);
+      if (!value || !count) {
+        realCb(null, str, stringLength);
         return;
       }
 

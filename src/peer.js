@@ -232,6 +232,8 @@ Peeracle.Peer = (function () {
     this.sending = window.setInterval(function sendIt() {
       if (!_this.connection ||
         _this.connection.state !== Peeracle.PeerConnection.State.Connected) {
+
+        console.log('peer not connected', _this.connection ? _this.connection.state : undefined );
         window.clearInterval(_this.sending);
         _this.sending = null;
         return;
@@ -246,6 +248,7 @@ Peeracle.Peer = (function () {
       }
 
       if (_this.connection.dataChannel.bufferedAmount > 0) {
+        console.log('buffered amount, waiting');
         return;
       }
 
@@ -255,6 +258,7 @@ Peeracle.Peer = (function () {
       offset += msg.props.bytes.length;
       _this.connection.send(msg);
 
+      console.log('sending chunk now');
       _this.emit('sending', hash, index, chunk,
         msg.props.bytes.length, offset, bytes.length);
 
@@ -262,6 +266,7 @@ Peeracle.Peer = (function () {
         window.clearInterval(_this.sending);
         _this.sending = null;
         _this.emit('sent', hash, index, chunk, bytes.length);
+        console.log('sent chunk');
       }
     }, 0);
   };
