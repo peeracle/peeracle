@@ -30,7 +30,7 @@ var Peeracle = {
 /* eslint-disable */
 Peeracle.PeerConnection = (function () {
   // @exclude
-  var webrtc = require('wrtc');
+  var webrtc = require('webrtc-native');
   var RTCPeerConnection = webrtc.RTCPeerConnection;
   var RTCSessionDescription = webrtc.RTCSessionDescription;
   var RTCIceCandidate = webrtc.RTCIceCandidate;
@@ -330,7 +330,10 @@ Peeracle.PeerConnection = (function () {
       type: Peeracle.PeerMessage.MessageType.Ping
     });
 
-    this.state = PeerConnection.State.Connecting;
+    if (this.state !== PeerConnection.State.Connecting) {
+      this.state = PeerConnection.State.Connecting;
+    }
+
     this.send(msg);
   };
 

@@ -25,7 +25,8 @@ var Peeracle = {
   DataStream: require('./dataStream'),
   Hash: require('./hash'),
   MetadataStream: require('./metadataStream'),
-  Media: require('./media')
+  Media: require('./media'),
+  MemoryDataStream: require('./memoryDataStream')
 };
 // @endexclude
 
@@ -238,88 +239,54 @@ Peeracle.Metadata = (function () {
   /**
    * @function Metadata#unserializeStreams_
    * @param {Peeracle.DataStream} dataStream
-   * @param {Metadata~genericCallback} cb
    * @private
    */
   Metadata.prototype.unserializeStreams_ =
-    function unserializeStreams_(dataStream, cb) {
+    function unserializeStreams_(dataStream) {
       var _this = this;
-      var index = 0;
-      var count;
       var stream;
+      var index;
+      var count = dataStream.readUInteger();
 
-      dataStream.readUInteger(function readStreamsCountCb(err, value) {
-        if (err) {
-          cb(err);
-          return;
-        }
-
-        count = value;
-
-        if (!count) {
-          cb(null);
-          return;
-        }
-
+      for (index = 0; index < count; ++index) {
         stream = new Peeracle.MetadataStream(_this);
-        stream.unserialize(dataStream, function unserializeCb(error) {
-          if (error) {
-            cb(error);
-            return;
-          }
+        stream.unserialize(dataStream);
+        this.streams.push(stream);
+      }
 
-          _this.streams.push(stream);
-          if (++index < count) {
-            stream = new Peeracle.MetadataStream(_this);
-            stream.unserialize(dataStream, unserializeCb);
-          } else {
-            _this.hash = _this.checksumAlgorithm.finish();
-            cb(null);
-          }
-        });
-      });
+      this.hash = this.checksumAlgorithm.finish();
     };
 
   /**
    * @function Metadata#unserializeTrackers_
    * @param {Peeracle.DataStream} dataStream
-   * @param {Metadata~genericCallback} cb
    * @private
    */
   Metadata.prototype.unserializeTrackers_ =
-    function unserializeTrackers_(dataStream, cb) {
-      var _this = this;
-      dataStream.readUInteger(function readTrackerCountCb(error, value) {
-        var index = 0;
-        var length;
+    function unserializeTrackers_(dataStream) {
+      var index;
+      var length = dataStream.readUInteger();
 
-        if (error) {
-          cb(error);
-          return;
-        }
-
-        length = value;
-        if (!length) {
-          _this.unserializeStreams_(dataStream, cb);
-          return;
-        }
-
-        _this.trackerUrls = [];
-        dataStream.readString(function readTrackerUrlCb(err, val) {
-          if (err) {
-            cb(err);
-            return;
-          }
-
-          _this.trackerUrls[index] = val;
-          if (++index < length) {
-            dataStream.readString(readTrackerUrlCb);
-          } else {
-            _this.unserializeStreams_(dataStream, cb);
-          }
-        });
-      });
+      for (index = 0; index < length; ++index) {
+        this.trackerUrls[index] = dataStream.readString();
+      }
     };
+
+  /**
+   * @function Metadata#unserializeHeader_
+   * @param {Peeracle.DataStream} dataStream
+   * @private
+   */
+  Metadata.prototype.unserializeHeader_ = function unserializeHeader_(dataStream) {
+    var field;
+    var index;
+    var length = Metadata.HEADER_FIELDS.length;
+
+    for (index = 0; index < length; ++index) {
+      field = Metadata.HEADER_FIELDS[index];
+      this[field.name] = dataStream['read' + field.type]();
+    }
+  };
 
   /**
    * @function Metadata#unserialize
@@ -327,9 +294,6 @@ Peeracle.Metadata = (function () {
    * @param {Metadata~genericCallback} cb
    */
   Metadata.prototype.unserialize = function unserialize(dataStream, cb) {
-    var field;
-    var index = 0;
-    var length = Metadata.HEADER_FIELDS.length;
     var _this = this;
 
     if (!(dataStream instanceof Peeracle.DataStream)) {
@@ -337,20 +301,25 @@ Peeracle.Metadata = (function () {
       return;
     }
 
-    field = Metadata.HEADER_FIELDS[index];
-    dataStream['read' + field.type](function readCb(error, value) {
+    dataStream.read(dataStream.length(), function readCb(error, bytes) {
+      var memoryDataStream;
+
       if (error) {
         cb(error);
         return;
       }
 
-      _this[field.name] = value;
-      if (++index < length) {
-        field = Metadata.HEADER_FIELDS[index];
-        dataStream['read' + field.type](readCb);
-      } else {
-        _this.unserializeTrackers_(dataStream, cb);
+      try {
+        memoryDataStream = new Peeracle.MemoryDataStream({buffer: bytes});
+        _this.unserializeHeader_(memoryDataStream);
+        _this.unserializeTrackers_(memoryDataStream);
+        _this.unserializeStreams_(memoryDataStream);
+      } catch (err) {
+        cb(err);
+        return;
       }
+
+      cb(null);
     });
   };
 

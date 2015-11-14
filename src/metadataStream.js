@@ -23,6 +23,7 @@
 // @exclude
 var Peeracle = {
   DataStream: require('./dataStream'),
+  MemoryDataStream: require('./memoryDataStream'),
   Hash: require('./hash')
 };
 // @endexclude
@@ -382,171 +383,93 @@ Peeracle.MetadataStream = (function () {
 
   /**
    * @function MetadataStream#unserializeChunks_
-   * @param {Array.<Uint8Array>} chunks
    * @param {Peeracle.DataStream} dataStream
-   * @param {Metadata~genericCallback} cb
    */
   MetadataStream.prototype.unserializeChunks_ =
-    function unserializeChunks_(chunks, dataStream, cb) {
+    function unserializeChunks_(dataStream) {
       var _this = this;
       var index = 0;
+      var length = dataStream.readUInteger();
+      var chunk;
+      var chunks = [];
 
-      dataStream.readUInteger(function readChunksCount(error, value) {
-        if (error) {
-          cb(error);
-          return;
-        }
+      for (index = 0; index < length; ++index) {
+        chunk = _this.checksumAlgorithm.constructor.unserialize(dataStream);
+        chunks.push(chunk);
+        this.metadata.checksumAlgorithm.update(chunk);
+      }
 
-        _this.checksumAlgorithm.constructor.unserialize(dataStream,
-          function readChunkCb(err, chunk) {
-            if (err) {
-              cb(err);
-              return;
-            }
-
-            chunks.push(chunk);
-            _this.metadata.checksumAlgorithm.update(chunk);
-            if (++index < value) {
-              _this.checksumAlgorithm.constructor.unserialize(dataStream,
-                readChunkCb);
-            } else {
-              cb(null);
-            }
-          });
-      });
+      return chunks;
     };
 
   /**
    * @function MetadataStream#serializeMediaSegments_
-   * @param {MetadataMediaSegment} mediaSegment
    * @param {Peeracle.DataStream} dataStream
-   * @param {Metadata~genericCallback} cb
    */
   MetadataStream.prototype.unserializeMediaSegment_ =
-    function unserializeMediaSegment_(mediaSegment, dataStream, cb) {
+    function unserializeMediaSegment_(dataStream) {
       var field;
-      var index = 0;
+      var index;
       var length = MetadataStream.MEDIASEGMENT_FIELDS.length;
-      var _this = this;
+      var mediaSegment = {};
 
-      field = MetadataStream.MEDIASEGMENT_FIELDS[index];
-      dataStream['read' + field.type](function readCb(error, value) {
-        if (error) {
-          cb(error);
-          return;
-        }
+      for (index = 0; index < length; ++index) {
+        field = MetadataStream.MEDIASEGMENT_FIELDS[index];
+        mediaSegment[field.name] = dataStream['read' + field.type]();
+      }
 
-        mediaSegment[field.name] = value;
-        if (++index < length) {
-          field = MetadataStream.MEDIASEGMENT_FIELDS[index];
-          dataStream['read' + field.type](readCb);
-        } else {
-          mediaSegment.chunks = [];
-          _this.unserializeChunks_(mediaSegment.chunks, dataStream, cb);
-        }
-      });
+      mediaSegment.chunks = this.unserializeChunks_(dataStream);
+      return mediaSegment;
     };
 
   /**
    * @function MetadataStream#unserializeMediaSegments_
    * @param {Peeracle.DataStream} dataStream
-   * @param {Metadata~genericCallback} cb
    */
   MetadataStream.prototype.unserializeMediaSegments_ =
-    function unserializeMediaSegments_(dataStream, cb) {
-      var _this = this;
-      dataStream.readUInteger(function readMediaSegmentsCountCb(error, value) {
-        var index = 0;
-        var mediaSegment;
+    function unserializeMediaSegments_(dataStream) {
+      var index;
+      var count = dataStream.readUInteger();
+      var mediaSegment;
 
-        if (error) {
-          cb(error);
-          return;
-        }
-
-        if (!value) {
-          cb(null);
-          return;
-        }
-
-        mediaSegment = {};
-        _this.unserializeMediaSegment_(mediaSegment, dataStream,
-          function unserializeMediaSegmentCb(err) {
-            if (err) {
-              cb(err);
-              return;
-            }
-
-            _this.mediaSegments.push(mediaSegment);
-            if (++index < value) {
-              mediaSegment = {};
-              _this.unserializeMediaSegment_(mediaSegment, dataStream,
-                unserializeMediaSegmentCb);
-            } else {
-              cb(null);
-            }
-          });
-      });
+      for (index = 0; index < count; ++index) {
+        mediaSegment = this.unserializeMediaSegment_(dataStream);
+        this.mediaSegments.push(mediaSegment);
+      }
     };
 
   /**
    * @function MetadataStream#unserializeInitSegment_
    * @param {Peeracle.DataStream} dataStream
-   * @param {Metadata~genericCallback} cb
    */
   MetadataStream.prototype.unserializeInitSegment_ =
-    function serializeInitSegment_(dataStream, cb) {
-      var _this = this;
-      dataStream.readUInteger(function readInitSegmentLengthCb(error, value) {
-        if (error) {
-          cb(error);
-          return;
-        }
+    function serializeInitSegment_(dataStream) {
+      var length = dataStream.readUInteger();
 
-        dataStream.read(value, function readInitSegmentCb(err, bytes) {
-          if (err) {
-            cb(err);
-            return;
-          }
-
-          _this.initSegment = bytes;
-          _this.metadata.checksumAlgorithm.update(bytes);
-          _this.unserializeMediaSegments_(dataStream, cb);
-        });
-      });
+      this.initSegment = dataStream.read(length);
+      this.metadata.checksumAlgorithm.update(this.initSegment);
     };
 
   /**
    * @function MetadataStream#unserialize
    * @param {DataStream} dataStream
-   * @param {Function} cb
    */
-  MetadataStream.prototype.unserialize = function unserialize(dataStream, cb) {
+  MetadataStream.prototype.unserialize = function unserialize(dataStream) {
     var field;
-    var index = 0;
+    var index;
     var length = MetadataStream.HEADER_FIELDS.length;
-    var _this = this;
 
-    if (!(dataStream instanceof Peeracle.DataStream)) {
-      cb(new TypeError('argument must be a DataStream'));
-      return;
+    if (!(dataStream instanceof Peeracle.MemoryDataStream)) {
+      throw (new TypeError('argument must be a MemoryDataStream'));
     }
 
-    field = MetadataStream.HEADER_FIELDS[index];
-    dataStream['read' + field.type](function readCb(error, value) {
-      if (error) {
-        cb(error);
-        return;
-      }
+    for (index = 0; index < length; ++index) {
+      field = MetadataStream.HEADER_FIELDS[index];
+      this[field.name] = dataStream['read' + field.type]();
+    }
 
-      _this[field.name] = value;
-      if (++index < length) {
-        field = MetadataStream.HEADER_FIELDS[index];
-        dataStream['read' + field.type](readCb);
-      } else {
-        _this.unserializeInitSegment_(dataStream, cb);
-      }
-    });
+    this.unserializeInitSegment_(dataStream);
+    this.unserializeMediaSegments_(dataStream);
   };
 
   /**

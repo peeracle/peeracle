@@ -97,10 +97,22 @@ Peeracle.Murmur3Hash = (function () {
    * @param {Function} cb
    */
   Murmur3Hash.unserialize = function unserialize(dataStream, cb) {
-    dataStream.read(16, function readByteCb(error, bytes) {
-      var i;
-      var str;
+    var i;
+    var str;
+    var syncBytes;
 
+    if (!cb) {
+      syncBytes = dataStream.read(16);
+
+      str = '';
+      for (i = 0; i < 16; ++i) {
+        str += ('00' + syncBytes[i].toString(16)).slice(-2);
+      }
+
+      return str;
+    }
+
+    dataStream.read(16, function readByteCb(error, bytes) {
       if (error) {
         cb(error);
         return;
