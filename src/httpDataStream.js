@@ -24,7 +24,7 @@
 var Peeracle = {
   DataStream: require('./dataStream')
 };
-// var XMLHttpRequest = require('xhr2');
+var XMLHttpRequest = require('xhr2');
 // @endexclude
 
 /* eslint-disable */
@@ -40,16 +40,30 @@ Peeracle.HttpDataStream = (function() {
   function HttpDataStream(options) {
     this.options = options || {};
     this.offset = 0;
+    this.length = -1;
+
+    if ((typeof options) !== 'object') {
+      throw new TypeError('options should be an object');
+    }
+
+    if (!options.hasOwnProperty('url') ||
+      (typeof options.url) !== 'string') {
+      throw new TypeError('options.url should be a string');
+    }
   }
+
+  HttpDataStream.CONTENT_RANGE_REGEX = /^bytes \d+-\d+\/(\d+)$/;
 
   HttpDataStream.prototype = Object.create(Peeracle.DataStream.prototype);
   HttpDataStream.prototype.constructor = HttpDataStream;
 
   /**
-   * @function HttpDataStream#length
+   * @function HttpDataStream#size
    * @return {Number}
    */
-  HttpDataStream.prototype.length = function length() {
+  HttpDataStream.prototype.size = function size() {
+    console.log('HttpDataStream::size', this.length);
+    return this.length;
   };
 
   /**
@@ -57,6 +71,8 @@ Peeracle.HttpDataStream = (function() {
    * @return {Number}
    */
   HttpDataStream.prototype.tell = function tell() {
+    console.log('HttpDataStream::tell', this.offset);
+    return this.offset;
   };
 
   /**
@@ -65,11 +81,17 @@ Peeracle.HttpDataStream = (function() {
    * @return {Number}
    */
   HttpDataStream.prototype.seek = function seek(position) {
-    this.offset = position;
+    console.log('HttpDataStream::seek', this.offset, position, this.length);
+    if (position > this.length) {
+      this.offset = this.length;
+    } else {
+      this.offset = position;
+    }
   };
 
   HttpDataStream.prototype.skip = function skip(length) {
-    this.offset += length;
+    console.log('HttpDataStream::skip', this.length);
+    this.seek(this.offset + length);
   };
 
   /**
@@ -78,80 +100,67 @@ Peeracle.HttpDataStream = (function() {
    * @param {DataStream~readCallback} cb
    */
   HttpDataStream.prototype.read = function read(length, cb) {
-    this.offset += length;
-    cb(null);
+    var _this = this;
+
+    console.log('HttpDataStream::read', length);
+    this.peek(length, function peekCb(error, bytes, count) {
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      _this.offset += count;
+      cb(null, bytes, count);
+    });
   };
 
-  /**
-   * @function HttpDataStream#readChar
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.readChar = function readChar(cb) {
-    cb(null);
+  HttpDataStream.prototype.onRequestLoad_ = function onRequestLoad_(request, start, cb) {
+    var bytes;
+    var match;
+    var contentRange;
+
+    if (request.status !== 206) {
+      return;
+    }
+
+    bytes = new Uint8Array(request.response);
+    contentRange = request.getResponseHeader('Content-Range');
+    match = HttpDataStream.CONTENT_RANGE_REGEX.exec(contentRange);
+
+    this.offset = start;
+    this.length = match && match.length >= 2 ? parseInt(match[1], 10) : -1;
+
+    cb(null, bytes, bytes.length);
   };
 
-  /**
-   * @function HttpDataStream#readByte
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.readByte = function readByte(cb) {
-    cb(null);
-  };
+  HttpDataStream.prototype.fetchBytes_ = function fetchBytes_(start, end, cb) {
+    var _this = this;
+    var request = new XMLHttpRequest();
 
-  /**
-   * @function HttpDataStream#readShort
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.readShort = function readShort(cb) {
-    cb(null);
-  };
+    if (this.length !== -1 && end > this.length) {
+      end = this.length;
+    }
 
-  /**
-   * @function HttpDataStream#readUShort
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.readUShort = function readUShort(cb) {
-    cb(null);
-  };
+    request.onreadystatechange = function onStateChangeCb() {
+      if (request.readyState === XMLHttpRequest.DONE) {
+        if (request.status !== 206) {
+          cb(new Error('HttpDataStream status code', request.status));
+        }
+      }
+    };
 
-  /**
-   * @function HttpDataStream#readInteger
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.readInteger = function readInteger(cb) {
-    cb(null);
-  };
+    request.onload = function onLoadCb() {
+      _this.onRequestLoad_(this, start, cb);
+    };
 
-  /**
-   * @function HttpDataStream#readUInteger
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.readUInteger = function readUInteger(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#readFloat
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.readFloat = function readFloat(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#readDouble
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.readDouble = function readDouble(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#readString
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.readString = function readString(cb) {
-    cb(null);
+    try {
+      request.open('GET', this.options.url);
+      request.setRequestHeader('Range', 'bytes=' + start + '-' + (end - 1));
+      request.responseType = 'arraybuffer';
+      request.send();
+    } catch (e) {
+      cb(e);
+    }
   };
 
   /**
@@ -160,79 +169,11 @@ Peeracle.HttpDataStream = (function() {
    * @param {DataStream~readCallback} cb
    */
   HttpDataStream.prototype.peek = function peek(length, cb) {
-    cb(null);
-  };
+    var start = this.offset;
+    var end = start + length;
 
-  /**
-   * @function HttpDataStream#peekChar
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.peekChar = function peekChar(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#peekByte
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.peekByte = function peekByte(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#peekShort
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.peekShort = function peekShort(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#peekUShort
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.peekUShort = function peekUShort(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#peekInteger
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.peekInteger = function peekInteger(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#peekUInteger
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.peekUInteger = function peekUInteger(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#peekFloat
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.peekFloat = function peekFloat(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#peekDouble
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.peekDouble = function peekDouble(cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#peekString
-   * @param {DataStream~readCallback} cb
-   */
-  HttpDataStream.prototype.peekString = function peekString(cb) {
-    cb(null);
+    console.log('HttpDataStream::peek', length);
+    this.fetchBytes_(start, end, cb);
   };
 
   /**
@@ -241,87 +182,6 @@ Peeracle.HttpDataStream = (function() {
    * @param {DataStream~writeCallback} cb
    */
   HttpDataStream.prototype.write = function write(bytes, cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#writeChar
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
-  HttpDataStream.prototype.writeChar = function writeChar(value, cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#writeByte
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
-  HttpDataStream.prototype.writeByte = function writeByte(value, cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#writeShort
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
-  HttpDataStream.prototype.writeShort = function writeShort(value, cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#writeUShort
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
-  HttpDataStream.prototype.writeUShort = function writeUShort(value, cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#writeInteger
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
-  HttpDataStream.prototype.writeInteger = function writeInteger(value, cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#writeUInteger
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
-  HttpDataStream.prototype.writeUInteger = function writeUInteger(value, cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#writeFloat
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
-  HttpDataStream.prototype.writeFloat = function writeFloat(value, cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#writeDouble
-   * @param {Number} value
-   * @param {DataStream~writeCallback} cb
-   */
-  HttpDataStream.prototype.writeDouble = function writeDouble(value, cb) {
-    cb(null);
-  };
-
-  /**
-   * @function HttpDataStream#writeString
-   * @param {String} str
-   * @param {DataStream~writeCallback} cb
-   */
-  HttpDataStream.prototype.writeString = function writeString(str, cb) {
     cb(null);
   };
 

@@ -301,7 +301,7 @@ Peeracle.Metadata = (function () {
       return;
     }
 
-    dataStream.read(dataStream.length(), function readCb(error, bytes) {
+    dataStream.read(dataStream.size(), function readCb(error, bytes) {
       var memoryDataStream;
 
       if (error) {

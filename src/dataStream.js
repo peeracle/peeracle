@@ -46,7 +46,7 @@ Peeracle.DataStream = (function() {
 
   /**
    * Return the total number of bytes.
-   * @function DataStream#length
+   * @function DataStream#size
    * @return {Number}
    */
   /* istanbul ignore next */
@@ -100,6 +100,18 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readChar = function readChar(cb) {
+    this.read(1, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getInt8(0), length);
+    });
   };
 
   /**
@@ -110,6 +122,18 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readByte = function readByte(cb) {
+    this.read(1, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getUint8(0), length);
+    });
   };
 
   /**
@@ -120,6 +144,19 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readShort = function readShort(cb) {
+    var _this = this;
+    this.read(2, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getInt16(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -130,6 +167,19 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readUShort = function readUShort(cb) {
+    var _this = this;
+    this.read(2, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getUint16(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -140,6 +190,19 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readInteger = function readInteger(cb) {
+    var _this = this;
+    this.read(4, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getInt32(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -150,6 +213,19 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readUInteger = function readUInteger(cb) {
+    var _this = this;
+    this.read(4, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getUint32(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -160,6 +236,36 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readUInteger64 = function readUInteger64(cb) {
+    var _this = this;
+    var high;
+    var low;
+
+    this.read(8, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+
+      if (_this.littleEndian) {
+        low = dataView.getUint32(0, true);
+        high = dataView.getUint32(4, true);
+      } else {
+        high = dataView.getUint32(0, false);
+        low = dataView.getUint32(4, false);
+      }
+
+      if (high > 0x1FFFFF) {
+        cb(new RangeError('Overflow reading 64-bit value.'));
+        return;
+      }
+
+      cb(null, (high * Math.pow(2, 32)) + low, length);
+    });
   };
 
   /**
@@ -170,6 +276,19 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readFloat = function readFloat(cb) {
+    var _this = this;
+    this.read(4, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getFloat32(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -180,6 +299,19 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readDouble = function readDouble(cb) {
+    var _this = this;
+    this.read(8, function readCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getFloat64(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -190,6 +322,26 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.readString = function readString(cb) {
+    var stringLength = 0;
+    var str = '';
+    var _this = this;
+    var realCb = ((typeof length) === 'function') ? length : cb;
+
+    this.readChar(function peekCharCb(error, value, count) {
+      if (error) {
+        realCb(error);
+        return;
+      }
+
+      if (!value || !count) {
+        realCb(null, str, stringLength);
+        return;
+      }
+
+      str += String.fromCharCode(value);
+      ++stringLength;
+      _this.readChar(peekCharCb);
+    });
   };
 
   /**
@@ -209,8 +361,19 @@ Peeracle.DataStream = (function() {
    * @function DataStream#peekChar
    * @param {DataStream~readCallback} cb
    */
-  /* istanbul ignore next */
   DataStream.prototype.peekChar = function peekChar(cb) {
+    this.peek(1, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getInt8(0), length);
+    });
   };
 
   /**
@@ -219,8 +382,19 @@ Peeracle.DataStream = (function() {
    * @function DataStream#peekByte
    * @param {DataStream~readCallback} cb
    */
-  /* istanbul ignore next */
   DataStream.prototype.peekByte = function peekByte(cb) {
+    this.peek(1, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getUint8(0), length);
+    });
   };
 
   /**
@@ -229,8 +403,20 @@ Peeracle.DataStream = (function() {
    * @function DataStream#peekShort
    * @param {DataStream~readCallback} cb
    */
-  /* istanbul ignore next */
   DataStream.prototype.peekShort = function peekShort(cb) {
+    var _this = this;
+    this.peek(2, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getInt16(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -239,8 +425,20 @@ Peeracle.DataStream = (function() {
    * @function DataStream#peekUShort
    * @param {DataStream~readCallback} cb
    */
-  /* istanbul ignore next */
   DataStream.prototype.peekUShort = function peekUShort(cb) {
+    var _this = this;
+    this.peek(2, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getUint16(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -249,8 +447,20 @@ Peeracle.DataStream = (function() {
    * @function DataStream#peekInteger
    * @param {DataStream~readCallback} cb
    */
-  /* istanbul ignore next */
   DataStream.prototype.peekInteger = function peekInteger(cb) {
+    var _this = this;
+    this.peek(4, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getInt32(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -259,8 +469,20 @@ Peeracle.DataStream = (function() {
    * @function DataStream#peekUInteger
    * @param {DataStream~readCallback} cb
    */
-  /* istanbul ignore next */
   DataStream.prototype.peekUInteger = function peekUInteger(cb) {
+    var _this = this;
+    this.peek(4, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getUint32(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -269,8 +491,20 @@ Peeracle.DataStream = (function() {
    * @function DataStream#peekFloat
    * @param {DataStream~readCallback} cb
    */
-  /* istanbul ignore next */
   DataStream.prototype.peekFloat = function peekFloat(cb) {
+    var _this = this;
+    this.peek(4, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getFloat32(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -279,8 +513,20 @@ Peeracle.DataStream = (function() {
    * @function DataStream#peekDouble
    * @param {DataStream~readCallback} cb
    */
-  /* istanbul ignore next */
   DataStream.prototype.peekDouble = function peekDouble(cb) {
+    var _this = this;
+    this.peek(8, function peekCb(error, bytes, length) {
+      /** @type {DataView} */
+      var dataView;
+
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      dataView = new DataView(bytes.buffer);
+      cb(null, dataView.getFloat64(0, _this.littleEndian), length);
+    });
   };
 
   /**
@@ -289,8 +535,25 @@ Peeracle.DataStream = (function() {
    * @function DataStream#peekString
    * @param {DataStream~readCallback} cb
    */
-  /* istanbul ignore next */
   DataStream.prototype.peekString = function peekString(cb) {
+    var stringLength = 0;
+    var str = '';
+
+    this.peekChar(function peekCb(error, value, length) {
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      if (!value || !length) {
+        cb(null, str, stringLength);
+        return;
+      }
+
+      str += value;
+      ++stringLength;
+      this.readChar(peekCb);
+    });
   };
 
   /**
@@ -314,6 +577,13 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.writeChar = function writeChar(value, cb) {
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(1);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setInt8(0, value);
+    this.write(bytes, cb);
   };
 
   /**
@@ -325,6 +595,13 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.writeByte = function writeByte(value, cb) {
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(1);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setUint8(0, value);
+    this.write(bytes, cb);
   };
 
   /**
@@ -336,6 +613,15 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.writeShort = function writeShort(value, cb) {
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(2);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setInt16(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   /**
@@ -347,6 +633,15 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.writeUShort = function writeUShort(value, cb) {
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(2);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setUint16(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   /**
@@ -358,6 +653,15 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.writeInteger = function writeInteger(value, cb) {
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(4);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setInt32(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   /**
@@ -369,6 +673,15 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.writeUInteger = function writeUInteger(value, cb) {
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(4);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setUint32(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   /**
@@ -380,6 +693,15 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.writeFloat = function writeFloat(value, cb) {
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(4);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setFloat32(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   /**
@@ -391,6 +713,15 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.writeDouble = function writeDouble(value, cb) {
+    // @exclude
+    /** @type {DataView} */
+    var dataView;
+    var bytes = new Uint8Array(8);
+
+    dataView = new DataView(bytes.buffer);
+    dataView.setFloat64(0, value, this.littleEndian);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   /**
@@ -402,6 +733,19 @@ Peeracle.DataStream = (function() {
    */
   /* istanbul ignore next */
   DataStream.prototype.writeString = function writeString(str, cb) {
+    // @exclude
+    var index = 0;
+    var length = str.length;
+    var bytes = new Uint8Array(length + 1);
+
+    while (index < length) {
+      bytes.set([str.charCodeAt(index)], index);
+      ++index;
+    }
+
+    bytes.set([0], index);
+    this.write(bytes, cb);
+    // @endexclude
   };
 
   /**

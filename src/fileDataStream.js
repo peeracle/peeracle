@@ -113,188 +113,6 @@ Peeracle.FileDataStream = (function () {
     });
   };
 
-  FileDataStream.prototype.readChar = function readChar(cb) {
-    this.read(1, function readCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getInt8(0), length);
-    });
-  };
-
-  FileDataStream.prototype.readByte = function readByte(cb) {
-    this.read(1, function readCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getUint8(0), length);
-    });
-  };
-
-  FileDataStream.prototype.readShort = function readShort(cb) {
-    var _this = this;
-    this.read(2, function readCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getInt16(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.readUShort = function readUShort(cb) {
-    var _this = this;
-    this.read(2, function readCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getUint16(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.readInteger = function readInteger(cb) {
-    var _this = this;
-    this.read(4, function readCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getInt32(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.readUInteger = function readUInteger(cb) {
-    var _this = this;
-    this.read(4, function readCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getUint32(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.readUInteger64 = function readUInteger(cb) {
-    var _this = this;
-    var high;
-    var low;
-
-    this.read(8, function readCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-
-      if (_this.littleEndian) {
-        low = dataView.getUint32(0, true);
-        high = dataView.getUint32(4, true);
-      } else {
-        high = dataView.getUint32(0, false);
-        low = dataView.getUint32(4, false);
-      }
-
-      if (high > 0x1FFFFF) {
-        cb(new RangeError('Overflow reading 64-bit value.'));
-        return;
-      }
-
-      cb(null, (high * Math.pow(2, 32)) + low, length);
-    });
-  };
-
-  FileDataStream.prototype.readFloat = function readFloat(cb) {
-    var _this = this;
-    this.read(4, function readCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getFloat32(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.readDouble = function readDouble(cb) {
-    var _this = this;
-    this.read(8, function readCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getFloat64(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.readString = function readString(length, cb) {
-    var stringLength = 0;
-    var str = '';
-    var _this = this;
-    var realCb = ((typeof length) === 'function') ? length : cb;
-
-    this.readChar(function peekCharCb(error, value, count) {
-      if (error) {
-        realCb(error);
-        return;
-      }
-
-      if (!value || !count) {
-        realCb(null, str, stringLength);
-        return;
-      }
-
-      str += String.fromCharCode(value);
-      ++stringLength;
-      _this.readChar(peekCharCb);
-    });
-  };
-
   FileDataStream.prototype.peek = function peek(length, cb) {
     var reader;
     // @exclude
@@ -326,153 +144,6 @@ Peeracle.FileDataStream = (function () {
       this.offset + length));
   };
 
-  FileDataStream.prototype.peekChar = function peekChar(cb) {
-    this.peek(1, function peekCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getInt8(), length);
-    });
-  };
-
-  FileDataStream.prototype.peekByte = function peekByte(cb) {
-    this.peek(1, function peekCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getUint8(), length);
-    });
-  };
-
-  FileDataStream.prototype.peekShort = function peekShort(cb) {
-    var _this = this;
-    this.peek(2, function peekCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getInt16(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.peekUShort = function peekUShort(cb) {
-    var _this = this;
-    this.peek(2, function peekCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getUint16(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.peekInteger = function peekInteger(cb) {
-    var _this = this;
-    this.peek(4, function peekCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getInt32(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.peekUInteger = function peekUInteger(cb) {
-    var _this = this;
-    this.peek(4, function peekCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getUint32(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.peekFloat = function peekFloat(cb) {
-    var _this = this;
-    this.peek(4, function peekCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getFloat32(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.peekDouble = function peekDouble(cb) {
-    var _this = this;
-    this.peek(8, function peekCb(error, bytes, length) {
-      /** @type {DataView} */
-      var dataView;
-
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      dataView = new DataView(bytes.buffer);
-      cb(null, dataView.getFloat64(0, _this.littleEndian), length);
-    });
-  };
-
-  FileDataStream.prototype.peekString = function peekString(cb) {
-    var stringLength = 0;
-    var str = '';
-
-    this.peekChar(function peekCb(error, value, length) {
-      if (error) {
-        cb(error);
-        return;
-      }
-
-      if (!value || !length) {
-        cb(null, str, stringLength);
-        return;
-      }
-
-      str += value;
-      ++stringLength;
-      this.readChar(peekCb);
-    });
-  };
-
   FileDataStream.prototype.write = function write(bytes, cb) {
     // @exclude
     var _this = this;
@@ -489,117 +160,34 @@ Peeracle.FileDataStream = (function () {
     // @endexclude
   };
 
-  FileDataStream.prototype.writeChar = function writeChar(value, cb) {
-    // @exclude
-    /** @type {DataView} */
-    var dataView;
-    var bytes = new Uint8Array(1);
+  if (typeof module === 'undefined') {
+    FileDataStream.prototype.writeChar = function writeChar(value, cb) {
+    };
 
-    dataView = new DataView(bytes.buffer);
-    dataView.setInt8(0, value);
-    this.write(bytes, cb);
-    // @endexclude
-  };
+    FileDataStream.prototype.writeByte = function writeByte(value, cb) {
+    };
 
-  FileDataStream.prototype.writeByte = function writeByte(value, cb) {
-    // @exclude
-    /** @type {DataView} */
-    var dataView;
-    var bytes = new Uint8Array(1);
+    FileDataStream.prototype.writeShort = function writeShort(value, cb) {
+    };
 
-    dataView = new DataView(bytes.buffer);
-    dataView.setUint8(0, value);
-    this.write(bytes, cb);
-    // @endexclude
-  };
+    FileDataStream.prototype.writeUShort = function writeUShort(value, cb) {
+    };
 
-  FileDataStream.prototype.writeShort = function writeShort(value, cb) {
-    // @exclude
-    /** @type {DataView} */
-    var dataView;
-    var bytes = new Uint8Array(2);
+    FileDataStream.prototype.writeInteger = function writeInteger(value, cb) {
+    };
 
-    dataView = new DataView(bytes.buffer);
-    dataView.setInt16(0, value, this.littleEndian);
-    this.write(bytes, cb);
-    // @endexclude
-  };
+    FileDataStream.prototype.writeUInteger = function writeUInteger(value, cb) {
+    };
 
-  FileDataStream.prototype.writeUShort = function writeUShort(value, cb) {
-    // @exclude
-    /** @type {DataView} */
-    var dataView;
-    var bytes = new Uint8Array(2);
+    FileDataStream.prototype.writeFloat = function writeFloat(value, cb) {
+    };
 
-    dataView = new DataView(bytes.buffer);
-    dataView.setUint16(0, value, this.littleEndian);
-    this.write(bytes, cb);
-    // @endexclude
-  };
+    FileDataStream.prototype.writeDouble = function writeDouble(value, cb) {
+    };
 
-  FileDataStream.prototype.writeInteger = function writeInteger(value, cb) {
-    // @exclude
-    /** @type {DataView} */
-    var dataView;
-    var bytes = new Uint8Array(4);
-
-    dataView = new DataView(bytes.buffer);
-    dataView.setInt32(0, value, this.littleEndian);
-    this.write(bytes, cb);
-    // @endexclude
-  };
-
-  FileDataStream.prototype.writeUInteger = function writeUInteger(value, cb) {
-    // @exclude
-    /** @type {DataView} */
-    var dataView;
-    var bytes = new Uint8Array(4);
-
-    dataView = new DataView(bytes.buffer);
-    dataView.setUint32(0, value, this.littleEndian);
-    this.write(bytes, cb);
-    // @endexclude
-  };
-
-  FileDataStream.prototype.writeFloat = function writeFloat(value, cb) {
-    // @exclude
-    /** @type {DataView} */
-    var dataView;
-    var bytes = new Uint8Array(4);
-
-    dataView = new DataView(bytes.buffer);
-    dataView.setFloat32(0, value, this.littleEndian);
-    this.write(bytes, cb);
-    // @endexclude
-  };
-
-  FileDataStream.prototype.writeDouble = function writeDouble(value, cb) {
-    // @exclude
-    /** @type {DataView} */
-    var dataView;
-    var bytes = new Uint8Array(8);
-
-    dataView = new DataView(bytes.buffer);
-    dataView.setFloat64(0, value, this.littleEndian);
-    this.write(bytes, cb);
-    // @endexclude
-  };
-
-  FileDataStream.prototype.writeString = function writeString(str, cb) {
-    // @exclude
-    var index = 0;
-    var length = str.length;
-    var bytes = new Uint8Array(length + 1);
-
-    while (index < length) {
-      bytes.set([str.charCodeAt(index)], index);
-      ++index;
-    }
-
-    bytes.set([0], index);
-    this.write(bytes, cb);
-    // @endexclude
-  };
+    FileDataStream.prototype.writeString = function writeString(str, cb) {
+    };
+  }
 
   return FileDataStream;
 })();
