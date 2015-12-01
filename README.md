@@ -1,4 +1,4 @@
-<a href="http://peeracle.org"><img src="http://peeracle.org/img/logo.svg" height="96"></a>
+# <a href="http://peeracle.org"><img src="http://peeracle.org/img/logo.svg" height="96"></a>
 
 **Peeracle** is an open-source solution that brings Peer-to-Peer video streaming to your website without requiring any plugins.
 
@@ -19,3 +19,20 @@ This project is currently feature incomplete and under heavy development. You ca
 [license-url]: LICENSE
 [downloads-image]: https://img.shields.io/npm/dm/peeracle.svg?style=flat-square
 [downloads-url]: http://npm-stat.com/charts.html?package=peeracle
+
+## Setting up
+
+### CDN
+
+We don't have a CDN yet, you can use rawgit for now :
+
+```html
+```
+
+### npm
+
+Peeracle is also listed in the official npm repository if you want to create some external utilities.
+
+```
+npm install peeracle --save
+```
