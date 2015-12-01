@@ -20,19 +20,44 @@ This project is currently feature incomplete and under heavy development. You ca
 [downloads-image]: https://img.shields.io/npm/dm/peeracle.svg?style=flat-square
 [downloads-url]: http://npm-stat.com/charts.html?package=peeracle
 
-## Setting up
+## Setup
 
 ### CDN
 
 We don't have a CDN yet, you can use rawgit for now :
 
 ```html
+<script src="https://cdn.rawgit.com/peeracle/peeracle/dev/dist/peeracle-dev.js"></script>
 ```
 
 ### npm
 
-Peeracle is also listed in the official npm repository if you want to create some external utilities.
+Peeracle is also listed inside the official npm repository.
 
 ```
-npm install peeracle --save
+npm install peeracle
+```
+
+You can build the web version by running Grunt, the output file will be located inside the `dist` folder.
+
+```
+grunt
+```
+
+## Get Started
+
+Here is a guide that will take you through the process of streaming your video in a peer-to-peer network with our library.
+
+### Signaling Server
+
+Setting up a signaling server is required in order to allow your viewers to connect between themselves and broadcast your content. You can quickly start a signaling server by using our sample located inside the `bin` folder :
+
+```
+node bin/tracker.js
+```
+
+This will start a signaling server which will listen to the host `127.0.0.1` and port `8080` by default. You can change the listening host and port by specifying these with the `-h` and `-p` options.
+
+```
+node bin/tracker.js -h 192.168.45.7 -p 9000
 ```
