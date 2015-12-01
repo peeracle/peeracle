@@ -61,3 +61,40 @@ This will start a signaling server which will listen to the host `127.0.0.1` and
 ```
 node bin/tracker.js -h 192.168.45.7 -p 9000
 ```
+
+### Encode your media
+
+Your content must be encoded and fragmented properly to fit the web browsers requirements. Here is a list of supported codecs at the time of writing.
+
+| Format | Video    | Audio  |
+|--------|----------|--------|
+| MP4    | H264     | AAC    |
+| WebM   | VP8, VP9 | Vorbis |
+
+We will cover the steps required to encode videos with ffmpeg.
+
+#### MP4
+
+Run the following command :
+
+```
+ffmpeg -i movie.avi -c:v libx264 -b:v 8000k -bf 2 -g 90 -sc_threshold 0 \
+       -c:a aac -strict experimental -b:a 96k -ar 44100 movie.mp4
+```
+
+| Parameter | Description              | Notes                                       |
+|-----------|--------------------------|---------------------------------------------|
+| -c:v      | Video codec              |                                             |
+| -b:v      | Video variable bitrate   | 8000k is recommended for 1080p resolutions. |
+| -g        | GOP size                 | 90 is recommended for 30 FPS.               |
+| -c:a      | Audio codec              |                                             |
+| -b:a      | Audio variable bitrate   |                                             |
+| -ar       | Audio sampling frequency |                                             |
+
+You must fragment the MP4 video into the ISOBMFF format so it can be played from web browsers, the MP4Box tool is required. You'll simply have to run the following command.
+
+```
+MP4Box -dash 3000 -rap -profile dashavc264:onDemand movie.mp4
+```
+
+A file named movie_dashinit.mp4 will be generated, you will have to use that one from now.
