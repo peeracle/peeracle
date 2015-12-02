@@ -98,3 +98,22 @@ MP4Box -dash 3000 -rap -profile dashavc264:onDemand movie.mp4
 ```
 
 A file named movie_dashinit.mp4 will be generated, you will have to use that one from now.
+
+#### WebM
+
+Run the following command :
+
+```
+ffmpeg -i movie.avi -c:v libvpx -b:v 8000k -tile-columns 4 -frame-parallel 1 \
+       -keyint_min 150 -g 150 -f webm -dash 1 -c:a libvorbis -b:a 64K movie.webm
+```
+
+You have to remux the WebM video with the sample_muxer tool located inside [the libwebm repository][libwebm-url].
+
+```
+sample_muxer -i movie.webm -o movie_muxed.webm -output_cues 1 -cues_before_clusters 1
+```
+
+A file named movie_muxed.webm will be generated, you will have to use that one from now.
+
+[libwebm-url]: https://github.com/webmproject/libwebm
