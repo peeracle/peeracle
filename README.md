@@ -117,3 +117,31 @@ sample_muxer -i movie.webm -o movie_muxed.webm -output_cues 1 -cues_before_clust
 A file named movie_muxed.webm will be generated, you will have to use that one from now.
 
 [libwebm-url]: https://github.com/webmproject/libwebm
+
+### Create a metadata file
+
+Your viewers will need to retrieve the metadata file. This file contains every details about the video they'll receive, including checksums to make sure that each part of the video has been received correctly.
+
+You can create a metadata file by using our sample located inside the `bin` folder :
+
+```
+node bin/create-metadata.js -t 127.0.0.1:8080 movie.mp4 movie.peeracle
+```
+
+The tracker server URL must be specified with the `-t` parameter. `movie.mp4` is the video used to create a metadata file, and `movie.peeracle` is the name you would like to give to your generated metadata file.
+
+### Start broadcasting
+
+Now that you've got the video file with it's metadata file, you can start broadcasting it with Peeracle, with the sample located inside the `bin` folder :
+
+```
+node bin/seed.js -m movie.mp4 movie.peeracle
+```
+
+You can specify the video file made from the metadata file with the `-m` option. The checksums will be recalculated in order to make sure that the video file matches correctly with the metadata file. If the verification goes wrong, the client will join the peer-to-peer network as a receiver.
+
+If you just want to receive the video, you can omit the `-m` parameter.
+
+```
+node bin/seed.js movie.peeracle
+```
