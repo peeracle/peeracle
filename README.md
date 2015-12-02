@@ -145,3 +145,12 @@ If you just want to receive the video, you can omit the `-m` parameter.
 ```
 node bin/seed.js movie.peeracle
 ```
+
+### Watch
+
+People can now receive your broadcast from a website. Check out our demo located at the [peeracle-web-demo][peeracle-web-demo-url] repository. It contains a page made with AngularJS with a simple video player, you just have to change the metadata file path inside the `views/webmvideo/view.html` file.
+
+![Demo preview][peeracle-web-demo-preview-img-url]
+
+[peeracle-web-demo-url]: https://github.com/peeracle/peeracle-web-demo
+[peeracle-web-demo-preview-img-url]: http://peeracle.org/img/demo-screenshot.png
