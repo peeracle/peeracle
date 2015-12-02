@@ -4,7 +4,7 @@
 
 Written in ECMAScript 5 to ensure high compatibility for both Node and Web Browsers. A native SDK made in C++ including Java and Objective-C bindings is also available inside the [libpeeracle][libpeeracle-url] repository.
 
-This project is currently feature incomplete and under heavy development. You can read [our roadmap][roadmap-url] and [follow us on Twitter][twitter-url] for updates. Pull requests are always appreciated!
+:warning: This **final study project** is currently feature incomplete and under heavy development. You can read [our roadmap][roadmap-url] and [follow us on Twitter][twitter-url] for updates. Pull requests are always appreciated!
 
 [![Version][version-svg]][package-url] [![Build Status][travis-svg]][travis-url] [![License][license-image]][license-url] [![Downloads][downloads-image]][downloads-url]
 
