@@ -154,3 +154,7 @@ People can now receive your broadcast from a website. Check out our demo located
 
 [peeracle-web-demo-url]: https://github.com/peeracle/peeracle-web-demo
 [peeracle-web-demo-preview-img-url]: http://peeracle.org/img/demo-screenshot.png
+
+## Contributing
+
+Feel free to open an issue if you wish to discuss a new feature or ask a question. We accept pull requests, don't forget to put your name and e-mail address inside the AUTHORS file! You may also discuss on Twitter with [@Peeracle][twitter-url].
