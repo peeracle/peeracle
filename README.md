@@ -1,4 +1,4 @@
-# <a href="http://peeracle.org"><img src="http://peeracle.org/img/logo.svg" height="96"></a>
+# <a href="http://peeracle.github.io"><img src="http://peeracle.github.io/img/logo.svg" height="96"></a>
 
 **Peeracle** is an open-source solution that brings Peer-to-Peer video streaming to your website without requiring any plugins.
 
@@ -153,7 +153,7 @@ People can now receive your broadcast from a website. Check out our demo located
 ![Demo preview][peeracle-web-demo-preview-img-url]
 
 [peeracle-web-demo-url]: https://github.com/peeracle/peeracle-web-demo
-[peeracle-web-demo-preview-img-url]: http://peeracle.org/img/demo-screenshot.png
+[peeracle-web-demo-preview-img-url]: http://peeracle.github.io/img/demo-screenshot.png
 
 ## Contributing
 
