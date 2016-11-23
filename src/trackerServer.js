@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var http = require('http');
 var WebSocketServer = require('websocket').server;
 var uaparser = require('ua-parser');
